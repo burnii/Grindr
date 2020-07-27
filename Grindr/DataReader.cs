@@ -9,9 +9,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Notepad.ScreenRecorderHelper;
+using static Grindr.ScreenRecorderHelper;
 
-namespace Notepad
+namespace Grindr
 {
     public class DataReader
     {

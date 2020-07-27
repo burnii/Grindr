@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Notepad.Enums
+namespace Grindr.Enums
 {
     public enum Mode
     { 

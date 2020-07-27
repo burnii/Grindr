@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Notepad.Enums;
+using Grindr.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,7 +24,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Notepad
+namespace Grindr
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

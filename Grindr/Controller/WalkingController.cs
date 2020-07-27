@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace Notepad
+namespace Grindr
 {
     public class WalkingController
     {

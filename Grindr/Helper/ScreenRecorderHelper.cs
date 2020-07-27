@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-namespace Notepad
+namespace Grindr
 {
     public static class ScreenRecorderHelper
     {

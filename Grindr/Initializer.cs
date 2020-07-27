@@ -9,10 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using static Notepad.DataReader;
-using static Notepad.ScreenRecorderHelper;
+using static Grindr.DataReader;
+using static Grindr.ScreenRecorderHelper;
 
-namespace Notepad
+namespace Grindr
 {
     class Initializer
     {

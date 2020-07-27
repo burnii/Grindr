@@ -32,3 +32,4 @@ C:\Users\dbern\source\repos\Notepad\Grindr\obj\Debug\Grindr.csproj.CoreCompileIn
 C:\Users\dbern\source\repos\Notepad\Grindr\obj\Debug\Grindr.csproj.CopyComplete
 C:\Users\dbern\source\repos\Notepad\Grindr\obj\Debug\Notepad.exe
 C:\Users\dbern\source\repos\Notepad\Grindr\obj\Debug\Notepad.pdb
+C:\Users\dbern\source\repos\Notepad\Grindr\obj\Debug\Grindr.csprojAssemblyReference.cache
