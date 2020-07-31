@@ -29,7 +29,7 @@ namespace Grindr
             RECT srcRect;
             if (Initializer.Process != null && Initializer.WindowHandle != null)
             {
-                if (GetWindowRect(Initializer.WindowHandle, out srcRect))
+                if (GetWindowRect(Initializer.WindowHandle.Value, out srcRect))
                 {
                     int width = srcRect.Right - srcRect.Left;
                     int height = srcRect.Bottom - srcRect.Top;

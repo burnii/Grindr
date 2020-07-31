@@ -20,7 +20,7 @@ namespace Grindr
 
         public WalkingController()
         {
-            this.InputController = new InputController(Initializer.WindowHandle);
+            this.InputController = new InputController(Initializer.WindowHandle.Value);
             this.CombatController = new CombatController(this.InputController);
         }
 
@@ -92,7 +92,7 @@ namespace Grindr
                 distanceToStart = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, startCoordinate);
                 distanceDelta = Math.Abs(distanceToStart - targetDistance);
             }
-            while (distanceDelta > 0.01 && targetDistance > distanceToStart);
+            while (/*distanceDelta > 0.01 &&*/ targetDistance > distanceToStart);
             Logger.AddLogEntry($"Moved to {Logger.GetLogMessageForCoordinate(target)}");
 
             this.InputController.ReleaseKey(Keys.W);

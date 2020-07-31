@@ -20,7 +20,7 @@ namespace Grindr
             }
             else
             {
-                this.InputController = new InputController(Initializer.WindowHandle);
+                this.InputController = new InputController(Initializer.WindowHandle.Value);
             }
         }
 

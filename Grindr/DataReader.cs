@@ -29,7 +29,7 @@ namespace Grindr
                 RECT srcRect;
                 if (Initializer.Process != null && Initializer.WindowHandle != null)
                 {
-                    if (GetWindowRect(Initializer.WindowHandle, out srcRect))
+                    if (GetWindowRect(Initializer.WindowHandle.Value, out srcRect))
                     {
                         
                         int width = srcRect.Right - srcRect.Left;
@@ -40,9 +40,10 @@ namespace Grindr
                         using (var screenG = Graphics.FromImage(bmp))
                         {
                             Logger.AddLogEntry("Data reading started");
-                            while (true)
+                            while (State.IsAttached)
                             {
-                                GetWindowRect(Initializer.WindowHandle, out srcRect);
+
+                                GetWindowRect(Initializer.WindowHandle.Value, out srcRect);
                                 ScreenRecorderHelper.RecordScreen(
                                     screenG,
                                     srcRect.Top,
@@ -63,6 +64,7 @@ namespace Grindr
 
                                 Data.IsTargetDead = GetBoolPixelValue(bmp, x + 6, y);
                             }
+                            Logger.AddLogEntry("Data reading stopped");
                         }
                     }
                 }

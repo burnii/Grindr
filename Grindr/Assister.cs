@@ -12,7 +12,7 @@ namespace Grindr
     {
         public Task Assist(string name)
         {
-            var inputController = new InputController(Initializer.WindowHandle);
+            var inputController = new InputController(Initializer.WindowHandle.Value);
             var combatController = new CombatController(inputController);
             
 

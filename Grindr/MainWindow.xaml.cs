@@ -94,7 +94,19 @@ namespace Grindr
 
         private void AttachButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Attach();
+            if (!State.IsAttached)
+            {
+                this.Attach();
+            }
+            else
+            {
+                this.Detach();
+            }
+        }
+
+        private void Detach()
+        {
+            State.IsAttached = false;
         }
 
         private void AddNavigationNodeButton_Click(object sender, RoutedEventArgs e)

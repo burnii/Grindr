@@ -28,7 +28,7 @@ namespace Grindr
         [DllImport("user32.dll")]
         private static extern Int32 GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
-        public static IntPtr WindowHandle { get; set; }
+        public static IntPtr? WindowHandle { get; set; }
 
         public static Process Process { get; set; }
 
@@ -60,7 +60,7 @@ namespace Grindr
                     while (IsInitializing)
                     {
                         Thread.Sleep(100);
-                        SetForegroundWindow(WindowHandle);
+                        SetForegroundWindow(WindowHandle.Value);
                     }
                 });
 
@@ -92,6 +92,7 @@ namespace Grindr
                     {
                         WindowHandle = windowHandle;
                         Process = process;
+                        State.IsAttached = true;
                         Logger.AddLogEntry($"Attached to Wow process");
                         break;
                     }
@@ -99,6 +100,14 @@ namespace Grindr
                     Thread.Sleep(1000);
                 }
             });
+        }
+
+        public static void Detach()
+        {
+            Logger.AddLogEntry("Detached");
+            State.IsAttached = false;
+            Initializer.Process = null;
+            Initializer.WindowHandle = null;
         }
 
         private static Process GetProcessByHandle(IntPtr hwnd)
