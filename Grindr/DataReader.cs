@@ -31,6 +31,7 @@ namespace Grindr
                 {
                     if (GetWindowRect(Initializer.WindowHandle, out srcRect))
                     {
+                        
                         int width = srcRect.Right - srcRect.Left;
                         int height = srcRect.Bottom - srcRect.Top;
 
@@ -41,6 +42,7 @@ namespace Grindr
                             Logger.AddLogEntry("Data reading started");
                             while (true)
                             {
+                                GetWindowRect(Initializer.WindowHandle, out srcRect);
                                 ScreenRecorderHelper.RecordScreen(
                                     screenG,
                                     srcRect.Top,

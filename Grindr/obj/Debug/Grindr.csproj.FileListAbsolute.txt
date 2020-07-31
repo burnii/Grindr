@@ -51,3 +51,11 @@ C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\Grindr.g.resources
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\Grindr.Properties.Resources.resources
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\Grindr.exe
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\Grindr.pdb
+C:\Users\dbern\source\repos\Grindr\Grindr\bin\Debug\QuickGraph.Data.dll
+C:\Users\dbern\source\repos\Grindr\Grindr\bin\Debug\QuickGraph.dll
+C:\Users\dbern\source\repos\Grindr\Grindr\bin\Debug\QuickGraph.Graphviz.dll
+C:\Users\dbern\source\repos\Grindr\Grindr\bin\Debug\QuickGraph.Serialization.dll
+C:\Users\dbern\source\repos\Grindr\Grindr\bin\Debug\QuickGraph.xml
+C:\Users\dbern\source\repos\Grindr\Grindr\bin\Debug\QuickGraph.Data.xml
+C:\Users\dbern\source\repos\Grindr\Grindr\bin\Debug\QuickGraph.Graphviz.xml
+C:\Users\dbern\source\repos\Grindr\Grindr\bin\Debug\QuickGraph.Serialization.xml
