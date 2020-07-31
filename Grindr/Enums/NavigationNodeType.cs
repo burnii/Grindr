@@ -10,6 +10,7 @@ namespace Grindr
     { 
         WayPoint,
         Combat,
-        Dungeon 
+        Dungeon,
+        ZoneChange
     }
 }

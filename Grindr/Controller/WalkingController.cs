@@ -39,7 +39,7 @@ namespace Grindr
             this.InputController.ReleaseKey(bestTurnKey);
         }
 
-        private double DetermineShortestTurnAngle(double targetDirection, out Keys bestTurnKey) 
+        private double DetermineShortestTurnAngle(double targetDirection, out Keys bestTurnKey)
         {
             var diff = targetDirection - Data.PlayerFacing;
 
@@ -68,6 +68,7 @@ namespace Grindr
 
             var distanceDelta = distanceToStart - targetDistance;
             Logger.AddLogEntry($"Start moving to {Logger.GetLogMessageForCoordinate(target)}");
+            var currentLocation = Data.PlayerZone;
             do
             {
                 if (State.IsRunning == false)
@@ -89,6 +90,12 @@ namespace Grindr
                     }
                 }
 
+                //if (Data.PlayerLocation != currentLocation)
+                //{
+                //    startCoordinate = Data.PlayerCoordinate;
+                //    targetDistance = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, target);
+                //}
+
                 distanceToStart = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, startCoordinate);
                 distanceDelta = Math.Abs(distanceToStart - targetDistance);
             }
@@ -105,6 +112,27 @@ namespace Grindr
             Logger.AddLogEntry($"Walk to next waypoint at {Logger.GetLogMessageForCoordinate(target)}");
             this.Turn(target);
             this.Move(target, isGrinding);
+        }
+
+        public void WalkUnitilZoneChange()
+        {
+            Logger.AddLogEntry($"Walk until zone change..");
+            var startZone = Data.PlayerZone;
+            this.InputController.PressKey(Keys.W);
+
+            while (startZone == Data.PlayerZone)
+            {
+                if (State.IsRunning == false)
+                {
+                    this.InputController.ReleaseKey(Keys.W);
+                    return;
+                }
+            }
+
+            this.InputController.ReleaseKey(Keys.W);
+
+            Logger.AddLogEntry($"Arrived at zone '{Data.PlayerZone}'");
+
         }
     }
 }

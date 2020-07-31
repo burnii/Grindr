@@ -128,6 +128,12 @@ namespace Grindr
             this.grinder.NavigationNodes[index].Type = NavigationNodeType.WayPoint;
         }
 
+        private void MarkAsZoneChangeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var index = this.coordinatesListBox.SelectedIndex;
+            this.grinder.NavigationNodes[index].Type = NavigationNodeType.ZoneChange;
+        }
+
         private void DeleteNavigatioNNodeButton_Click(object sender, RoutedEventArgs e)
         {
             this.grinder.DeleteNavigationNode(this.coordinatesListBox.SelectedIndex);

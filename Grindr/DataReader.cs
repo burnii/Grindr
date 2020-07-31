@@ -52,17 +52,19 @@ namespace Grindr
                                     bmp.Height
                                 );
 
-                                Data.PlayerXCoordinate = GetDoublePixelValue(bmp, x + 1, y) * 10;
+                                Data.PlayerXCoordinate = GetDoublePixelValue(bmp, x + 10, y) * 10;
 
-                                Data.PlayerYCoordinate = GetDoublePixelValue(bmp, x + 2, y) * 10;
+                                Data.PlayerYCoordinate = GetDoublePixelValue(bmp, x + 20, y) * 10;
 
-                                Data.PlayerFacing = GetDoublePixelValue(bmp, x + 3, y);
+                                Data.PlayerFacing = GetDoublePixelValue(bmp, x + 30, y);
 
-                                Data.PlayerIsInCombat = GetBoolPixelValue(bmp, x + 4, y);
+                                Data.PlayerIsInCombat = GetBoolPixelValue(bmp, x + 40, y);
 
-                                Data.PlayerHasTarget = GetBoolPixelValue(bmp, x + 5, y);
+                                Data.PlayerHasTarget = GetBoolPixelValue(bmp, x + 50, y);
 
-                                Data.IsTargetDead = GetBoolPixelValue(bmp, x + 6, y);
+                                Data.IsTargetDead = GetBoolPixelValue(bmp, x + 60, y);
+
+                                Data.PlayerZone = GetStringPixelValues(bmp, y, x + 80/*, x + 90, x + 100, x + 110*/);
                             }
                             Logger.AddLogEntry("Data reading stopped");
                         }
@@ -109,6 +111,32 @@ namespace Grindr
         {
             var hex = GetPixelValueAt(bmp, x, y);
             return (double)Convert.ToInt32(hex.Substring(2), 16) / 100000;
+        }
+
+        private static string GetStringPixelValues(Bitmap bmp, int y, params int[] xs)
+        {
+            var locationString = "";
+
+            foreach (var x in xs)
+            {
+                var hex = GetPixelValueAt(bmp, x, y);
+                var hexInt = Convert.ToInt32(hex.Substring(2), 16);
+                var intString = hexInt.ToString();
+
+                for (int i = 0; i < 6; i += 2)
+                {
+                    var c = char.ConvertFromUtf32(Convert.ToInt32(intString.Substring(i, 2)));
+                    locationString += c;
+                }
+            }
+
+            return locationString;
+        }
+
+        private static int GetIntPixelValue(Bitmap bmp, int x, int y)
+        {
+            var hex = GetPixelValueAt(bmp, x, y);
+            return Convert.ToInt32(hex.Substring(2), 16);
         }
 
         private static string GetPixelValueAt(Bitmap bmp, int x, int y)
