@@ -33,6 +33,7 @@ namespace Grindr
     {
         private Grinder grinder;
         private Assister assister;
+        private Recorder recorder;
 
         public MainWindow()
         {
@@ -72,6 +73,7 @@ namespace Grindr
             DataReader.Start();
             this.grinder = new Grinder(this.coordinatesListBox);
             this.assister = new Assister();
+            this.recorder = new Recorder(this.grinder);
 
             this.coordinatesListBox.DataContext = this.grinder.NavigationNodes;
             this.coordinatesListBox.SetBinding(ItemsControl.ItemsSourceProperty, new System.Windows.Data.Binding());
@@ -111,7 +113,7 @@ namespace Grindr
 
         private void AddNavigationNodeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.grinder.AddNavigationNode(Data.PlayerXCoordinate, Data.PlayerYCoordinate, NavigationNodeType.WayPoint);
+            this.grinder.AddNavigationNode(Data.PlayerCoordinate, NavigationNodeType.WayPoint);
         }
 
         private void MarkAsCombatNodeButton_Click(object sender, RoutedEventArgs e)
@@ -166,7 +168,7 @@ namespace Grindr
             File.WriteAllText(System.IO.Path.Combine(Settings.ProfilePath, this.profileNameTextBox.Text + ".json"), serializedNavigationNodes.ToString());
         }
 
-        private void importProfileButton_Click(object sender, RoutedEventArgs e)
+        private void ImportProfileButton_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new OpenFileDialog();
 
@@ -197,6 +199,20 @@ namespace Grindr
             this.assistTabControl.Visibility = Visibility.Visible;
 
             State.Mode = Mode.Assist;
+        }
+
+        private void RecordButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (State.IsRecording == false)
+            {
+                this.recorder.StartRecording();
+                this.recordButton.Content = "Stop recording";
+            }
+            else
+            {
+                this.recorder.StopRecording();
+                this.recordButton.Content = "Start recording";
+            }
         }
     }
 }

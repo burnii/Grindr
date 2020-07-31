@@ -46,8 +46,9 @@
                         </ListBox.ContextMenu>
                     </ListBox>
                     <Button x:Name="exportProfileButton" Content="Save" HorizontalAlignment="Left" Margin="10,189,0,0" VerticalAlignment="Top" Width="90" Height="22" Click="SaveProfileButton_Click"/>
-                    <Button x:Name="importProfileButton" Content="Load" HorizontalAlignment="Left" Margin="102,189,0,0" VerticalAlignment="Top" Width="90" Height="22" Click="importProfileButton_Click"/>
+                    <Button x:Name="importProfileButton" Content="Load" HorizontalAlignment="Left" Margin="102,189,0,0" VerticalAlignment="Top" Width="90" Height="22" Click="ImportProfileButton_Click"/>
                     <TextBox x:Name="profileNameTextBox" HorizontalAlignment="Left" Height="22" Margin="205,11,0,0" TextWrapping="Wrap" Text="Profilename" VerticalAlignment="Top" Width="130"/>
+                    <Button x:Name="recordButton" Content="Start recording" HorizontalAlignment="Left" VerticalAlignment="Top" Width="90" Margin="102,154,0,0" Height="22" Click="RecordButton_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Combat">

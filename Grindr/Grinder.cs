@@ -65,17 +65,19 @@ namespace Grindr
             }, this.CancellationTokenSource.Token);
         }
 
-        public NavigationNode AddNavigationNode(double x, double y, NavigationNodeType type)
+        public NavigationNode AddNavigationNode(Coordinate coordinate, NavigationNodeType type)
         {
             var index = this.GetIndexToInsert();
 
             var node = new NavigationNode(
-                x,
-                y, 
+                coordinate.X,
+                coordinate.Y, 
                 type, 
                 this.TryToGetNodeAtIndex(index),
                 this.TryToGetNodeAtIndex(index - 1)
             );
+
+            Logger.AddLogEntry($"Recorded a navigationnode at {Logger.GetLogMessageForCoordinate(coordinate)}");
 
             this.NavigationNodes.Insert(index, node);
 

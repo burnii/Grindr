@@ -12,5 +12,6 @@ namespace Grindr
         public static bool IsRunning { get; set; } = false;
         public static Mode Mode { get; set; } = Mode.Grind;
         public static bool IsAttached { get; set; }
+        public static bool IsRecording { get; set; } = false;
     }
 }
