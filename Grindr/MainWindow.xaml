@@ -98,7 +98,7 @@
         <Button x:Name="attachButton" Content="Attach" HorizontalAlignment="Left" Margin="71,16,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="AttachButton_Click"/>
         <Button x:Name="grindButton" Content="Grind" HorizontalAlignment="Left" Margin="206,16,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="GrindButton_Click"/>
         <Button x:Name="assistButton" Content="Assist" HorizontalAlignment="Left" Margin="266,16,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="AssistButton_Click"/>
-        <TabControl x:Name="assistTabControl" HorizontalAlignment="Left" Height="253" Margin="11,71,0,0" VerticalAlignment="Top" Width="621">
+        <TabControl Visibility="Hidden" x:Name="assistTabControl" HorizontalAlignment="Left" Height="253" Margin="11,71,0,0" VerticalAlignment="Top" Width="621">
             <TabItem Header="General">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -108,5 +108,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="436,39,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <Button x:Name="button1" Content="Button" HorizontalAlignment="Left" Margin="339,39,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
     </Grid>
 </Window>

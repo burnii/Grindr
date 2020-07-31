@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Windows.Media.Media3D;
 
 namespace Grindr
 {
@@ -26,32 +27,39 @@ namespace Grindr
         private void Turn(Coordinate target)
         {
             var direction1 = CalculationHelper.CalculateWowDirection(Data.PlayerXCoordinate, Data.PlayerYCoordinate, target.X, target.Y);
-            var deg = CalculationHelper.RadToDeg(direction1 - Data.PlayerFacing);
-            var deg2 = CalculationHelper.RadToDeg(Data.PlayerFacing - direction1);
+            var diff = this.DetermineShortestTurnAngle(direction1, out Keys bestTurnKey);
+            var turnTime = Convert.ToInt32(Math.Round(Math.Abs(diff) / 0.0033));
 
-            var bestTurnKey = Keys.A;
-
-            if (deg2 > deg)
-            {
-                bestTurnKey = Keys.D;
-            }
             this.InputController.PressKey(bestTurnKey);
 
             Logger.AddLogEntry($"Start turning to {Logger.GetLogMessageForCoordinate(target)}");
-            while (Math.Abs(Math.Abs(direction1) - Math.Abs(Data.PlayerFacing)) > 0.1)
-            {
-                if (State.IsRunning == false)
-                {
-                    break;
-                }
-            }
+            Thread.Sleep(turnTime);
             Logger.AddLogEntry($"Turned to {Logger.GetLogMessageForCoordinate(target)}");
 
             this.InputController.ReleaseKey(bestTurnKey);
         }
 
+        private double DetermineShortestTurnAngle(double targetDirection, out Keys bestTurnKey) 
+        {
+            var diff = targetDirection - Data.PlayerFacing;
+
+            if (diff < 0)
+            {
+                diff += Math.PI * 2;
+            }
+
+            if (diff < Math.PI)
+                bestTurnKey = Keys.A;
+            else
+                bestTurnKey = Keys.D;
+
+            return Math.Min(Math.PI * 2 - Math.Abs(diff), Math.Abs(diff));
+        }
+
         private void Move(Coordinate target, bool isGrinding)
         {
+            this.InputController.PressKey(Keys.W);
+            this.InputController.PressKey(Keys.W);
             this.InputController.PressKey(Keys.W);
             var targetDistance = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, target);
 
@@ -76,13 +84,15 @@ namespace Grindr
                         targetDistance = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, target);
                         this.Turn(target);
                         this.InputController.PressKey(Keys.W);
+                        this.InputController.PressKey(Keys.W);
+                        this.InputController.PressKey(Keys.W);
                     }
                 }
 
                 distanceToStart = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, startCoordinate);
                 distanceDelta = Math.Abs(distanceToStart - targetDistance);
             }
-            while (distanceDelta > 0.01);
+            while (distanceDelta > 0.01 && targetDistance > distanceToStart);
             Logger.AddLogEntry($"Moved to {Logger.GetLogMessageForCoordinate(target)}");
 
             this.InputController.ReleaseKey(Keys.W);

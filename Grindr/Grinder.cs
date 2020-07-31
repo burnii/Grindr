@@ -51,7 +51,7 @@ namespace Grindr
                         // TODO Only fight while on navigationnode -> try to fight sometimes, always fight when in combat
                         Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.NavigationCoordinatesListBox.SelectedIndex = i; }));
                         
-                        this.WalkingController.Walk(this.NavigationNodes[i].Coordinates, true);
+                        this.WalkingController.Walk(this.NavigationNodes[i].Coordinates, false);
 
                         if (this.NavigationNodes[i].Type == NavigationNodeType.Combat)
                         {
