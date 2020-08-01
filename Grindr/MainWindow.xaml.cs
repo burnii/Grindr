@@ -113,7 +113,7 @@ namespace Grindr
 
         private void AddNavigationNodeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.grinder.AddNavigationNode(Data.PlayerCoordinate, NavigationNodeType.WayPoint);
+            this.grinder.AddNavigationNode(Data.PlayerCoordinate, NavigationNodeType.WayPoint, Data.PlayerZone);
         }
 
         private void MarkAsCombatNodeButton_Click(object sender, RoutedEventArgs e)

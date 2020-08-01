@@ -31,6 +31,28 @@ namespace Grindr
             this.CombatController = new CombatController();
         }
 
+        internal void MarkLastNavigationNodeAsZoneChangeNode(string playerZone)
+        {
+            var lastNodeFromZone = this.GetLastNavigationNodeFromZone(this.NavigationNodes.Last(), playerZone);
+            lastNodeFromZone.Type = NavigationNodeType.ZoneChange;
+        }
+
+        private NavigationNode GetLastNavigationNodeFromZone(NavigationNode node, string zone) 
+        {
+            if (node.Zone == zone)
+            {
+                return node;
+            }
+            else if (node.PreviousNode == null)
+            {
+                return null;
+            }
+            else
+            {
+                return this.GetLastNavigationNodeFromZone(node.PreviousNode, zone);
+            }
+        }
+
         public Task StartJourney()
         {
             this.CancellationTokenSource = new CancellationTokenSource();
@@ -71,7 +93,7 @@ namespace Grindr
             }, this.CancellationTokenSource.Token);
         }
 
-        public NavigationNode AddNavigationNode(Coordinate coordinate, NavigationNodeType type)
+        public NavigationNode AddNavigationNode(Coordinate coordinate, NavigationNodeType type, string zone)
         {
             var index = this.GetIndexToInsert();
 
@@ -79,6 +101,7 @@ namespace Grindr
                 coordinate.X,
                 coordinate.Y, 
                 type, 
+                zone,
                 this.TryToGetNodeAtIndex(index),
                 this.TryToGetNodeAtIndex(index - 1)
             );
