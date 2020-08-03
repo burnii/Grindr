@@ -33,7 +33,7 @@ namespace Grindr
                         startZone = Data.PlayerZone;
                     }
 
-                    if (currentDistance > 0.1)
+                    if (currentDistance > 0.01 && startZone == Data.PlayerZone)
                     {
                         startCoordinate = Data.PlayerCoordinate;
                         Application.Current.Dispatcher.BeginInvoke(

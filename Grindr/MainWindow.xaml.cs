@@ -118,20 +118,20 @@ namespace Grindr
 
         private void MarkAsCombatNodeButton_Click(object sender, RoutedEventArgs e)
         {
-            var index = this.coordinatesListBox.SelectedIndex;
-            this.grinder.NavigationNodes[index].Type = NavigationNodeType.Combat;
+            var i = this.coordinatesListBox.SelectedIndex;
+            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.Combat);
         }
 
         private void MarkAsWayPointButton_Click(object sender, RoutedEventArgs e)
         {
-            var index = this.coordinatesListBox.SelectedIndex;
-            this.grinder.NavigationNodes[index].Type = NavigationNodeType.WayPoint;
+            var i = this.coordinatesListBox.SelectedIndex;
+            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.WayPoint);
         }
 
         private void MarkAsZoneChangeButton_Click(object sender, RoutedEventArgs e)
         {
-            var index = this.coordinatesListBox.SelectedIndex;
-            this.grinder.NavigationNodes[index].Type = NavigationNodeType.ZoneChange;
+            var i = this.coordinatesListBox.SelectedIndex;
+            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.ZoneChange);
         }
 
         private void DeleteNavigatioNNodeButton_Click(object sender, RoutedEventArgs e)
@@ -184,6 +184,8 @@ namespace Grindr
             {
                 var serializedNavigationNodes = File.ReadAllText(openFileDialog.FileName);
 
+                this.grinder.NavigationNodes.Clear();
+
                 foreach (var navNode in JsonConvert.DeserializeObject<ObservableCollection<NavigationNode>>(serializedNavigationNodes))
                 {
                     this.grinder.NavigationNodes.Add(navNode);
@@ -219,6 +221,27 @@ namespace Grindr
                 this.recorder.StopRecording();
                 this.recordButton.Content = "Start recording";
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            var input = new InputController(Initializer.WindowHandle.Value);
+            var startTurn = Data.PlayerFacing;
+            Task.Run(() =>
+            {
+                input.PressKey(Keys.A);
+                Thread.Sleep(1000);
+                input.ReleaseKey(Keys.A);
+                Thread.Sleep(1000);
+                var endTurn = Data.PlayerFacing;
+
+                Console.WriteLine(startTurn);
+                Console.WriteLine(endTurn);
+                Console.WriteLine("___________");
+                Console.WriteLine(startTurn - endTurn);
+            });
+            
         }
     }
 }

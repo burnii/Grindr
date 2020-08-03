@@ -37,6 +37,7 @@
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Mark as CombatNode" Click="MarkAsCombatNodeButton_Click"/>
@@ -93,6 +94,7 @@
             <TextBlock Text="{Binding Path=(local:Data.PlayerHasTarget)}" ></TextBlock>
             <TextBlock Text="{Binding Path=(local:Data.IsTargetDead)}" ></TextBlock>
             <TextBlock Text="{Binding Path=(local:Data.PlayerZone)}" ></TextBlock>
+            <TextBlock Text="{Binding Path=(local:Data.IsInInstance)}" ></TextBlock>
         </StackPanel>
         <Button x:Name="runButton" Content="Start" HorizontalAlignment="Left" Margin="637,16,0,0" VerticalAlignment="Top" Width="145" Click="RunButton_Click" Height="46"/>
         <Button x:Name="launchButton" Content="Launch" HorizontalAlignment="Left" Margin="11,16,0,0" VerticalAlignment="Top" Width="55" Click="LaunchButton_Click" Height="43"/>
@@ -111,5 +113,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="450,38,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
     </Grid>
 </Window>

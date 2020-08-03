@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace Grindr
             PlayerHasTargetChanged += (sender, e) => { return; };
             IsTargetDeadChanged += (sender, e) => { return; };
             PlayerZoneChanged += (sender, e) => { return; };
+            IsInInstanceChanged += (sender, e) => { return; };
         }
 
         public static event EventHandler PlayerXCoordinateChanged;
@@ -29,6 +31,7 @@ namespace Grindr
         public static event EventHandler PlayerHasTargetChanged;
         public static event EventHandler IsTargetDeadChanged;
         public static event EventHandler PlayerZoneChanged;
+        public static event EventHandler IsInInstanceChanged;
 
 
         public static Coordinate PlayerCoordinate
@@ -144,6 +147,20 @@ namespace Grindr
             }
         }
 
+        private static bool isInInstance;
+        public static bool IsInInstance
+        {
+            get
+            {
+                return isInInstance;
+            }
+            set
+            {
+                isInInstance = value;
+
+                IsInInstanceChanged(null, EventArgs.Empty);
+            }
+        }
 
     }
 }

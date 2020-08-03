@@ -13,7 +13,7 @@ using System.Windows.Media.Media3D;
 
 namespace Grindr
 {
-    public class WalkingController
+    public class WalkingController : IWalkingController
     {
         public InputController InputController { get; set; }
         public CombatController CombatController { get; set; }
@@ -28,12 +28,27 @@ namespace Grindr
         {
             var direction1 = CalculationHelper.CalculateWowDirection(Data.PlayerXCoordinate, Data.PlayerYCoordinate, target.X, target.Y);
             var diff = this.DetermineShortestTurnAngle(direction1, out Keys bestTurnKey);
-            var turnTime = Convert.ToInt32(Math.Round(Math.Abs(diff) / 0.0033));
+
+            
+            var turnTime = Convert.ToInt32(Math.Abs(diff) / 0.0030);
 
             this.InputController.PressKey(bestTurnKey);
+            var start = DateTime.Now;
+            var stop = false;
 
+            Task.Run(() =>
+            {
+                Thread.Sleep(turnTime);
+                stop = true;
+            });
+
+            while (Math.Abs(direction1 - Data.PlayerFacing) > 0.02 && /*(DateTime.Now - start).TotalMilliseconds < turnTime && */State.IsRunning && stop == false)
+            {
+
+            }
+            Console.WriteLine(stop);
             Logger.AddLogEntry($"Start turning to {Logger.GetLogMessageForCoordinate(target)}");
-            Thread.Sleep(turnTime);
+            //Thread.Sleep(turnTime);
             Logger.AddLogEntry($"Turned to {Logger.GetLogMessageForCoordinate(target)}");
 
             this.InputController.ReleaseKey(bestTurnKey);
@@ -68,7 +83,6 @@ namespace Grindr
 
             var distanceDelta = distanceToStart - targetDistance;
             Logger.AddLogEntry($"Start moving to {Logger.GetLogMessageForCoordinate(target)}");
-            var currentLocation = Data.PlayerZone;
             do
             {
                 if (State.IsRunning == false)
@@ -90,16 +104,11 @@ namespace Grindr
                     }
                 }
 
-                //if (Data.PlayerLocation != currentLocation)
-                //{
-                //    startCoordinate = Data.PlayerCoordinate;
-                //    targetDistance = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, target);
-                //}
-
                 distanceToStart = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, startCoordinate);
                 distanceDelta = Math.Abs(distanceToStart - targetDistance);
+                Thread.Sleep(100);
             }
-            while (/*distanceDelta > 0.01 &&*/ targetDistance > distanceToStart);
+            while (targetDistance > distanceToStart - 0.001);
             Logger.AddLogEntry($"Moved to {Logger.GetLogMessageForCoordinate(target)}");
 
             this.InputController.ReleaseKey(Keys.W);
@@ -109,7 +118,10 @@ namespace Grindr
 
         public void Walk(Coordinate target, bool isGrinding)
         {
-            Logger.AddLogEntry($"Walk to next waypoint at {Logger.GetLogMessageForCoordinate(target)}");
+            Logger.AddLogEntry($"Walk to next waypoint at {Logger.GetLogMessageForCoordinate(target)} from {Logger.GetLogMessageForCoordinate(target)}");
+            if (Data.PlayerZone == "ELW")
+            { 
+            }
             this.Turn(target);
             this.Move(target, isGrinding);
         }
@@ -129,6 +141,7 @@ namespace Grindr
                 }
             }
 
+            Thread.Sleep(200);
             this.InputController.ReleaseKey(Keys.W);
 
             Logger.AddLogEntry($"Arrived at zone '{Data.PlayerZone}'");
