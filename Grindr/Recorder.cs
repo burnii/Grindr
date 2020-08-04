@@ -7,11 +7,11 @@ namespace Grindr
 {
     internal class Recorder
     {
-        public Grinder Grinder { get; set; }
+        public static Grinder Grinder { get; set; }
 
         public Recorder(Grinder grinder)
         {
-            this.Grinder = grinder;
+            Grinder = grinder;
         }
 
         public void StartRecording()
@@ -29,24 +29,29 @@ namespace Grindr
 
                     if (startZone != Data.PlayerZone)
                     {
-                        this.Grinder.MarkLastNavigationNodeAsZoneChangeNode(startZone);
+                        Grinder.MarkLastNavigationNodeAsZoneChangeNode(startZone);
                         startZone = Data.PlayerZone;
                     }
 
                     if (currentDistance > 0.01 && startZone == Data.PlayerZone)
                     {
                         startCoordinate = Data.PlayerCoordinate;
-                        Application.Current.Dispatcher.BeginInvoke(
-                            new Action(() => 
-                            { 
-                                this.Grinder.AddNavigationNode(startCoordinate, NavigationNodeType.WayPoint, Data.PlayerZone); 
-                            })
-                        );
+                        AddNavigationNode(startCoordinate);
                     }
 
                     Thread.Sleep(100);
                 }
             });
+        }
+
+        public static void AddNavigationNode(Coordinate coordinate)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                                new Action(() =>
+                                {
+                                    Grinder.AddNavigationNode(coordinate, NavigationNodeType.WayPoint, Data.PlayerZone);
+                                })
+                            );
         }
 
         public void StopRecording()

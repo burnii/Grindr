@@ -43,6 +43,7 @@
                                 <MenuItem Header="Mark as CombatNode" Click="MarkAsCombatNodeButton_Click"/>
                                 <MenuItem Header="Mark as WayPoint" Click="MarkAsWayPointButton_Click"/>
                                 <MenuItem Header="Mark as ZoneChange" Click="MarkAsZoneChangeButton_Click"/>
+                                <MenuItem Header="Mark as Unstuck" Click="MarkAsUnstuckButton_Click"/>
                                 <MenuItem Header="Delete" Click="DeleteNavigatioNNodeButton_Click"/>
                             </ContextMenu>
                         </ListBox.ContextMenu>

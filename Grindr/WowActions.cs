@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Grindr
 {
@@ -31,6 +32,37 @@ namespace Grindr
             {
                 inputController.TapKey(System.Windows.Forms.Keys.D7);
                 Thread.Sleep(1000);
+            }
+        }
+
+        public static Task OpenMapAsync()
+        {
+            return Task.Run(() =>
+            {
+                while (Data.IsMapOpened == false)
+                {
+                    inputController.TapKey(Keys.M);
+                    Thread.Sleep(1000);
+                }
+            });
+
+        }
+
+        public static void OpenMap()
+        {
+            while (Data.IsMapOpened == false)
+            {
+                inputController.TapKey(Keys.M);
+                Thread.Sleep(200);
+            }
+        }
+
+        public static void CloseMap()
+        {
+            while (Data.IsMapOpened == true)
+            {
+                inputController.TapKey(Keys.M);
+                Thread.Sleep(200);
             }
         }
     }

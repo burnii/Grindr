@@ -115,7 +115,15 @@ namespace Grindr
 
         private void AddNavigationNodeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.grinder.AddNavigationNode(Data.PlayerCoordinate, NavigationNodeType.WayPoint, Data.PlayerZone);
+            Task.Run(() =>
+            {
+                if (Data.IsInInstance)
+                {
+                    WowActions.OpenMap();
+                }
+                Recorder.AddNavigationNode(Data.PlayerCoordinate);
+                WowActions.CloseMap();
+            });
         }
 
         private void MarkAsCombatNodeButton_Click(object sender, RoutedEventArgs e)
@@ -134,6 +142,12 @@ namespace Grindr
         {
             var i = this.coordinatesListBox.SelectedIndex;
             this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.ZoneChange);
+        }
+
+        private void MarkAsUnstuckButton_Click(object sender, RoutedEventArgs e)
+        {
+            var i = this.coordinatesListBox.SelectedIndex;
+            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.Unstuck);
         }
 
         private void DeleteNavigatioNNodeButton_Click(object sender, RoutedEventArgs e)
@@ -192,6 +206,13 @@ namespace Grindr
                 {
                     this.grinder.NavigationNodes.Add(navNode);
                 }
+
+                Task.Run(() =>
+                {
+                    // Wait that the listBox list is synchronized with the navigationNodes list.
+                    Thread.Sleep(1000);
+                    this.grinder.UpdateNavigationNodeColors();
+                });
             }
         }
 

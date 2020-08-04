@@ -76,6 +76,19 @@ namespace Grindr
                     item = NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
                     Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#C7CEEA") as Brush; }));
                     break;
+                case NavigationNodeType.Unstuck:
+                    i = this.NavigationNodes.IndexOf(node);
+                    item = NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
+                    Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#F9E79F") as Brush; }));
+                    break;
+            }
+        }
+
+        public void UpdateNavigationNodeColors()
+        {
+            foreach (var node in this.NavigationNodes)
+            {
+                this.UpdateNavigationNodeColor(node);
             }
         }
 
@@ -135,9 +148,14 @@ namespace Grindr
                             wc.Walk(this.NavigationNodes[i].Coordinates, true);
                         }
 
-                        if (this.NavigationNodes[i].Type == NavigationNodeType.Combat)
+                        switch (this.NavigationNodes[i].Type)
                         {
-                            this.CombatController.FightWhileInCombat();
+                            case NavigationNodeType.Combat:
+                                this.CombatController.FightWhileInCombat();
+                                break;
+                            case NavigationNodeType.Unstuck:
+                                WowActions.Unstuck();
+                                break;
                         }
                     }
                 }

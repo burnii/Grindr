@@ -90,6 +90,7 @@ namespace Grindr
             while (Data.PlayerHasTarget == true && !Data.IsTargetDead)
             {
                 this.InputController.TapKey(Keys.Y);
+                this.InputController.TapKey(Keys.D3);
                 this.InputController.TapKey(Keys.D2);
                 this.InputController.TapKey(Keys.D1);
                 Thread.Sleep(1000);

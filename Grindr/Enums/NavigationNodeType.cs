@@ -11,6 +11,7 @@ namespace Grindr
         WayPoint,
         Combat,
         Dungeon,
-        ZoneChange
+        ZoneChange,
+        Unstuck
     }
 }
