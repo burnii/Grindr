@@ -73,13 +73,17 @@ namespace Grindr
                                 Marshal.Copy(ptr, rgbValues, 0, bytes);
 
                                 Data.IsInInstance = GetBoolPixelValue(bmp, x + 24, y, rgbValues);
+                                Data.IsMapOpened = GetBoolPixelValue(bmp, x + 27, y, rgbValues);
 
                                 if (Data.IsInInstance == true)
                                 {
-                                    
-                                    if (Data.PlayerXCoordinate == int.MaxValue || Data.PlayerYCoordinate == int.MaxValue)
+
+                                    if (Data.IsMapOpened == false)
                                     {
-                                        inputController.TapKey(Keys.M);
+                                        
+                                            inputController.TapKey(Keys.M);
+                                            Thread.Sleep(1000);
+                                        
                                     }
                                     var playerCoordinate = GetPixelCoordinate(rgbValues, bmpData, out var angle);
 
@@ -93,11 +97,11 @@ namespace Grindr
                                     Data.PlayerYCoordinate = GetDoublePixelValue(bmp, x + 6, y, rgbValues) * 10;
                                     Data.PlayerFacing = GetDoublePixelValue(bmp, x + 9, y, rgbValues);
                                 }
-                                
                                 Data.PlayerIsInCombat = GetBoolPixelValue(bmp, x + 12, y, rgbValues);
                                 Data.IsTargetDead = GetBoolPixelValue(bmp, x + 15, y, rgbValues);
                                 Data.PlayerHasTarget = GetBoolPixelValue(bmp, x + 18, y, rgbValues);
                                 Data.PlayerZone = GetStringPixelValues(bmp, y, rgbValues, x + 21/*, x + 90, x + 100, x + 110*/);
+                                
 
                                 bmp.UnlockBits(bmpData);
                                 Thread.Sleep(1);

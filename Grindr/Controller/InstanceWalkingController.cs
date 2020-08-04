@@ -46,7 +46,7 @@ namespace Grindr
             {
 
             }
-           // Console.WriteLine(stop);
+            // Console.WriteLine(stop);
             Logger.AddLogEntry($"Start turning to {Logger.GetLogMessageForCoordinate(target)}");
             //Thread.Sleep(turnTime);
             Logger.AddLogEntry($"Turned to {Logger.GetLogMessageForCoordinate(target)}");
@@ -106,8 +106,8 @@ namespace Grindr
 
                 distanceToStart = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, startCoordinate);
                 distanceDelta = Math.Abs(distanceToStart - targetDistance);
-                
-                
+
+
             }
             while (targetDistance > distanceToStart);
             Console.WriteLine(targetDistance);
@@ -122,10 +122,15 @@ namespace Grindr
         public void Walk(Coordinate target, bool isGrinding)
         {
             Logger.AddLogEntry($"Walk to next waypoint at {Logger.GetLogMessageForCoordinate(target)} from {Logger.GetLogMessageForCoordinate(target)}");
-            
+
+            while (Data.IsMapOpened == false || Data.PlayerXCoordinate == int.MaxValue || Data.PlayerYCoordinate == int.MaxValue)
+            {
+
+            }
 
             this.Turn(target);
             this.Move(target, isGrinding);
+
         }
 
         public void WalkUnitilZoneChange()

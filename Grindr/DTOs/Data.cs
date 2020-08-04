@@ -22,6 +22,7 @@ namespace Grindr
             IsTargetDeadChanged += (sender, e) => { return; };
             PlayerZoneChanged += (sender, e) => { return; };
             IsInInstanceChanged += (sender, e) => { return; };
+            IsMapOpenedChanged += (sender, e) => { return; };
         }
 
         public static event EventHandler PlayerXCoordinateChanged;
@@ -32,6 +33,7 @@ namespace Grindr
         public static event EventHandler IsTargetDeadChanged;
         public static event EventHandler PlayerZoneChanged;
         public static event EventHandler IsInInstanceChanged;
+        public static event EventHandler IsMapOpenedChanged;
 
 
         public static Coordinate PlayerCoordinate
@@ -159,6 +161,21 @@ namespace Grindr
                 isInInstance = value;
 
                 IsInInstanceChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private static bool isMapOpened;
+        public static bool IsMapOpened
+        {
+            get
+            {
+                return isMapOpened;
+            }
+            set
+            {
+                isMapOpened = value;
+
+                IsMapOpenedChanged(null, EventArgs.Empty);
             }
         }
 
