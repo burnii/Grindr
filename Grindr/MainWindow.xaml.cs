@@ -23,6 +23,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Cursor = System.Windows.Forms.Cursor;
+using Point = System.Drawing.Point;
 
 namespace Grindr
 {
@@ -225,23 +227,6 @@ namespace Grindr
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-            var input = new InputController(Initializer.WindowHandle.Value);
-            var startTurn = Data.PlayerFacing;
-            Task.Run(() =>
-            {
-                input.PressKey(Keys.A);
-                Thread.Sleep(1000);
-                input.ReleaseKey(Keys.A);
-                Thread.Sleep(1000);
-                var endTurn = Data.PlayerFacing;
-
-                Console.WriteLine(startTurn);
-                Console.WriteLine(endTurn);
-                Console.WriteLine("___________");
-                Console.WriteLine(startTurn - endTurn);
-            });
-            
         }
     }
 }

@@ -26,6 +26,8 @@ namespace Grindr
 
         private static int stride = 0;
 
+
+
         public static void Start()
         {
             Task.Run(() =>
@@ -44,7 +46,7 @@ namespace Grindr
 
                         Bitmap bmp = new Bitmap(width, height);
 
-                        var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);                    
+                        var rect = new Rectangle(srcRect.Left, srcRect.Top, bmp.Width, bmp.Height);                    
 
                         using (var screenG = Graphics.FromImage(bmp))
                         {
@@ -52,6 +54,18 @@ namespace Grindr
                             
                             while (State.IsAttached)
                             {
+                                //Point p = Cursor.Position;
+
+                                //if (rect.Contains(p))
+                                //{
+                                //    var x1 = Cursor.Position.X - rect.Left;
+                                //    var y1 = Cursor.Position.Y - rect.Top;
+                                //    Console.WriteLine(x1);
+                                //    Console.WriteLine(y1);
+                                //    //new InputController(Initializer.WindowHandle.Value).MouseClick(x1, y1);
+                                    
+                                //}
+
                                 GetWindowRect(Initializer.WindowHandle.Value, out srcRect);
                                 ScreenRecorderHelper.RecordScreen(
                                     screenG,
@@ -101,7 +115,9 @@ namespace Grindr
                                 Data.IsTargetDead = GetBoolPixelValue(bmp, x + 15, y, rgbValues);
                                 Data.PlayerHasTarget = GetBoolPixelValue(bmp, x + 18, y, rgbValues);
                                 Data.PlayerZone = GetStringPixelValues(bmp, y, rgbValues, x + 21/*, x + 90, x + 100, x + 110*/);
-                                
+                                Data.IsPlayerDead = GetBoolPixelValue(bmp, x + 30, y, rgbValues);
+
+
 
                                 bmp.UnlockBits(bmpData);
                                 Thread.Sleep(100);

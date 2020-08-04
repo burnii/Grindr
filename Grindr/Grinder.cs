@@ -103,44 +103,44 @@ namespace Grindr
             {
                 Logger.AddLogEntry("Grinder started");
 
-                //while (State.IsRunning)
-                //{
-                for (int i = 0; i < this.NavigationNodes.Count; i++)
+                while (State.IsRunning)
                 {
-                    if (State.IsRunning == false)
+                    for (int i = 0; i < this.NavigationNodes.Count; i++)
                     {
-                        break;
-                    }
+                        if (State.IsRunning == false)
+                        {
+                            break;
+                        }
 
-                    IWalkingController wc;
+                        IWalkingController wc;
 
-                    if (Data.IsInInstance)
-                    {
-                        wc = this.InstanceWalkingController;
-                    }
-                    else
-                    {
-                        wc = this.WalkingController;
-                    }
+                        if (Data.IsInInstance)
+                        {
+                            wc = this.InstanceWalkingController;
+                        }
+                        else
+                        {
+                            wc = this.WalkingController;
+                        }
 
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.NavigationCoordinatesListBox.SelectedIndex = i; }));
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.NavigationCoordinatesListBox.SelectedIndex = i; }));
 
-                    if (this.NavigationNodes[i].Type == NavigationNodeType.ZoneChange)
-                    {
-                        wc.Walk(this.NavigationNodes[i].Coordinates, false);
-                        wc.WalkUnitilZoneChange();
-                    }
-                    else
-                    {
-                        wc.Walk(this.NavigationNodes[i].Coordinates, false);
-                    }
+                        if (this.NavigationNodes[i].Type == NavigationNodeType.ZoneChange)
+                        {
+                            wc.Walk(this.NavigationNodes[i].Coordinates, false);
+                            wc.WalkUnitilZoneChange();
+                        }
+                        else
+                        {
+                            wc.Walk(this.NavigationNodes[i].Coordinates, true);
+                        }
 
-                    if (this.NavigationNodes[i].Type == NavigationNodeType.Combat)
-                    {
-                        this.CombatController.FightWhileInCombat();
+                        if (this.NavigationNodes[i].Type == NavigationNodeType.Combat)
+                        {
+                            this.CombatController.FightWhileInCombat();
+                        }
                     }
                 }
-                //}
 
                 Logger.AddLogEntry("Grinder stopped");
 

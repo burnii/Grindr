@@ -21,6 +21,8 @@ namespace Grindr
 
         const uint WM_KEYDOWN = 0x100;
         const uint WM_KEYUP = 0x0101;
+        const int WM_LBUTTONDOWN = 0x0201;
+        const int WM_LBUTTONUP = 0x0202;
 
         public InputController(IntPtr windowHandle)
         {
@@ -49,10 +51,19 @@ namespace Grindr
             //Logger.AddLogEntry($"Releasing {key}");
             PostMessage(this.WindowHandle, WM_KEYUP, (IntPtr)key, IntPtr.Zero);
         }
+        public static int MakeLParam(int x, int y) => (y << 16) | (x & 0xFFFF);
+        public void MouseClick(int x, int y)
+        {
+            Task.Run(() =>
+            {
+                PostMessage(this.WindowHandle, WM_LBUTTONDOWN, (IntPtr)0, (IntPtr)MakeLParam(x,y));
+                PostMessage(this.WindowHandle, WM_LBUTTONUP, (IntPtr)1, (IntPtr)MakeLParam(x,y));
+            });
+        }
 
         public void TapKey(Keys key)
         {
-            this.PressKey(key);
+            this.PressKey(key);          
             this.ReleaseKey(key);
         }
     }
