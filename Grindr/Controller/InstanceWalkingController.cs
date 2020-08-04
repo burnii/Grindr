@@ -33,25 +33,10 @@ namespace Grindr
             var turnTime = Convert.ToInt32(Math.Abs(diff) / 0.003141);
 
             this.InputController.PressKey(bestTurnKey);
-            var start = DateTime.Now;
-            var stop = false;
-
-            Task.Run(() =>
-            {
-                Thread.Sleep(turnTime);
-                stop = true;
-            });
-
-            while (/*Math.Abs(direction1 - Data.PlayerFacing) > 0.2 &&*/ /*(DateTime.Now - start).TotalMilliseconds < turnTime && */State.IsRunning && stop == false)
-            {
-
-            }
-            // Console.WriteLine(stop);
             Logger.AddLogEntry($"Start turning to {Logger.GetLogMessageForCoordinate(target)}");
-            //Thread.Sleep(turnTime);
-            Logger.AddLogEntry($"Turned to {Logger.GetLogMessageForCoordinate(target)}");
-
+            Thread.Sleep(turnTime);
             this.InputController.ReleaseKey(bestTurnKey);
+            Logger.AddLogEntry($"Turned to {Logger.GetLogMessageForCoordinate(target)}");
         }
 
         private double DetermineShortestTurnAngle(double targetDirection, out Keys bestTurnKey)
@@ -107,7 +92,7 @@ namespace Grindr
                 distanceToStart = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, startCoordinate);
                 distanceDelta = Math.Abs(distanceToStart - targetDistance);
 
-
+                Thread.Sleep(100);
             }
             while (targetDistance > distanceToStart);
             Console.WriteLine(targetDistance);

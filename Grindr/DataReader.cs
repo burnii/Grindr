@@ -78,7 +78,7 @@ namespace Grindr
                                 if (Data.IsInInstance == true)
                                 {
 
-                                    if (Data.IsMapOpened == false)
+                                    if ((Data.IsMapOpened == false) && State.IsRunning)
                                     {
                                         
                                             inputController.TapKey(Keys.M);
@@ -104,7 +104,7 @@ namespace Grindr
                                 
 
                                 bmp.UnlockBits(bmpData);
-                                Thread.Sleep(1);
+                                Thread.Sleep(100);
                             }
                             Logger.AddLogEntry("Data reading stopped");
                         }

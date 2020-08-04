@@ -132,7 +132,7 @@ namespace Grindr
                     }
                     else
                     {
-                        wc.Walk(this.NavigationNodes[i].Coordinates, true);
+                        wc.Walk(this.NavigationNodes[i].Coordinates, false);
                     }
 
                     if (this.NavigationNodes[i].Type == NavigationNodeType.Combat)
