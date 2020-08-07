@@ -73,7 +73,7 @@ namespace Grindr
 
         private void Move(Coordinate target, bool isGrinding)
         {
-            this.InputController.PressKey(Keys.W);
+            WowActions.MountUpIfNeeded();
             this.InputController.PressKey(Keys.W);
             this.InputController.PressKey(Keys.W);
             var targetDistance = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, target);
@@ -85,6 +85,8 @@ namespace Grindr
             Logger.AddLogEntry($"Start moving to {Logger.GetLogMessageForCoordinate(target)}");
             do
             {
+                this.InputController.PressKey(Keys.W);
+
                 if (State.IsRunning == false)
                 {
                     break;

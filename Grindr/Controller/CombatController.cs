@@ -30,8 +30,9 @@ namespace Grindr
 
             this.TryToFindTarget();
             Thread.Sleep(100);
-            if (Data.PlayerHasTarget == true)
+            if (Data.PlayerHasTarget == true /*&& Data.TargetIsInInteractRange == true*/)
             {
+              
                 Logger.AddLogEntry($"Found enemy, stop walking");
                 this.InputController.ReleaseKey(Keys.W);
                 this.InputController.ReleaseKey(Keys.W);
@@ -39,6 +40,7 @@ namespace Grindr
                 coordinates = Data.PlayerCoordinate; 
                 this.Fight();
                 TryToLootEnemy();
+             
             }
 
             return coordinates;
@@ -47,14 +49,18 @@ namespace Grindr
         public void FightWhileInCombat()
         {
             Logger.AddLogEntry($"Start fighting until out of combat");
+            
             while (Data.PlayerIsInCombat)
             {
+                WowActions.CloseMap();
                 this.SearchForAttackingTarget();
                 this.Fight();
+                TryToLootEnemy();
                 Thread.Sleep(1000);
             }
             Logger.AddLogEntry($"Out of combat");
             TryToLootEnemy();
+            WowActions.OpenMap();
         }
 
         private void TryToLootEnemy()
@@ -63,9 +69,14 @@ namespace Grindr
             this.InputController.TapKey(Keys.D6);
             this.InputController.TapKey(Keys.D6);
             this.InputController.TapKey(Keys.D6);
-            this.InputController.TapKey(Keys.Y);
-            this.InputController.TapKey(Keys.Y);
-            this.InputController.TapKey(Keys.Y);
+            Thread.Sleep(500);
+            if (Data.IsTargetDead == true)
+            {
+                this.InputController.TapKey(Keys.Y);
+                this.InputController.TapKey(Keys.Y);
+                this.InputController.TapKey(Keys.Y);
+            }
+            
             Thread.Sleep(1000);
         }
 
@@ -76,9 +87,15 @@ namespace Grindr
 
         public void SearchForAttackingTarget()
         {
-            while (Data.PlayerHasTarget == false && Data.PlayerIsInCombat)
+            while (Data.PlayerIsInCombat)
             {
                 this.TryToFindTarget();
+
+                if (Data.PlayerHasTarget && Data.IsTargetAttackingPlayer)
+                {
+                    break;
+                }
+
                 Thread.Sleep(1000);
             }
         }
@@ -87,7 +104,7 @@ namespace Grindr
         {
             Logger.AddLogEntry($"Fight current target");
 
-            while (Data.PlayerHasTarget == true && !Data.IsTargetDead)
+            while (Data.PlayerHasTarget == true && !Data.IsTargetDead && Data.IsTargetAttackingPlayer)
             {
                 this.InputController.TapKey(Keys.Y);
                 this.InputController.TapKey(Keys.D3);

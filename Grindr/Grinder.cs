@@ -51,36 +51,34 @@ namespace Grindr
 
         private void UpdateNavigationNodeColor(NavigationNode node)
         {
-            switch (node.Type)
+            var i = this.NavigationNodes.IndexOf(node);
+            var item = NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
+            if (item != null)
             {
-                case NavigationNodeType.Combat:
-                    var i = this.NavigationNodes.IndexOf(node);
-                    var item = NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
-                    Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#FFB7B2") as Brush; }));
-                    break;
-                case NavigationNodeType.WayPoint:
-                    i = this.NavigationNodes.IndexOf(node);
-                    item = NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
-                    if (item != null)
-                    {
-                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = null as Brush; }));
-                    }
-                    break;
-                case NavigationNodeType.ZoneChange:
-                    i = this.NavigationNodes.IndexOf(node);
-                    item = NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
-                    Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#E2F0CB") as Brush; }));
-                    break;
-                case NavigationNodeType.Dungeon:
-                    i = this.NavigationNodes.IndexOf(node);
-                    item = NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
-                    Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#C7CEEA") as Brush; }));
-                    break;
-                case NavigationNodeType.Unstuck:
-                    i = this.NavigationNodes.IndexOf(node);
-                    item = NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
-                    Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#F9E79F") as Brush; }));
-                    break;
+                switch (node.Type)
+                {
+                    case NavigationNodeType.Combat:
+                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#FFB7B2") as Brush; }));
+                        break;
+                    case NavigationNodeType.WayPoint:
+                        if (item != null)
+                        {
+                            Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = null as Brush; }));
+                        }
+                        break;
+                    case NavigationNodeType.ZoneChange:
+                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#E2F0CB") as Brush; }));
+                        break;
+                    case NavigationNodeType.Dungeon:
+                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#C7CEEA") as Brush; }));
+                        break;
+                    case NavigationNodeType.Unstuck:
+                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#F9E79F") as Brush; }));
+                        break;
+                    case NavigationNodeType.Loot:
+                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#F9E79F") as Brush; }));
+                        break;
+                }
             }
         }
 
@@ -111,14 +109,14 @@ namespace Grindr
         public Task StartJourney()
         {
             this.CancellationTokenSource = new CancellationTokenSource();
-
+            var selectedIndex = this.NavigationCoordinatesListBox.SelectedIndex;
             return Task.Run(() =>
             {
                 Logger.AddLogEntry("Grinder started");
-
+                
                 while (State.IsRunning)
                 {
-                    for (int i = 0; i < this.NavigationNodes.Count; i++)
+                    for (int i = selectedIndex; i < this.NavigationNodes.Count; i++)
                     {
                         if (State.IsRunning == false)
                         {
@@ -145,7 +143,7 @@ namespace Grindr
                         }
                         else
                         {
-                            wc.Walk(this.NavigationNodes[i].Coordinates, true);
+                            wc.Walk(this.NavigationNodes[i].Coordinates, false);
                         }
 
                         switch (this.NavigationNodes[i].Type)
@@ -156,7 +154,15 @@ namespace Grindr
                             case NavigationNodeType.Unstuck:
                                 WowActions.Unstuck();
                                 break;
+                            case NavigationNodeType.Loot:
+                                WowActions.TryToLootWithMouseClick();
+                                break;
+                            case NavigationNodeType.Reset:
+                                WowActions.ResetInstances();
+                                break;
                         }
+
+                        WowActions.SellItemsIfNeeded();
                     }
                 }
 

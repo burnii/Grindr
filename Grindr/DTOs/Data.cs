@@ -24,6 +24,12 @@ namespace Grindr
             IsInInstanceChanged += (sender, e) => { return; };
             IsMapOpenedChanged += (sender, e) => { return; };
             IsPlayerDeadChanged += (sender, e) => { return; };
+            TargetIsInInteractRangeChanged += (sender, e) => { return; };
+            IsTargetAttackingPlayerChanged += (sender, e) => { return; };
+            IsOutDoorsChanged += (sender, e) => { return; };
+            FreeBagSlotsChanged += (sender, e) => { return; };
+            IsMountedChanged += (sender, e) => { return; };
+            PlayerHealthChanged += (sender, e) => { return; };
         }
 
         public static event EventHandler PlayerXCoordinateChanged;
@@ -36,6 +42,12 @@ namespace Grindr
         public static event EventHandler IsInInstanceChanged;
         public static event EventHandler IsMapOpenedChanged;
         public static event EventHandler IsPlayerDeadChanged;
+        public static event EventHandler TargetIsInInteractRangeChanged;
+        public static event EventHandler IsTargetAttackingPlayerChanged;
+        public static event EventHandler IsOutDoorsChanged;
+        public static event EventHandler FreeBagSlotsChanged;
+        public static event EventHandler IsMountedChanged;
+        public static event EventHandler PlayerHealthChanged;
 
 
         public static Coordinate PlayerCoordinate
@@ -193,6 +205,96 @@ namespace Grindr
                 isPlayerDead = value;
 
                 IsPlayerDeadChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private static bool targetIsInInteractRange;
+        public static bool TargetIsInInteractRange
+        {
+            get
+            {
+                return targetIsInInteractRange;
+            }
+            set
+            {
+                targetIsInInteractRange = value;
+
+                TargetIsInInteractRangeChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private static bool isTargetAttackingPlayer;
+        public static bool IsTargetAttackingPlayer
+        {
+            get
+            {
+                return isTargetAttackingPlayer;
+            }
+            set
+            {
+                isTargetAttackingPlayer = value;
+
+                IsTargetAttackingPlayerChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private static bool isOutDoors;
+        public static bool IsOutDoors
+        {
+            get
+            {
+                return isOutDoors;
+            }
+            set
+            {
+                isOutDoors = value;
+
+                IsOutDoorsChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private static int freeBagSlots;
+        public static int FreeBagSlots
+        {
+            get
+            {
+                return freeBagSlots;
+            }
+            set
+            {
+                freeBagSlots = value;
+
+                FreeBagSlotsChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private static bool isMounted;
+        public static bool IsMounted
+        {
+            get
+            {
+                return isMounted;
+            }
+            set
+            {
+                isMounted = value;
+
+                IsMountedChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private static int playerHealth;
+        public static int PlayerHealth
+        {
+            get
+            {
+                return playerHealth;
+            }
+            set
+            {
+                playerHealth = value;
+
+                PlayerHealthChanged(null, EventArgs.Empty);
             }
         }
 

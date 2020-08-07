@@ -110,7 +110,7 @@ namespace Grindr
 
             while (Data.IsMapOpened == false || Data.PlayerXCoordinate == int.MaxValue || Data.PlayerYCoordinate == int.MaxValue)
             {
-
+                WowActions.OpenMap();
             }
 
             this.Turn(target);

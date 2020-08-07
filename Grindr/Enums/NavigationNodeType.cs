@@ -12,6 +12,8 @@ namespace Grindr
         Combat,
         Dungeon,
         ZoneChange,
-        Unstuck
+        Unstuck,
+        Loot,
+        Reset
     }
 }

@@ -36,10 +36,12 @@ namespace Grindr
         private Grinder grinder;
         private Assister assister;
         private Recorder recorder;
+        private Settings settings;
 
         public MainWindow()
         {
             InitializeComponent();
+            this.settings = new Settings();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -150,6 +152,18 @@ namespace Grindr
             this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.Unstuck);
         }
 
+        private void MarkAsLootButton_Click(object sender, RoutedEventArgs e)
+        {
+            var i = this.coordinatesListBox.SelectedIndex;
+            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.Loot);
+        }
+
+        private void MarkAsResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            var i = this.coordinatesListBox.SelectedIndex;
+            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.Reset);
+        }
+
         private void DeleteNavigatioNNodeButton_Click(object sender, RoutedEventArgs e)
         {
             this.grinder.DeleteNavigationNode(this.coordinatesListBox.SelectedIndex);
@@ -187,7 +201,7 @@ namespace Grindr
         {
             var serializedNavigationNodes = JsonConvert.SerializeObject(this.grinder.NavigationNodes);
 
-            File.WriteAllText(System.IO.Path.Combine(Settings.ProfilePath, this.profileNameTextBox.Text + ".json"), serializedNavigationNodes.ToString());
+            File.WriteAllText(System.IO.Path.Combine(this.settings.ProfilePath, this.profileNameTextBox.Text + ".json"), serializedNavigationNodes.ToString());
         }
 
         private void ImportProfileButton_Click(object sender, RoutedEventArgs e)
@@ -210,8 +224,9 @@ namespace Grindr
                 Task.Run(() =>
                 {
                     // Wait that the listBox list is synchronized with the navigationNodes list.
-                    Thread.Sleep(1000);
-                    this.grinder.UpdateNavigationNodeColors();
+                    // TODO NICOLAS FRAGEN
+                    //Thread.Sleep(2000);
+                    //this.grinder.UpdateNavigationNodeColors();
                 });
             }
         }
@@ -246,8 +261,62 @@ namespace Grindr
             }
         }
 
+
+        private bool stop = true;
+        private bool shouldHeal = false;
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            var inputController = new InputController(Initializer.WindowHandle.Value);
+            if (stop == true)
+            {
+                stop = false;
+            }
+            else
+            {
+                stop = true;
+            }
+
+            var keyArray = new Keys[]
+                {
+                    Keys.D1,
+                    Keys.D3,
+                    Keys.D4,
+                    Keys.D5,
+                    Keys.D6
+                };
+
+            Task.Run(() =>
+            {
+                while (!stop)
+                {
+                    inputController.TapKey(Keys.Tab);
+                    Thread.Sleep(2000);
+                }
+            });
+
+            Task.Run(() =>
+            {
+                var i = 0;
+                while (!stop)
+                {
+                    if (i > 4)
+                    {
+                        i = 0;
+                    }
+
+                    if (Data.PlayerHealth < 50)
+                    {
+                        inputController.TapKey(Keys.D2);
+                    }
+                    else
+                    {
+                        inputController.TapKey(keyArray[i]);
+                        i++;
+                    }
+                    Thread.Sleep(700);
+                }
+            });
         }
     }
 }

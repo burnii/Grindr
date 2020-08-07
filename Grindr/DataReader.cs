@@ -54,17 +54,17 @@ namespace Grindr
                             
                             while (State.IsAttached)
                             {
-                                //Point p = Cursor.Position;
+                                Point p = Cursor.Position;
 
-                                //if (rect.Contains(p))
-                                //{
-                                //    var x1 = Cursor.Position.X - rect.Left;
-                                //    var y1 = Cursor.Position.Y - rect.Top;
-                                //    Console.WriteLine(x1);
-                                //    Console.WriteLine(y1);
-                                //    //new InputController(Initializer.WindowHandle.Value).MouseClick(x1, y1);
-                                    
-                                //}
+                                if (rect.Contains(p))
+                                {
+                                    var x1 = Cursor.Position.X - rect.Left;
+                                    var y1 = Cursor.Position.Y - rect.Top;
+                                    Console.WriteLine(x1);
+                                    Console.WriteLine(y1);
+                                    //new InputController(Initializer.WindowHandle.Value).MouseClick(x1, y1);
+
+                                }
 
                                 GetWindowRect(Initializer.WindowHandle.Value, out srcRect);
                                 ScreenRecorderHelper.RecordScreen(
@@ -92,13 +92,13 @@ namespace Grindr
                                 if (Data.IsInInstance == true)
                                 {
 
-                                    if ((Data.IsMapOpened == false) && State.IsRunning)
-                                    {
+                                    //if ((Data.IsMapOpened == false) && State.IsRunning)
+                                    //{
                                         
-                                            inputController.TapKey(Keys.M);
-                                            Thread.Sleep(1000);
+                                    //        inputController.TapKey(Keys.M);
+                                    //        Thread.Sleep(1000);
                                         
-                                    }
+                                    //}
                                     var playerCoordinate = GetPixelCoordinate(rgbValues, bmpData, out var angle);
 
                                     Data.PlayerXCoordinate = playerCoordinate.X;
@@ -116,6 +116,12 @@ namespace Grindr
                                 Data.PlayerHasTarget = GetBoolPixelValue(bmp, x + 18, y, rgbValues);
                                 Data.PlayerZone = GetStringPixelValues(bmp, y, rgbValues, x + 21/*, x + 90, x + 100, x + 110*/);
                                 Data.IsPlayerDead = GetBoolPixelValue(bmp, x + 30, y, rgbValues);
+                                Data.TargetIsInInteractRange = GetBoolPixelValue(bmp, x + 33, y, rgbValues);
+                                Data.IsTargetAttackingPlayer = GetBoolPixelValue(bmp, x + 36, y, rgbValues);
+                                Data.IsOutDoors = GetBoolPixelValue(bmp, x + 39, y, rgbValues);
+                                Data.FreeBagSlots = GetIntPixelValue(bmp, x + 42, y, rgbValues);
+                                Data.IsMounted = GetBoolPixelValue(bmp, x + 45, y, rgbValues);
+                                Data.PlayerHealth = GetIntPixelValue(bmp, x + 48, y, rgbValues);
 
 
 

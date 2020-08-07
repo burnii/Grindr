@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Grindr
 {
-    public static class Settings
+    public class Settings
     {
-        public static string ProfilePath { get; set; } = @"C:\Users\dbern\OneDrive\Dokumente\Profiles";
-        public static string Username { get; set; }
-        public static string Password { get; set; }
+        public string ProfilePath { get; set; } = @"C:\Users\dbern\OneDrive\Dokumente\Profiles";
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }
