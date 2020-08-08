@@ -22,24 +22,28 @@ namespace Grindr
         [DllImport("user32.dll", SetLastError = true)]
         static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int Width, int Height, bool Repaint);
 
-        private static readonly string rootColorHex = "ffff0000";
+        private readonly string rootColorHex = "ffff0000";
 
-        private static int stride = 0;
+        private int stride = 0;
 
+        public BotInstance i { get; set; }
 
+        public DataReader(BotInstance instance)
+        {
+            this.i = instance;
+        }
 
-        public static void Start()
+        public void Start()
         {
             Task.Run(() =>
             {
-                var inputController = new InputController(Initializer.WindowHandle.Value);
-                MoveWindow(Initializer.WindowHandle.Value, 0, 0, 500, 500, false);
+                MoveWindow(this.i.Initializer.WindowHandle.Value, 0, 0, 500, 500, false);
                 GetRootCoordinate(out int x, out int y);
 
                 RECT srcRect;
-                if (Initializer.Process != null && Initializer.WindowHandle != null)
+                if (this.i.Initializer.Process != null && this.i.Initializer.WindowHandle != null)
                 {
-                    if (GetWindowRect(Initializer.WindowHandle.Value, out srcRect))
+                    if (GetWindowRect(this.i.Initializer.WindowHandle.Value, out srcRect))
                     {
                         int width = srcRect.Right - srcRect.Left;
                         int height = srcRect.Bottom - srcRect.Top;
@@ -50,7 +54,7 @@ namespace Grindr
 
                         using (var screenG = Graphics.FromImage(bmp))
                         {
-                            Logger.AddLogEntry("Data reading started");
+                            this.i.Logger.AddLogEntry("Data reading started");
                             
                             while (State.IsAttached)
                             {
@@ -66,7 +70,7 @@ namespace Grindr
 
                                 }
 
-                                GetWindowRect(Initializer.WindowHandle.Value, out srcRect);
+                                GetWindowRect(this.i.Initializer.WindowHandle.Value, out srcRect);
                                 ScreenRecorderHelper.RecordScreen(
                                     screenG,
                                     srcRect.Top,
@@ -86,10 +90,10 @@ namespace Grindr
 
                                 Marshal.Copy(ptr, rgbValues, 0, bytes);
 
-                                Data.IsInInstance = GetBoolPixelValue(bmp, x + 24, y, rgbValues);
-                                Data.IsMapOpened = GetBoolPixelValue(bmp, x + 27, y, rgbValues);
+                                this.i.Data.IsInInstance = GetBoolPixelValue(bmp, x + 24, y, rgbValues);
+                                this.i.Data.IsMapOpened = GetBoolPixelValue(bmp, x + 27, y, rgbValues);
 
-                                if (Data.IsInInstance == true)
+                                if (this.i.Data.IsInInstance == true)
                                 {
 
                                     //if ((Data.IsMapOpened == false) && State.IsRunning)
@@ -101,41 +105,41 @@ namespace Grindr
                                     //}
                                     var playerCoordinate = GetPixelCoordinate(rgbValues, bmpData, out var angle);
 
-                                    Data.PlayerXCoordinate = playerCoordinate.X;
-                                    Data.PlayerYCoordinate = playerCoordinate.Y;
-                                    Data.PlayerFacing = angle;
+                                    this.i.Data.PlayerXCoordinate = playerCoordinate.X;
+                                    this.i.Data.PlayerYCoordinate = playerCoordinate.Y;
+                                    this.i.Data.PlayerFacing = angle;
                                 }
                                 else
                                 {
-                                    Data.PlayerXCoordinate = GetDoublePixelValue(bmp, x + 3, y, rgbValues) * 10;
-                                    Data.PlayerYCoordinate = GetDoublePixelValue(bmp, x + 6, y, rgbValues) * 10;
-                                    Data.PlayerFacing = GetDoublePixelValue(bmp, x + 9, y, rgbValues);
+                                    this.i.Data.PlayerXCoordinate = GetDoublePixelValue(bmp, x + 3, y, rgbValues) * 10;
+                                    this.i.Data.PlayerYCoordinate = GetDoublePixelValue(bmp, x + 6, y, rgbValues) * 10;
+                                    this.i.Data.PlayerFacing = GetDoublePixelValue(bmp, x + 9, y, rgbValues);
                                 }
-                                Data.PlayerIsInCombat = GetBoolPixelValue(bmp, x + 12, y, rgbValues);
-                                Data.IsTargetDead = GetBoolPixelValue(bmp, x + 15, y, rgbValues);
-                                Data.PlayerHasTarget = GetBoolPixelValue(bmp, x + 18, y, rgbValues);
-                                Data.PlayerZone = GetStringPixelValues(bmp, y, rgbValues, x + 21/*, x + 90, x + 100, x + 110*/);
-                                Data.IsPlayerDead = GetBoolPixelValue(bmp, x + 30, y, rgbValues);
-                                Data.TargetIsInInteractRange = GetBoolPixelValue(bmp, x + 33, y, rgbValues);
-                                Data.IsTargetAttackingPlayer = GetBoolPixelValue(bmp, x + 36, y, rgbValues);
-                                Data.IsOutDoors = GetBoolPixelValue(bmp, x + 39, y, rgbValues);
-                                Data.FreeBagSlots = GetIntPixelValue(bmp, x + 42, y, rgbValues);
-                                Data.IsMounted = GetBoolPixelValue(bmp, x + 45, y, rgbValues);
-                                Data.PlayerHealth = GetIntPixelValue(bmp, x + 48, y, rgbValues);
+                                this.i.Data.PlayerIsInCombat = GetBoolPixelValue(bmp, x + 12, y, rgbValues);
+                                this.i.Data.IsTargetDead = GetBoolPixelValue(bmp, x + 15, y, rgbValues);
+                                this.i.Data.PlayerHasTarget = GetBoolPixelValue(bmp, x + 18, y, rgbValues);
+                                this.i.Data.PlayerZone = GetStringPixelValues(bmp, y, rgbValues, x + 21/*, x + 90, x + 100, x + 110*/);
+                                this.i.Data.IsPlayerDead = GetBoolPixelValue(bmp, x + 30, y, rgbValues);
+                                this.i.Data.TargetIsInInteractRange = GetBoolPixelValue(bmp, x + 33, y, rgbValues);
+                                this.i.Data.IsTargetAttackingPlayer = GetBoolPixelValue(bmp, x + 36, y, rgbValues);
+                                this.i.Data.IsOutDoors = GetBoolPixelValue(bmp, x + 39, y, rgbValues);
+                                this.i.Data.FreeBagSlots = GetIntPixelValue(bmp, x + 42, y, rgbValues);
+                                this.i.Data.IsMounted = GetBoolPixelValue(bmp, x + 45, y, rgbValues);
+                                this.i.Data.PlayerHealth = GetIntPixelValue(bmp, x + 48, y, rgbValues);
 
 
 
                                 bmp.UnlockBits(bmpData);
                                 Thread.Sleep(100);
                             }
-                            Logger.AddLogEntry("Data reading stopped");
+                            this.i.Logger.AddLogEntry("Data reading stopped");
                         }
                     }
                 }
             });
         }
 
-        private static Coordinate GetPixelCoordinate(byte[] rgbValues, BitmapData bmpData,out double angle)
+        private Coordinate GetPixelCoordinate(byte[] rgbValues, BitmapData bmpData,out double angle)
         {
             var stride = bmpData.Stride;
             int count = 0;
@@ -196,14 +200,14 @@ namespace Grindr
 
 
 
-        private static void GetRootCoordinate(out int x, out int y)
+        private void GetRootCoordinate(out int x, out int y)
         {
             int attempts = 0;
             while (true)
             {
-                Logger.AddLogEntry($"Try to get root coordinates ({attempts})");
+                this.i.Logger.AddLogEntry($"Try to get root coordinates ({attempts})");
 
-                var bmp = ScreenRecorderHelper.TakeScreenshot();
+                var bmp = ScreenRecorderHelper.TakeScreenshot(this.i);
 
                 for (x = 0; x < bmp.Width; x++)
                 {
@@ -213,7 +217,7 @@ namespace Grindr
 
                         if (value == rootColorHex)
                         {
-                            Logger.AddLogEntry($"Root coordinates: x: {x}, y: {y}");
+                            this.i.Logger.AddLogEntry($"Root coordinates: x: {x}, y: {y}");
                             return;
                         }
                     }
@@ -224,31 +228,31 @@ namespace Grindr
             }
         }
 
-        private static string RgbToHex(int x, int y, byte[] rgbValues)
+        private string RgbToHex(int x, int y, byte[] rgbValues)
         {
-            var b = rgbValues[(y * stride) + (x * 3)];
-            var g = rgbValues[(y * stride) + (x * 3) + 1];
-            var r = rgbValues[(y * stride) + (x * 3) + 2];
+            var b = rgbValues[(y * this.stride) + (x * 3)];
+            var g = rgbValues[(y * this.stride) + (x * 3) + 1];
+            var r = rgbValues[(y * this.stride) + (x * 3) + 2];
 
             var color = Color.FromArgb(r, g, b);
 
             return color.Name.Substring(2);
         }
 
-        private static bool GetBoolPixelValue(Bitmap bmp, int x, int y, byte[] rgbValues)
+        private bool GetBoolPixelValue(Bitmap bmp, int x, int y, byte[] rgbValues)
         {
             var hex = RgbToHex(x, y, rgbValues);
 
             return Convert.ToInt32(hex, 16) == 100 ? false : true;
         }
 
-        private static double GetDoublePixelValue(Bitmap bmp, int x, int y, byte[] rgbValues)
+        private double GetDoublePixelValue(Bitmap bmp, int x, int y, byte[] rgbValues)
         {
             var hex = RgbToHex(x, y, rgbValues);
             return (double)Convert.ToInt32(hex, 16) / 100000;
         }
 
-        private static string GetStringPixelValues(Bitmap bmp, int y, byte[] rgbValues, params int[] xs)
+        private string GetStringPixelValues(Bitmap bmp, int y, byte[] rgbValues, params int[] xs)
         {
             var locationString = "";
 
@@ -271,7 +275,7 @@ namespace Grindr
             return locationString;
         }
 
-        private static int GetIntPixelValue(Bitmap bmp, int x, int y, byte[] rgbValues)
+        private  int GetIntPixelValue(Bitmap bmp, int x, int y, byte[] rgbValues)
         {
             var hex = RgbToHex(x, y, rgbValues);
 

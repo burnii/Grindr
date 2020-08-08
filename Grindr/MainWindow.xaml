@@ -111,22 +111,22 @@
             </TabItem>
         </TabControl>
         <StackPanel x:Name="dataStackPanel" HorizontalAlignment="Left" Height="301" Margin="649,98,0,0" VerticalAlignment="Top" Width="121">
-            <TextBlock Text="{Binding Path=(local:Data.PlayerXCoordinate)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.PlayerYCoordinate)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.PlayerFacing)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.PlayerIsInCombat)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.PlayerHasTarget)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.IsTargetDead)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.PlayerZone)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.IsInInstance)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.IsMapOpened)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.IsPlayerDead)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.TargetIsInInteractRange)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.IsTargetAttackingPlayer)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.IsOutDoors)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.FreeBagSlots)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.IsMounted)}" ></TextBlock>
-            <TextBlock Text="{Binding Path=(local:Data.PlayerHealth)}" ></TextBlock>
+            <TextBlock Text="{Binding PlayerXCoordinate}" ></TextBlock>
+            <TextBlock Text="{Binding PlayerYCoordinate}" ></TextBlock>
+            <TextBlock Text="{Binding PlayerFacing}" ></TextBlock>
+            <TextBlock Text="{Binding PlayerIsInCombat}" ></TextBlock>
+            <TextBlock Text="{Binding PlayerHasTarget}" ></TextBlock>
+            <TextBlock Text="{Binding IsTargetDead}" ></TextBlock>
+            <TextBlock Text="{Binding PlayerZone}" ></TextBlock>
+            <TextBlock Text="{Binding IsInInstance}" ></TextBlock>
+            <TextBlock Text="{Binding IsMapOpened}" ></TextBlock>
+            <TextBlock Text="{Binding IsPlayerDead}" ></TextBlock>
+            <TextBlock Text="{Binding TargetIsInInteractRange}" ></TextBlock>
+            <TextBlock Text="{Binding IsTargetAttackingPlayer}" ></TextBlock>
+            <TextBlock Text="{Binding IsOutDoors}" ></TextBlock>
+            <TextBlock Text="{Binding FreeBagSlots}" ></TextBlock>
+            <TextBlock Text="{Binding IsMounted}" ></TextBlock>
+            <TextBlock Text="{Binding PlayerHealth}" ></TextBlock>
         </StackPanel>
         <Button x:Name="runButton" Content="Start" HorizontalAlignment="Left" Margin="637,16,0,0" VerticalAlignment="Top" Width="145" Click="RunButton_Click" Height="46"/>
         <Button x:Name="launchButton" Content="Launch" HorizontalAlignment="Left" Margin="11,16,0,0" VerticalAlignment="Top" Width="55" Click="LaunchButton_Click" Height="43"/>

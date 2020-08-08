@@ -23,13 +23,13 @@ namespace Grindr
         [DllImport("user32.dll")]
         private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
-        public static Bitmap TakeScreenshot()
+        public static Bitmap TakeScreenshot(BotInstance i)
         {
             Bitmap bmp = null;
             RECT srcRect;
-            if (Initializer.Process != null && Initializer.WindowHandle != null)
+            if (i.Initializer.Process != null && i.Initializer.WindowHandle != null)
             {
-                if (GetWindowRect(Initializer.WindowHandle.Value, out srcRect))
+                if (GetWindowRect(i.Initializer.WindowHandle.Value, out srcRect))
                 {
                     int width = srcRect.Right - srcRect.Left;
                     int height = srcRect.Bottom - srcRect.Top;

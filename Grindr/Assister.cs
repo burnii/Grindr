@@ -10,23 +10,25 @@ namespace Grindr
 {
     public class Assister
     {
+        public BotInstance i { get; set; }
+        public Assister(BotInstance instance)
+        {
+            this.i = instance;
+        }
+
         public Task Assist(string name)
         {
-            var inputController = new InputController(Initializer.WindowHandle.Value);
-            var combatController = new CombatController(inputController);
-            
-
             return Task.Run(() =>
             {
                 while (State.IsRunning)
                 {
-                    inputController.TapKey(Keys.D4);
-                    inputController.TapKey(Keys.D5);
+                    this.i.InputController.TapKey(Keys.D4);
+                    this.i.InputController.TapKey(Keys.D5);
                     Thread.Sleep(500);
 
-                    if (Data.PlayerHasTarget && !Data.IsTargetDead)
+                    if (this.i.Data.PlayerHasTarget && !this.i.Data.IsTargetDead)
                     {
-                        combatController.Fight();
+                        this.i.CombatController.Fight();
                     }
                 }
             });

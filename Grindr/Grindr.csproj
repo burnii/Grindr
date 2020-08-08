@@ -77,6 +77,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Assister.cs" />
+    <Compile Include="BotInstance.cs" />
     <Compile Include="Controller\InstanceWalkingController.cs" />
     <Compile Include="Enums\BotMode.cs" />
     <Compile Include="Helper\CalculationHelper.cs" />

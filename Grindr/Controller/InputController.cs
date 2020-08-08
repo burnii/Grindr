@@ -17,7 +17,8 @@ namespace Grindr
         [DllImport("user32.dll")]
         public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
-        public IntPtr WindowHandle { get; set; }
+        private BotInstance i { get; set; }
+
 
         const uint WM_KEYDOWN = 0x100;
         const uint WM_KEYUP = 0x0101;
@@ -26,15 +27,14 @@ namespace Grindr
         const int WM_RBUTTONDOWN = 0x0204;
         const int WM_RBUTTONUP = 0x0205;
 
-        public InputController(IntPtr windowHandle)
+        public InputController(BotInstance instance)
         {
-            this.WindowHandle = windowHandle;
+            this.i = instance;
         }
 
         public void PressKey(Keys key)
         {
-            //Logger.AddLogEntry($"Pressing {key}");
-            PostMessage(this.WindowHandle, WM_KEYDOWN, (IntPtr)key, IntPtr.Zero);
+            PostMessage(this.i.Initializer.WindowHandle.Value, WM_KEYDOWN, (IntPtr)key, IntPtr.Zero);
         }
 
         public void PressKey(Keys key, int msUntilRelease)
@@ -51,15 +51,15 @@ namespace Grindr
         public void ReleaseKey(Keys key)
         {
             //Logger.AddLogEntry($"Releasing {key}");
-            PostMessage(this.WindowHandle, WM_KEYUP, (IntPtr)key, IntPtr.Zero);
+            PostMessage(this.i.Initializer.WindowHandle.Value, WM_KEYUP, (IntPtr)key, IntPtr.Zero);
         }
         public static int MakeLParam(int x, int y) => (y << 16) | (x & 0xFFFF);
         public void LeftMouseClick(int x, int y)
         {
             Task.Run(() =>
             {
-                PostMessage(this.WindowHandle, WM_LBUTTONDOWN, (IntPtr)0, (IntPtr)MakeLParam(x,y));
-                PostMessage(this.WindowHandle, WM_LBUTTONUP, (IntPtr)1, (IntPtr)MakeLParam(x,y));
+                PostMessage(this.i.Initializer.WindowHandle.Value, WM_LBUTTONDOWN, (IntPtr)0, (IntPtr)MakeLParam(x,y));
+                PostMessage(this.i.Initializer.WindowHandle.Value, WM_LBUTTONUP, (IntPtr)1, (IntPtr)MakeLParam(x,y));
             });
         }
 
@@ -67,8 +67,8 @@ namespace Grindr
         {
             Task.Run(() =>
             {
-                PostMessage(this.WindowHandle, WM_RBUTTONDOWN, (IntPtr)0, (IntPtr)MakeLParam(x, y));
-                PostMessage(this.WindowHandle, WM_RBUTTONUP, (IntPtr)1, (IntPtr)MakeLParam(x, y));
+                PostMessage(this.i.Initializer.WindowHandle.Value, WM_RBUTTONDOWN, (IntPtr)0, (IntPtr)MakeLParam(x, y));
+                PostMessage(this.i.Initializer.WindowHandle.Value, WM_RBUTTONUP, (IntPtr)1, (IntPtr)MakeLParam(x, y));
             });
         }
 

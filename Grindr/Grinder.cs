@@ -19,22 +19,12 @@ namespace Grindr
     {
         public ObservableCollection<NavigationNode> NavigationNodes { get; set; }
 
-        public ListBox NavigationCoordinatesListBox { get; set; }
+        public BotInstance i { get; set; }
 
-        public InstanceWalkingController InstanceWalkingController { get; set; }
-        public WalkingController WalkingController { get; set; }
-
-        private CancellationTokenSource CancellationTokenSource { get; set; }
-
-        private CombatController CombatController { get; set; }
-
-        public Grinder(ListBox navigationCoordinatesListBox)
+        public Grinder(BotInstance instance)
         {
-            this.NavigationCoordinatesListBox = navigationCoordinatesListBox;
             this.NavigationNodes = new ObservableCollection<NavigationNode>();
-            this.InstanceWalkingController = new InstanceWalkingController();
-            this.WalkingController = new WalkingController();
-            this.CombatController = new CombatController();
+            this.i = instance;
         }
 
         internal void MarkLastNavigationNodeAsZoneChangeNode(string playerZone)
@@ -52,7 +42,7 @@ namespace Grindr
         private void UpdateNavigationNodeColor(NavigationNode node)
         {
             var i = this.NavigationNodes.IndexOf(node);
-            var item = NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
+            var item = this.i.NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
             if (item != null)
             {
                 switch (node.Type)
@@ -108,11 +98,10 @@ namespace Grindr
 
         public Task StartJourney()
         {
-            this.CancellationTokenSource = new CancellationTokenSource();
-            var selectedIndex = this.NavigationCoordinatesListBox.SelectedIndex;
+            var selectedIndex = this.i.NavigationCoordinatesListBox.SelectedIndex;
             return Task.Run(() =>
             {
-                Logger.AddLogEntry("Grinder started");
+                this.i.Logger.AddLogEntry("Grinder started");
                 
                 while (State.IsRunning)
                 {
@@ -125,16 +114,16 @@ namespace Grindr
 
                         IWalkingController wc;
 
-                        if (Data.IsInInstance)
+                        if (this.i.Data.IsInInstance)
                         {
-                            wc = this.InstanceWalkingController;
+                            wc = this.i.InstanceWalkingController;
                         }
                         else
                         {
-                            wc = this.WalkingController;
+                            wc = this.i.WalkingController;
                         }
 
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.NavigationCoordinatesListBox.SelectedIndex = i; }));
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.i.NavigationCoordinatesListBox.SelectedIndex = i; }));
 
                         if (this.NavigationNodes[i].Type == NavigationNodeType.ZoneChange)
                         {
@@ -149,26 +138,26 @@ namespace Grindr
                         switch (this.NavigationNodes[i].Type)
                         {
                             case NavigationNodeType.Combat:
-                                this.CombatController.FightWhileInCombat();
+                                this.i.CombatController.FightWhileInCombat();
                                 break;
                             case NavigationNodeType.Unstuck:
-                                WowActions.Unstuck();
+                                this.i.WowActions.Unstuck();
                                 break;
                             case NavigationNodeType.Loot:
-                                WowActions.TryToLootWithMouseClick();
+                                this.i.WowActions.TryToLootWithMouseClick();
                                 break;
                             case NavigationNodeType.Reset:
-                                WowActions.ResetInstances();
+                                this.i.WowActions.ResetInstances();
                                 break;
                         }
 
-                        WowActions.SellItemsIfNeeded();
+                        this.i.WowActions.SellItemsIfNeeded();
                     }
                 }
 
-                Logger.AddLogEntry("Grinder stopped");
+                this.i.Logger.AddLogEntry("Grinder stopped");
 
-            }, this.CancellationTokenSource.Token);
+            });
         }
 
         public NavigationNode AddNavigationNode(Coordinate coordinate, NavigationNodeType type, string zone)
@@ -185,7 +174,7 @@ namespace Grindr
             );
 
 
-            Logger.AddLogEntry($"Recorded a navigationnode at {Logger.GetLogMessageForCoordinate(coordinate)}");
+            this.i.Logger.AddLogEntry($"Recorded a navigationnode at {this.i.Logger.GetLogMessageForCoordinate(coordinate)}");
 
             this.NavigationNodes.Insert(index, node);
 
@@ -201,13 +190,13 @@ namespace Grindr
 
         private int GetIndexToInsert()
         {
-            if (this.NavigationCoordinatesListBox.SelectedItem == null)
+            if (this.i.NavigationCoordinatesListBox.SelectedItem == null)
             {
                 return this.NavigationNodes.Count;
             }
             else
             {
-                return this.NavigationCoordinatesListBox.SelectedIndex + 1;
+                return this.i.NavigationCoordinatesListBox.SelectedIndex + 1;
             }
         }
 

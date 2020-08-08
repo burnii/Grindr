@@ -5,13 +5,13 @@ using System.Windows;
 
 namespace Grindr
 {
-    internal class Recorder
+    public class Recorder
     {
-        public static Grinder Grinder { get; set; }
+        public BotInstance i { get; set; }
 
-        public Recorder(Grinder grinder)
+        public Recorder(BotInstance instance)
         {
-            Grinder = grinder;
+            this.i = instance;
         }
 
         public void StartRecording()
@@ -20,22 +20,22 @@ namespace Grindr
 
             Task.Run(() =>
             {
-                Logger.AddLogEntry("Start recording navigation nodes");
-                var startCoordinate = Data.PlayerCoordinate;
-                var startZone = Data.PlayerZone;
+                this.i.Logger.AddLogEntry("Start recording navigation nodes");
+                var startCoordinate = this.i.Data.PlayerCoordinate;
+                var startZone = this.i.Data.PlayerZone;
                 while (State.IsRecording)
                 {
-                    var currentDistance = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, startCoordinate);
+                    var currentDistance = CalculationHelper.CalculateDistance(this.i.Data.PlayerCoordinate, startCoordinate);
 
-                    if (startZone != Data.PlayerZone)
+                    if (startZone != this.i.Data.PlayerZone)
                     {
-                        Grinder.MarkLastNavigationNodeAsZoneChangeNode(startZone);
-                        startZone = Data.PlayerZone;
+                        this.i.Grinder.MarkLastNavigationNodeAsZoneChangeNode(startZone);
+                        startZone = this.i.Data.PlayerZone;
                     }
 
-                    if (currentDistance > 0.01 && startZone == Data.PlayerZone)
+                    if (currentDistance > 0.01 && startZone == this.i.Data.PlayerZone)
                     {
-                        startCoordinate = Data.PlayerCoordinate;
+                        startCoordinate = this.i.Data.PlayerCoordinate;
                         AddNavigationNode(startCoordinate);
                     }
 
@@ -44,19 +44,19 @@ namespace Grindr
             });
         }
 
-        public static void AddNavigationNode(Coordinate coordinate)
+        public void AddNavigationNode(Coordinate coordinate)
         {
             Application.Current.Dispatcher.BeginInvoke(
                                 new Action(() =>
                                 {
-                                    Grinder.AddNavigationNode(coordinate, NavigationNodeType.WayPoint, Data.PlayerZone);
+                                    this.i.Grinder.AddNavigationNode(coordinate, NavigationNodeType.WayPoint, this.i.Data.PlayerZone);
                                 })
                             );
         }
 
         public void StopRecording()
         {
-            Logger.AddLogEntry("Stopped recording navigation nodes");
+            this.i.Logger.AddLogEntry("Stopped recording navigation nodes");
             State.IsRecording = false;
         }
     }

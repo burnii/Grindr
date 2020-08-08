@@ -14,7 +14,7 @@ using static Grindr.ScreenRecorderHelper;
 
 namespace Grindr
 {
-    class Initializer
+    public class Initializer
     {
         [DllImport("user32.dll")]
         private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
@@ -28,25 +28,32 @@ namespace Grindr
         [DllImport("user32.dll")]
         private static extern Int32 GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
-        public static IntPtr? WindowHandle { get; set; }
+        public IntPtr? WindowHandle { get; set; }
 
-        public static Process Process { get; set; }
+        public Process Process { get; set; }
 
         public static string Username { get; set; } = "fritz.bauer@muell.icu";
         public static string Password { get; set; } = "Yh9tegjmg";
 
-        public static bool IsInitializing { get; set; } = false;
+        public bool IsInitializing { get; set; } = false;
 
-        public static Task Initialize()
+        public BotInstance i { get; set; }
+
+        public Initializer(BotInstance instance)
+        {
+            this.i = instance;
+        }
+
+        public Task Initialize()
         {
             return Task.Run(() =>
             {
-                Logger.AddLogEntry("Initializing ...");
+                this.i.Logger.AddLogEntry("Initializing ...");
                 IsInitializing = true;
 
                 if (Process != null)
                 {
-                    Logger.AddLogEntry($"Kill WoW process with PID: {Process.Id}");
+                    this.i.Logger.AddLogEntry($"Kill WoW process with PID: {Process.Id}");
                     Process.Kill();
                 }
 
@@ -72,28 +79,28 @@ namespace Grindr
                 Thread.Sleep(10000);
                 SendKeys.SendWait("{Enter}");
 
-                Logger.AddLogEntry("Initialized");
+                this.i.Logger.AddLogEntry("Initialized");
                 IsInitializing = false;
             });
         }
 
-        public static Task Attach()
+        public Task Attach()
         {
             return Task.Run(() =>
             {
-                Logger.AddLogEntry("Try to attach to focused wow process");
+                this.i.Logger.AddLogEntry("Try to attach to focused wow process");
                 while (true)
                 {
                     var windowHandle = GetForegroundWindow();
 
                     var process = GetProcessByHandle(windowHandle);
-                    Logger.AddLogEntry($"Focused process name: {process.ProcessName}");
+                    this.i.Logger.AddLogEntry($"Focused process name: {process.ProcessName}");
                     if (process.ProcessName == "Wow")
                     {
                         WindowHandle = windowHandle;
                         Process = process;
                         State.IsAttached = true;
-                        Logger.AddLogEntry($"Attached to Wow process");
+                        this.i.Logger.AddLogEntry($"Attached to Wow process");
                         break;
                     }
                     
@@ -102,15 +109,15 @@ namespace Grindr
             });
         }
 
-        public static void Detach()
+        public void Detach()
         {
-            Logger.AddLogEntry("Detached");
+            this.i.Logger.AddLogEntry("Detached");
             State.IsAttached = false;
-            Initializer.Process = null;
-            Initializer.WindowHandle = null;
+            this.Process = null;
+            this.WindowHandle = null;
         }
 
-        private static Process GetProcessByHandle(IntPtr hwnd)
+        private Process GetProcessByHandle(IntPtr hwnd)
         {
             try
             {

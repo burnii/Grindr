@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Channels;
 using System.Security.Policy;
 using System.Text;
@@ -10,47 +11,18 @@ using System.Threading.Tasks;
 
 namespace Grindr
 {
-    public class Data
+    public class Data : INotifyPropertyChanged
     {
-        static Data()
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Create the OnPropertyChanged method to raise the event
+        // The calling member's name will be used as the parameter.
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
-            PlayerXCoordinateChanged += (sender, e) => { return; };
-            PlayerYCoordinateChanged += (sender, e) => { return; };
-            PlayerFacingChanged += (sender, e) => { return; };
-            PlayerIsInCombatChanged += (sender, e) => { return; };
-            PlayerHasTargetChanged += (sender, e) => { return; };
-            IsTargetDeadChanged += (sender, e) => { return; };
-            PlayerZoneChanged += (sender, e) => { return; };
-            IsInInstanceChanged += (sender, e) => { return; };
-            IsMapOpenedChanged += (sender, e) => { return; };
-            IsPlayerDeadChanged += (sender, e) => { return; };
-            TargetIsInInteractRangeChanged += (sender, e) => { return; };
-            IsTargetAttackingPlayerChanged += (sender, e) => { return; };
-            IsOutDoorsChanged += (sender, e) => { return; };
-            FreeBagSlotsChanged += (sender, e) => { return; };
-            IsMountedChanged += (sender, e) => { return; };
-            PlayerHealthChanged += (sender, e) => { return; };
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public static event EventHandler PlayerXCoordinateChanged;
-        public static event EventHandler PlayerYCoordinateChanged;
-        public static event EventHandler PlayerFacingChanged;
-        public static event EventHandler PlayerIsInCombatChanged;
-        public static event EventHandler PlayerHasTargetChanged;
-        public static event EventHandler IsTargetDeadChanged;
-        public static event EventHandler PlayerZoneChanged;
-        public static event EventHandler IsInInstanceChanged;
-        public static event EventHandler IsMapOpenedChanged;
-        public static event EventHandler IsPlayerDeadChanged;
-        public static event EventHandler TargetIsInInteractRangeChanged;
-        public static event EventHandler IsTargetAttackingPlayerChanged;
-        public static event EventHandler IsOutDoorsChanged;
-        public static event EventHandler FreeBagSlotsChanged;
-        public static event EventHandler IsMountedChanged;
-        public static event EventHandler PlayerHealthChanged;
-
-
-        public static Coordinate PlayerCoordinate
+        public Coordinate PlayerCoordinate
         {
             get
             {
@@ -58,8 +30,8 @@ namespace Grindr
             }
         }
 
-        private static bool isTargetDead;
-        public static bool IsTargetDead
+        private  bool isTargetDead;
+        public  bool IsTargetDead
         {
             get
             {
@@ -69,12 +41,12 @@ namespace Grindr
             {
                 isTargetDead = value;
 
-                IsTargetDeadChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static double playerXCoordinate;
-        public static double PlayerXCoordinate
+        private  double playerXCoordinate;
+        public  double PlayerXCoordinate
         {
             get
             {
@@ -83,13 +55,12 @@ namespace Grindr
             set
             {
                 playerXCoordinate = value;
-
-                PlayerXCoordinateChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static double playerYCoordinate;
-        public static double PlayerYCoordinate
+        private  double playerYCoordinate;
+        public  double PlayerYCoordinate
         {
             get
             {
@@ -99,12 +70,12 @@ namespace Grindr
             {
                 playerYCoordinate = value;
 
-                PlayerYCoordinateChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static double playerFacing;
-        public static double PlayerFacing
+        private  double playerFacing;
+        public  double PlayerFacing
         {
             get
             {
@@ -114,12 +85,12 @@ namespace Grindr
             {
                 playerFacing = value;
 
-                PlayerFacingChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static bool playerIsInCombat;
-        public static bool PlayerIsInCombat
+        private  bool playerIsInCombat;
+        public  bool PlayerIsInCombat
         {
             get
             {
@@ -129,12 +100,12 @@ namespace Grindr
             {
                 playerIsInCombat = value;
 
-                PlayerIsInCombatChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static bool playerHasTarget;
-        public static bool PlayerHasTarget
+        private  bool playerHasTarget;
+        public  bool PlayerHasTarget
         {
             get
             {
@@ -144,12 +115,12 @@ namespace Grindr
             {
                 playerHasTarget = value;
 
-                PlayerHasTargetChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static string playerZone;
-        public static string PlayerZone
+        private  string playerZone;
+        public  string PlayerZone
         {
             get
             {
@@ -159,12 +130,12 @@ namespace Grindr
             {
                 playerZone = value;
 
-                PlayerZoneChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static bool isInInstance;
-        public static bool IsInInstance
+        private  bool isInInstance;
+        public  bool IsInInstance
         {
             get
             {
@@ -174,12 +145,12 @@ namespace Grindr
             {
                 isInInstance = value;
 
-                IsInInstanceChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static bool isMapOpened;
-        public static bool IsMapOpened
+        private  bool isMapOpened;
+        public  bool IsMapOpened
         {
             get
             {
@@ -189,12 +160,12 @@ namespace Grindr
             {
                 isMapOpened = value;
 
-                IsMapOpenedChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static bool isPlayerDead;
-        public static bool IsPlayerDead
+        private  bool isPlayerDead;
+        public  bool IsPlayerDead
         {
             get
             {
@@ -204,12 +175,12 @@ namespace Grindr
             {
                 isPlayerDead = value;
 
-                IsPlayerDeadChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static bool targetIsInInteractRange;
-        public static bool TargetIsInInteractRange
+        private  bool targetIsInInteractRange;
+        public  bool TargetIsInInteractRange
         {
             get
             {
@@ -219,12 +190,12 @@ namespace Grindr
             {
                 targetIsInInteractRange = value;
 
-                TargetIsInInteractRangeChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static bool isTargetAttackingPlayer;
-        public static bool IsTargetAttackingPlayer
+        private  bool isTargetAttackingPlayer;
+        public  bool IsTargetAttackingPlayer
         {
             get
             {
@@ -234,12 +205,12 @@ namespace Grindr
             {
                 isTargetAttackingPlayer = value;
 
-                IsTargetAttackingPlayerChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static bool isOutDoors;
-        public static bool IsOutDoors
+        private  bool isOutDoors;
+        public  bool IsOutDoors
         {
             get
             {
@@ -249,12 +220,12 @@ namespace Grindr
             {
                 isOutDoors = value;
 
-                IsOutDoorsChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static int freeBagSlots;
-        public static int FreeBagSlots
+        private  int freeBagSlots;
+        public  int FreeBagSlots
         {
             get
             {
@@ -264,12 +235,12 @@ namespace Grindr
             {
                 freeBagSlots = value;
 
-                FreeBagSlotsChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static bool isMounted;
-        public static bool IsMounted
+        private  bool isMounted;
+        public  bool IsMounted
         {
             get
             {
@@ -279,12 +250,12 @@ namespace Grindr
             {
                 isMounted = value;
 
-                IsMountedChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 
-        private static int playerHealth;
-        public static int PlayerHealth
+        private  int playerHealth;
+        public  int PlayerHealth
         {
             get
             {
@@ -294,7 +265,7 @@ namespace Grindr
             {
                 playerHealth = value;
 
-                PlayerHealthChanged(null, EventArgs.Empty);
+                OnPropertyChanged();
             }
         }
 

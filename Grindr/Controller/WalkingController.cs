@@ -15,24 +15,22 @@ namespace Grindr
 {
     public class WalkingController : IWalkingController
     {
-        public InputController InputController { get; set; }
-        public CombatController CombatController { get; set; }
+        public BotInstance i { get; set; }
 
-        public WalkingController()
+        public WalkingController(BotInstance instance)
         {
-            this.InputController = new InputController(Initializer.WindowHandle.Value);
-            this.CombatController = new CombatController(this.InputController);
+            this.i = instance;
         }
 
         private void Turn(Coordinate target)
         {
-            var direction1 = CalculationHelper.CalculateWowDirection(Data.PlayerXCoordinate, Data.PlayerYCoordinate, target.X, target.Y);
+            var direction1 = CalculationHelper.CalculateWowDirection(this.i.Data.PlayerXCoordinate, this.i.Data.PlayerYCoordinate, target.X, target.Y);
             var diff = this.DetermineShortestTurnAngle(direction1, out Keys bestTurnKey);
 
             
             var turnTime = Convert.ToInt32(Math.Abs(diff) / 0.0030);
 
-            this.InputController.PressKey(bestTurnKey);
+            this.i.InputController.PressKey(bestTurnKey);
             var start = DateTime.Now;
             var stop = false;
 
@@ -42,21 +40,21 @@ namespace Grindr
                 stop = true;
             });
 
-            while (Math.Abs(direction1 - Data.PlayerFacing) > 0.02 && /*(DateTime.Now - start).TotalMilliseconds < turnTime && */State.IsRunning && stop == false)
+            while (Math.Abs(direction1 - this.i.Data.PlayerFacing) > 0.02 && /*(DateTime.Now - start).TotalMilliseconds < turnTime && */State.IsRunning && stop == false)
             {
 
             }
             Console.WriteLine(stop);
-            Logger.AddLogEntry($"Start turning to {Logger.GetLogMessageForCoordinate(target)}");
+            this.i.Logger.AddLogEntry($"Start turning to {this.i.Logger.GetLogMessageForCoordinate(target)}");
             //Thread.Sleep(turnTime);
-            Logger.AddLogEntry($"Turned to {Logger.GetLogMessageForCoordinate(target)}");
+            this.i.Logger.AddLogEntry($"Turned to {this.i.Logger.GetLogMessageForCoordinate(target)}");
 
-            this.InputController.ReleaseKey(bestTurnKey);
+            this.i.InputController.ReleaseKey(bestTurnKey);
         }
 
         private double DetermineShortestTurnAngle(double targetDirection, out Keys bestTurnKey)
         {
-            var diff = targetDirection - Data.PlayerFacing;
+            var diff = targetDirection - this.i.Data.PlayerFacing;
 
             if (diff < 0)
             {
@@ -73,19 +71,19 @@ namespace Grindr
 
         private void Move(Coordinate target, bool isGrinding)
         {
-            WowActions.MountUpIfNeeded();
-            this.InputController.PressKey(Keys.W);
-            this.InputController.PressKey(Keys.W);
-            var targetDistance = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, target);
+            this.i.WowActions.MountUpIfNeeded();
+            this.i.InputController.PressKey(Keys.W);
+            this.i.InputController.PressKey(Keys.W);
+            var targetDistance = CalculationHelper.CalculateDistance(this.i.Data.PlayerCoordinate, target);
 
-            var startCoordinate = Data.PlayerCoordinate;
-            var distanceToStart = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, startCoordinate);
+            var startCoordinate = this.i.Data.PlayerCoordinate;
+            var distanceToStart = CalculationHelper.CalculateDistance(this.i.Data.PlayerCoordinate, startCoordinate);
 
             var distanceDelta = distanceToStart - targetDistance;
-            Logger.AddLogEntry($"Start moving to {Logger.GetLogMessageForCoordinate(target)}");
+            this.i.Logger.AddLogEntry($"Start moving to {this.i.Logger.GetLogMessageForCoordinate(target)}");
             do
             {
-                this.InputController.PressKey(Keys.W);
+                this.i.InputController.PressKey(Keys.W);
 
                 if (State.IsRunning == false)
                 {
@@ -94,34 +92,34 @@ namespace Grindr
 
                 if (isGrinding)
                 {
-                    var coordinates = this.CombatController.TryToFightEnemy();
+                    var coordinates = this.i.CombatController.TryToFightEnemy();
                     if (coordinates != null)
                     {
                         startCoordinate = coordinates;
-                        targetDistance = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, target);
+                        targetDistance = CalculationHelper.CalculateDistance(this.i.Data.PlayerCoordinate, target);
                         this.Turn(target);
-                        this.InputController.PressKey(Keys.W);
-                        this.InputController.PressKey(Keys.W);
-                        this.InputController.PressKey(Keys.W);
+                        this.i.InputController.PressKey(Keys.W);
+                        this.i.InputController.PressKey(Keys.W);
+                        this.i.InputController.PressKey(Keys.W);
                     }
                 }
 
-                distanceToStart = CalculationHelper.CalculateDistance(Data.PlayerCoordinate, startCoordinate);
+                distanceToStart = CalculationHelper.CalculateDistance(this.i.Data.PlayerCoordinate, startCoordinate);
                 distanceDelta = Math.Abs(distanceToStart - targetDistance);
                 Thread.Sleep(100);
             }
             while (targetDistance > distanceToStart - 0.001);
-            Logger.AddLogEntry($"Moved to {Logger.GetLogMessageForCoordinate(target)}");
+            this.i.Logger.AddLogEntry($"Moved to {this.i.Logger.GetLogMessageForCoordinate(target)}");
 
-            this.InputController.ReleaseKey(Keys.W);
-            this.InputController.ReleaseKey(Keys.W);
-            this.InputController.ReleaseKey(Keys.W);
+            this.i.InputController.ReleaseKey(Keys.W);
+            this.i.InputController.ReleaseKey(Keys.W);
+            this.i.InputController.ReleaseKey(Keys.W);
         }
 
         public void Walk(Coordinate target, bool isGrinding)
         {
-            Logger.AddLogEntry($"Walk to next waypoint at {Logger.GetLogMessageForCoordinate(target)} from {Logger.GetLogMessageForCoordinate(target)}");
-            if (Data.PlayerZone == "ELW")
+            this.i.Logger.AddLogEntry($"Walk to next waypoint at {this.i.Logger.GetLogMessageForCoordinate(target)} from {this.i.Logger.GetLogMessageForCoordinate(target)}");
+            if (this.i.Data.PlayerZone == "ELW")
             { 
             }
             this.Turn(target);
@@ -130,23 +128,23 @@ namespace Grindr
 
         public void WalkUnitilZoneChange()
         {
-            Logger.AddLogEntry($"Walk until zone change..");
-            var startZone = Data.PlayerZone;
-            this.InputController.PressKey(Keys.W);
+            this.i.Logger.AddLogEntry($"Walk until zone change..");
+            var startZone = this.i.Data.PlayerZone;
+            this.i.InputController.PressKey(Keys.W);
 
-            while (startZone == Data.PlayerZone)
+            while (startZone == this.i.Data.PlayerZone)
             {
                 if (State.IsRunning == false)
                 {
-                    this.InputController.ReleaseKey(Keys.W);
+                    this.i.InputController.ReleaseKey(Keys.W);
                     return;
                 }
             }
 
             Thread.Sleep(200);
-            this.InputController.ReleaseKey(Keys.W);
+            this.i.InputController.ReleaseKey(Keys.W);
 
-            Logger.AddLogEntry($"Arrived at zone '{Data.PlayerZone}'");
+            this.i.Logger.AddLogEntry($"Arrived at zone '{this.i.Data.PlayerZone}'");
 
         }
     }

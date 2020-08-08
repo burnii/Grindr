@@ -9,114 +9,118 @@ using System.Windows.Forms;
 
 namespace Grindr
 {
-    public static class WowActions
+    public class WowActions
     {
-        private static InputController inputController = new InputController(Initializer.WindowHandle.Value);
+        public BotInstance i { get; set; }
 
-        public static void Unstuck()
+        public WowActions(BotInstance instance)
         {
-            while (Data.IsPlayerDead == false)
+            this.i = instance;
+        }
+
+        public void Unstuck()
+        {
+            while (this.i.Data.IsPlayerDead == false)
             {
-                Logger.AddLogEntry("Unstuck player to return to dungeon entrance");
-                var input = new InputController(Initializer.WindowHandle.Value);
-                input.LeftMouseClick(474, 451);
+                this.i.Logger.AddLogEntry("Unstuck player to return to dungeon entrance");
+                this.i.InputController.LeftMouseClick(474, 451);
                 Thread.Sleep(1000);
-                input.LeftMouseClick(199, 163);
+                this.i.InputController.LeftMouseClick(199, 163);
                 Thread.Sleep(1000);
-                input.LeftMouseClick(29, 225);
+                this.i.InputController.LeftMouseClick(29, 225);
                 Thread.Sleep(1000);
-                input.LeftMouseClick(294, 310);
+                this.i.InputController.LeftMouseClick(294, 310);
                 Thread.Sleep(12000);
             }
 
-            while (Data.IsPlayerDead == true)
+            while (this.i.Data.IsPlayerDead == true)
             {
-                inputController.TapKey(System.Windows.Forms.Keys.D7);
+                this.i.InputController.TapKey(System.Windows.Forms.Keys.D7);
                 Thread.Sleep(1000);
             }
         }
 
-        public static Task OpenMapAsync()
+        public Task OpenMapAsync()
         {
             return Task.Run(() =>
             {
-                while (Data.IsMapOpened == false)
+                while (this.i.Data.IsMapOpened == false)
                 {
-                    inputController.TapKey(Keys.M);
+                    this.i.InputController.TapKey(Keys.M);
                     Thread.Sleep(1000);
                 }
             });
 
         }
 
-        public static void OpenMap()
+        public void OpenMap()
         {
-            while (Data.IsMapOpened == false)
+            while (this.i.Data.IsMapOpened == false)
             {
-                inputController.TapKey(Keys.M);
+                this.i.InputController.TapKey(Keys.M);
                 Thread.Sleep(200);
             }
         }
 
-        public static void CloseMap()
+        public void CloseMap()
         {
-            while (Data.IsMapOpened == true)
+            while (this.i.Data.IsMapOpened == true)
             {
-                inputController.TapKey(Keys.M);
+                this.i.InputController.TapKey(Keys.M);
                 Thread.Sleep(200);
             }
         }
 
-        public static void SellItemsIfNeeded()
+        public void SellItemsIfNeeded()
         {
-            if (Data.IsOutDoors && Data.FreeBagSlots < 30)
+            if (this.i.Data.IsOutDoors && this.i.Data.FreeBagSlots < 30)
             {
                 Thread.Sleep(5000);
 
-                while (Data.IsOutDoors && Data.FreeBagSlots < 30)
+                while (this.i.Data.IsOutDoors && this.i.Data.FreeBagSlots < 30)
                 {
-                    while (!Data.IsMounted)
+                    while (!this.i.Data.IsMounted)
                     {
-                        inputController.TapKey(Keys.D8);
+                        this.i.InputController.TapKey(Keys.D8);
                         Thread.Sleep(5000);
                     }
 
-                    while (Data.IsMounted && Data.FreeBagSlots < 90)
+                    while (this.i.Data.IsMounted && this.i.Data.FreeBagSlots < 90)
                     {
-                        inputController.TapKey(Keys.D9);
+                        this.i.InputController.TapKey(Keys.D9);
                         Thread.Sleep(1000);
-                        inputController.TapKey(Keys.Y);
+                        this.i.InputController.TapKey(Keys.Y);
                         Thread.Sleep(1000);
-                        inputController.TapKey(Keys.D0);
+                        this.i.InputController.TapKey(Keys.D0);
                     }
 
                 }
             }
         }
 
-        public static void TryToLootWithMouseClick()
+        public void TryToLootWithMouseClick()
         {
-            WowActions.CloseMap();
+            this.CloseMap();
             for (int i = 0; i < 2; i++)
             {
-                inputController.RightMouseClick(202, 258);
-                inputController.RightMouseClick(190, 242);
-                inputController.RightMouseClick(251, 253);
+                this.i.InputController.RightMouseClick(202, 258);
+                this.i.InputController.RightMouseClick(190, 242);
+                this.i.InputController.RightMouseClick(251, 253);
                 Thread.Sleep(1000);
             }
-            WowActions.OpenMap();
+            this.OpenMap();
         }
 
-        public static void ResetInstances()
+        public void ResetInstances()
         {
-            inputController.TapKey(Keys.OemMinus);
+            this.i.InputController.TapKey(Keys.OemMinus);
         }
 
-        public static void MountUpIfNeeded()
+        public void MountUpIfNeeded()
         {
-            while (!Data.IsMounted && Data.IsOutDoors)
+            while (!this.i.Data.IsMounted && this.i.Data.IsOutDoors)
             {
-                inputController.TapKey(Keys.U);
+                this.i.InputController.TapKey(Keys.U);
                 Thread.Sleep(5000);
             }
         }

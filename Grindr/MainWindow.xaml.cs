@@ -33,20 +33,19 @@ namespace Grindr
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Grinder grinder;
-        private Assister assister;
-        private Recorder recorder;
-        private Settings settings;
+        public BotInstance i { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            this.settings = new Settings();
+            i = new BotInstance(this.coordinatesListBox);
+            this.dataStackPanel.DataContext = this.i.Data;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.loggingListBox.ItemsSource = Logger.Logs;
+
+            this.loggingListBox.ItemsSource = this.i.Logger.Logs;
             ((INotifyCollectionChanged)loggingListBox.Items).CollectionChanged += LoggingCollectionChanged;
         }
 
@@ -60,26 +59,23 @@ namespace Grindr
 
         private async void Initialize()
         {
-            await Initializer.Initialize();
+            await this.i.Initializer.Initialize();
 
             this.SetupBots();
         }
 
         private async void Attach()
         {
-            await Initializer.Attach();
+            await this.i.Initializer.Attach();
 
             this.SetupBots();
         }
 
         private void SetupBots()
         {
-            DataReader.Start();
-            this.grinder = new Grinder(this.coordinatesListBox);
-            this.assister = new Assister();
-            this.recorder = new Recorder(this.grinder);
+            this.i.DataReader.Start();
 
-            this.coordinatesListBox.DataContext = this.grinder.NavigationNodes;
+            this.coordinatesListBox.DataContext = this.i.Grinder.NavigationNodes;
             this.coordinatesListBox.SetBinding(ItemsControl.ItemsSourceProperty, new System.Windows.Data.Binding());
             ((INotifyCollectionChanged)this.coordinatesListBox.Items).CollectionChanged += CoordinatesCollectionChanged;
         }
@@ -119,54 +115,54 @@ namespace Grindr
         {
             Task.Run(() =>
             {
-                if (Data.IsInInstance)
+                if (this.i.Data.IsInInstance)
                 {
-                    WowActions.OpenMap();
+                    this.i.WowActions.OpenMap();
                 }
-                Recorder.AddNavigationNode(Data.PlayerCoordinate);
-                WowActions.CloseMap();
+                this.i.Recorder.AddNavigationNode(this.i.Data.PlayerCoordinate);
+                this.i.WowActions.CloseMap();
             });
         }
 
         private void MarkAsCombatNodeButton_Click(object sender, RoutedEventArgs e)
         {
             var i = this.coordinatesListBox.SelectedIndex;
-            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.Combat);
+            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.Combat);
         }
 
         private void MarkAsWayPointButton_Click(object sender, RoutedEventArgs e)
         {
             var i = this.coordinatesListBox.SelectedIndex;
-            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.WayPoint);
+            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.WayPoint);
         }
 
         private void MarkAsZoneChangeButton_Click(object sender, RoutedEventArgs e)
         {
             var i = this.coordinatesListBox.SelectedIndex;
-            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.ZoneChange);
+            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.ZoneChange);
         }
 
         private void MarkAsUnstuckButton_Click(object sender, RoutedEventArgs e)
         {
             var i = this.coordinatesListBox.SelectedIndex;
-            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.Unstuck);
+            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.Unstuck);
         }
 
         private void MarkAsLootButton_Click(object sender, RoutedEventArgs e)
         {
             var i = this.coordinatesListBox.SelectedIndex;
-            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.Loot);
+            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.Loot);
         }
 
         private void MarkAsResetButton_Click(object sender, RoutedEventArgs e)
         {
             var i = this.coordinatesListBox.SelectedIndex;
-            this.grinder.MarkNavigationNode(this.grinder.NavigationNodes[i], NavigationNodeType.Reset);
+            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.Reset);
         }
 
         private void DeleteNavigatioNNodeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.grinder.DeleteNavigationNode(this.coordinatesListBox.SelectedIndex);
+            this.i.Grinder.DeleteNavigationNode(this.coordinatesListBox.SelectedIndex);
         }
 
         private async void RunButton_Click(object sender, RoutedEventArgs e)
@@ -179,10 +175,10 @@ namespace Grindr
                 switch (State.Mode)
                 {
                     case Mode.Grind:
-                        await this.grinder.StartJourney();
+                        await this.i.Grinder.StartJourney();
                         break;
                     case Mode.Assist:
-                        await this.assister.Assist("bla");
+                        await this.i.Assister.Assist("bla");
                         break;
                 }
 
@@ -193,15 +189,15 @@ namespace Grindr
             else
             {
                 State.IsRunning = false;
-                Logger.AddLogEntry("Requested to stop grinder");
+                this.i.Logger.AddLogEntry("Requested to stop grinder");
             }
         }
 
         private void SaveProfileButton_Click(object sender, RoutedEventArgs e)
         {
-            var serializedNavigationNodes = JsonConvert.SerializeObject(this.grinder.NavigationNodes);
+            var serializedNavigationNodes = JsonConvert.SerializeObject(this.i.Grinder.NavigationNodes);
 
-            File.WriteAllText(System.IO.Path.Combine(this.settings.ProfilePath, this.profileNameTextBox.Text + ".json"), serializedNavigationNodes.ToString());
+            File.WriteAllText(System.IO.Path.Combine(this.i.Settings.ProfilePath, this.profileNameTextBox.Text + ".json"), serializedNavigationNodes.ToString());
         }
 
         private void ImportProfileButton_Click(object sender, RoutedEventArgs e)
@@ -214,11 +210,11 @@ namespace Grindr
             {
                 var serializedNavigationNodes = File.ReadAllText(openFileDialog.FileName);
 
-                this.grinder.NavigationNodes.Clear();
+                this.i.Grinder.NavigationNodes.Clear();
 
                 foreach (var navNode in JsonConvert.DeserializeObject<ObservableCollection<NavigationNode>>(serializedNavigationNodes))
                 {
-                    this.grinder.NavigationNodes.Add(navNode);
+                    this.i.Grinder.NavigationNodes.Add(navNode);
                 }
 
                 Task.Run(() =>
@@ -251,23 +247,21 @@ namespace Grindr
         {
             if (State.IsRecording == false)
             {
-                this.recorder.StartRecording();
+                this.i.Recorder.StartRecording();
                 this.recordButton.Content = "Stop recording";
             }
             else
             {
-                this.recorder.StopRecording();
+                this.i.Recorder.StopRecording();
                 this.recordButton.Content = "Start recording";
             }
         }
 
 
         private bool stop = true;
-        private bool shouldHeal = false;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var inputController = new InputController(Initializer.WindowHandle.Value);
             if (stop == true)
             {
                 stop = false;
@@ -286,37 +280,70 @@ namespace Grindr
                     Keys.D6
                 };
 
+            //Task.Run(() =>
+            //{
+            //    while (!stop)
+            //    {
+            //        this.i.InputController.TapKey(Keys.Tab);
+            //        Thread.Sleep(2000);
+            //    }
+            //});
+
+            //Task.Run(() =>
+            //{
+            //    var i = 0;
+            //    while (!stop)
+            //    {
+            //        if (i > 4)
+            //        {
+            //            i = 0;
+            //        }
+
+            //        if (this.i.Data.PlayerHealth < 70 || this.i.Data.PlayerHealth > 500)
+            //        {
+            //            this.i.InputController.TapKey(Keys.D2);
+            //        }
+            //        else
+            //        {
+            //            this.i.InputController.TapKey(keyArray[i]);
+            //            i++;
+            //        }
+            //        Thread.Sleep(700);
+            //    }
+            //});
+
             Task.Run(() =>
             {
                 while (!stop)
                 {
-                    inputController.TapKey(Keys.Tab);
-                    Thread.Sleep(2000);
+                    this.i.InputController.TapKey(Keys.Tab);
+                    this.i.InputController.TapKey(Keys.D1);
+                    Thread.Sleep(1500);
+                    this.HealIfNeeded();
+                    if (this.i.Data.PlayerHasTarget == false)
+                    {
+                        this.i.InputController.TapKey(Keys.Tab);
+                    }
+                    this.i.InputController.TapKey(Keys.D3);
+                    Thread.Sleep(1500);
+                    if (this.i.Data.PlayerHasTarget == false)
+                    {
+                        this.i.InputController.TapKey(Keys.Tab);
+                    }
+                    this.i.InputController.TapKey(Keys.D4);
+                    this.i.InputController.TapKey(Keys.D3);
+                    Thread.Sleep(1500);
                 }
             });
+        }
 
-            Task.Run(() =>
+        private void HealIfNeeded()
+        {
+            while (this.i.Data.PlayerHealth < 70 || this.i.Data.PlayerHealth > 500)
             {
-                var i = 0;
-                while (!stop)
-                {
-                    if (i > 4)
-                    {
-                        i = 0;
-                    }
-
-                    if (Data.PlayerHealth < 50)
-                    {
-                        inputController.TapKey(Keys.D2);
-                    }
-                    else
-                    {
-                        inputController.TapKey(keyArray[i]);
-                        i++;
-                    }
-                    Thread.Sleep(700);
-                }
-            });
+                this.i.InputController.TapKey(Keys.D2);
+                Thread.Sleep(1000);
+            }
         }
     }
 }
