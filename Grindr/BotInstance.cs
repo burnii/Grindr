@@ -11,6 +11,7 @@ namespace Grindr
 {
     public class BotInstance
     {
+        public int BotIndex { get; set; }
         public CombatController CombatController { get; set; }
         public WalkingController WalkingController { get; set; }
         public InstanceWalkingController InstanceWalkingController { get; set; }
@@ -26,8 +27,11 @@ namespace Grindr
         public WowActions WowActions { get; set; }
         public ListBox NavigationCoordinatesListBox { get; set; }
 
-        public BotInstance(ListBox lb)
+        public State State { get; set; }
+
+        public BotInstance(ListBox lb, int botIndex)
         {
+            this.BotIndex = botIndex;
             this.CombatController = new CombatController(this);
             this.WalkingController = new WalkingController(this);
             this.InstanceWalkingController = new InstanceWalkingController(this);
@@ -42,6 +46,7 @@ namespace Grindr
             this.Settings = new Settings();
             this.WowActions = new WowActions(this);
             this.NavigationCoordinatesListBox = lb;
+            this.State = new State();
         }
     }
 }

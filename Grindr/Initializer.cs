@@ -9,8 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using static Grindr.DataReader;
-using static Grindr.ScreenRecorderHelper;
 
 namespace Grindr
 {
@@ -38,6 +36,14 @@ namespace Grindr
         public bool IsInitializing { get; set; } = false;
 
         public BotInstance i { get; set; }
+
+        public struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
 
         public Initializer(BotInstance instance)
         {
@@ -99,7 +105,7 @@ namespace Grindr
                     {
                         WindowHandle = windowHandle;
                         Process = process;
-                        State.IsAttached = true;
+                        this.i.State.IsAttached = true;
                         this.i.Logger.AddLogEntry($"Attached to Wow process");
                         break;
                     }
@@ -112,7 +118,7 @@ namespace Grindr
         public void Detach()
         {
             this.i.Logger.AddLogEntry("Detached");
-            State.IsAttached = false;
+            this.i.State.IsAttached = false;
             this.Process = null;
             this.WindowHandle = null;
         }

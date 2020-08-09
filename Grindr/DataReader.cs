@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Grindr.ScreenRecorderHelper;
 
 namespace Grindr
 {
@@ -26,6 +25,20 @@ namespace Grindr
 
         private int stride = 0;
 
+        private readonly int width1 = 500;
+        private readonly int height1 = 500;
+        private readonly int maxWidth = 2000;
+
+        private ScreenRecorderHelper recorder = new ScreenRecorderHelper();
+
+        public struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
         public BotInstance i { get; set; }
 
         public DataReader(BotInstance instance)
@@ -33,16 +46,35 @@ namespace Grindr
             this.i = instance;
         }
 
+        private void AlignWindow()
+        {
+            var row = 0;
+
+            if ((this.i.BotIndex + 1) * height1 > maxWidth)
+            {
+                row++;    
+            }
+
+            if (this.i.BotIndex * height1 > maxWidth * 2)
+            {
+                row++;
+            }
+
+            //MoveWindow(this.i.Initializer.WindowHandle.Value, 1, 1, width1, height1, false);
+            MoveWindow(this.i.Initializer.WindowHandle.Value, this.i.BotIndex * width1 - (row * maxWidth), row * height1, width1, height1, false);
+        }
+
         public void Start()
         {
             Task.Run(() =>
             {
-                MoveWindow(this.i.Initializer.WindowHandle.Value, 0, 0, 500, 500, false);
                 GetRootCoordinate(out int x, out int y);
 
                 RECT srcRect;
                 if (this.i.Initializer.Process != null && this.i.Initializer.WindowHandle != null)
                 {
+                    this.AlignWindow();
+
                     if (GetWindowRect(this.i.Initializer.WindowHandle.Value, out srcRect))
                     {
                         int width = srcRect.Right - srcRect.Left;
@@ -50,13 +82,13 @@ namespace Grindr
 
                         Bitmap bmp = new Bitmap(width, height);
 
-                        var rect = new Rectangle(srcRect.Left, srcRect.Top, bmp.Width, bmp.Height);                    
+                        var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);                    
 
                         using (var screenG = Graphics.FromImage(bmp))
                         {
                             this.i.Logger.AddLogEntry("Data reading started");
                             
-                            while (State.IsAttached)
+                            while (this.i.State.IsAttached)
                             {
                                 Point p = Cursor.Position;
 
@@ -71,7 +103,7 @@ namespace Grindr
                                 }
 
                                 GetWindowRect(this.i.Initializer.WindowHandle.Value, out srcRect);
-                                ScreenRecorderHelper.RecordScreen(
+                                recorder.RecordScreen(
                                     screenG,
                                     srcRect.Top,
                                     srcRect.Left,
@@ -207,7 +239,7 @@ namespace Grindr
             {
                 this.i.Logger.AddLogEntry($"Try to get root coordinates ({attempts})");
 
-                var bmp = ScreenRecorderHelper.TakeScreenshot(this.i);
+                var bmp = recorder.TakeScreenshot(this.i);
 
                 for (x = 0; x < bmp.Width; x++)
                 {

@@ -35,10 +35,10 @@ namespace Grindr
     {
         public BotInstance i { get; set; }
 
-        public BotUserControl()
+        public BotUserControl(int botIndex)
         {
             InitializeComponent();
-            i = new BotInstance(this.coordinatesListBox);
+            i = new BotInstance(this.coordinatesListBox, botIndex);
             this.dataStackPanel.DataContext = this.i.Data;
         }
 
@@ -96,7 +96,7 @@ namespace Grindr
 
         private void AttachButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!State.IsAttached)
+            if (!this.i.State.IsAttached)
             {
                 this.Attach();
             }
@@ -108,7 +108,7 @@ namespace Grindr
 
         private void Detach()
         {
-            State.IsAttached = false;
+            this.i.State.IsAttached = false;
         }
 
         private void AddNavigationNodeButton_Click(object sender, RoutedEventArgs e)
@@ -165,14 +165,20 @@ namespace Grindr
             this.i.Grinder.DeleteNavigationNode(this.coordinatesListBox.SelectedIndex);
         }
 
+        public void StopBot()
+        {
+            this.i.State.IsRunning = false;
+            this.stop = true;
+        }
+
         private async void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            if (State.IsRunning == false)
+            if (this.i.State.IsRunning == false)
             {
-                State.IsRunning = true;
+                this.i.State.IsRunning = true;
                 this.runButton.Content = "Stop";
 
-                switch (State.Mode)
+                switch (this.i.State.Mode)
                 {
                     case Mode.Grind:
                         await this.i.Grinder.StartJourney();
@@ -184,11 +190,11 @@ namespace Grindr
 
 
                 this.runButton.Content = "Start";
-                State.IsRunning = false;
+                this.i.State.IsRunning = false;
             }
             else
             {
-                State.IsRunning = false;
+                this.i.State.IsRunning = false;
                 this.i.Logger.AddLogEntry("Requested to stop grinder");
             }
         }
@@ -232,7 +238,7 @@ namespace Grindr
             this.assistTabControl.Visibility = Visibility.Hidden;
             this.grindTabControl.Visibility = Visibility.Visible;
 
-            State.Mode = Mode.Grind;
+            this.i.State.Mode = Mode.Grind;
         }
 
         private void AssistButton_Click(object sender, RoutedEventArgs e)
@@ -240,12 +246,12 @@ namespace Grindr
             this.grindTabControl.Visibility = Visibility.Hidden;
             this.assistTabControl.Visibility = Visibility.Visible;
 
-            State.Mode = Mode.Assist;
+            this.i.State.Mode = Mode.Assist;
         }
 
         private void RecordButton_Click(object sender, RoutedEventArgs e)
         {
-            if (State.IsRecording == false)
+            if (this.i.State.IsRecording == false)
             {
                 this.i.Recorder.StartRecording();
                 this.recordButton.Content = "Stop recording";

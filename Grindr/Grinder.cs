@@ -103,11 +103,11 @@ namespace Grindr
             {
                 this.i.Logger.AddLogEntry("Grinder started");
                 
-                while (State.IsRunning)
+                while (this.i.State.IsRunning)
                 {
                     for (int i = selectedIndex; i < this.NavigationNodes.Count; i++)
                     {
-                        if (State.IsRunning == false)
+                        if (this.i.State.IsRunning == false)
                         {
                             break;
                         }

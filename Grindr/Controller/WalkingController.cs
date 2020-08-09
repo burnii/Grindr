@@ -40,7 +40,7 @@ namespace Grindr
                 stop = true;
             });
 
-            while (Math.Abs(direction1 - this.i.Data.PlayerFacing) > 0.02 && /*(DateTime.Now - start).TotalMilliseconds < turnTime && */State.IsRunning && stop == false)
+            while (Math.Abs(direction1 - this.i.Data.PlayerFacing) > 0.02 && /*(DateTime.Now - start).TotalMilliseconds < turnTime && */this.i.State.IsRunning && stop == false)
             {
 
             }
@@ -85,7 +85,7 @@ namespace Grindr
             {
                 this.i.InputController.PressKey(Keys.W);
 
-                if (State.IsRunning == false)
+                if (this.i.State.IsRunning == false)
                 {
                     break;
                 }
@@ -134,7 +134,7 @@ namespace Grindr
 
             while (startZone == this.i.Data.PlayerZone)
             {
-                if (State.IsRunning == false)
+                if (this.i.State.IsRunning == false)
                 {
                     this.i.InputController.ReleaseKey(Keys.W);
                     return;

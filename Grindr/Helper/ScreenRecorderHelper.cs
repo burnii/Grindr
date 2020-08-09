@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace Grindr
 {
-    public static class ScreenRecorderHelper
+    public class ScreenRecorderHelper
     {
         public struct RECT
         {
@@ -23,7 +23,7 @@ namespace Grindr
         [DllImport("user32.dll")]
         private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
-        public static Bitmap TakeScreenshot(BotInstance i)
+        public Bitmap TakeScreenshot(BotInstance i)
         {
             Bitmap bmp = null;
             RECT srcRect;
@@ -38,7 +38,7 @@ namespace Grindr
 
                     using (var screenG = Graphics.FromImage(bmp))
                     {
-                        ScreenRecorderHelper.RecordScreen(
+                        this.RecordScreen(
                             screenG,
                             srcRect.Top,
                             srcRect.Left,
@@ -52,7 +52,7 @@ namespace Grindr
             return bmp;
         }
 
-        public static void RecordScreen(Graphics screenG, int top, int left, int width, int height)
+        public void RecordScreen(Graphics screenG, int top, int left, int width, int height)
         {
             screenG.CopyFromScreen(left, top,
                             0, 0, new Size(width, height),

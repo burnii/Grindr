@@ -20,7 +20,7 @@ namespace Grindr
         {
             return Task.Run(() =>
             {
-                while (State.IsRunning)
+                while (this.i.State.IsRunning)
                 {
                     this.i.InputController.TapKey(Keys.D4);
                     this.i.InputController.TapKey(Keys.D5);

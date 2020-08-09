@@ -13,6 +13,6 @@
             </TabItem>
         </TabControl>
         <Button Content="Add Bot" HorizontalAlignment="Left" Margin="22,10,0,0" VerticalAlignment="Top" Width="75" Click="AddBotButton_Click"/>
-
+        <Button Content="Remove Bot" HorizontalAlignment="Left" Margin="128,10,0,0" VerticalAlignment="Top" Width="75" Click="RemoveBotButton_Click"/>
     </Grid>
 </Window>

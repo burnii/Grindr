@@ -16,14 +16,14 @@ namespace Grindr
 
         public void StartRecording()
         {
-            State.IsRecording = true;
+            this.i.State.IsRecording = true;
 
             Task.Run(() =>
             {
                 this.i.Logger.AddLogEntry("Start recording navigation nodes");
                 var startCoordinate = this.i.Data.PlayerCoordinate;
                 var startZone = this.i.Data.PlayerZone;
-                while (State.IsRecording)
+                while (this.i.State.IsRecording)
                 {
                     var currentDistance = CalculationHelper.CalculateDistance(this.i.Data.PlayerCoordinate, startCoordinate);
 
@@ -57,7 +57,7 @@ namespace Grindr
         public void StopRecording()
         {
             this.i.Logger.AddLogEntry("Stopped recording navigation nodes");
-            State.IsRecording = false;
+            this.i.State.IsRecording = false;
         }
     }
 }

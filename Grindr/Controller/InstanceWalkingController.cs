@@ -67,7 +67,7 @@ namespace Grindr
             this.i.Logger.AddLogEntry($"Start moving to {this.i.Logger.GetLogMessageForCoordinate(target)}");
             do
             {
-                if (State.IsRunning == false)
+                if (this.i.State.IsRunning == false)
                 {
                     break;
                 }
@@ -123,7 +123,7 @@ namespace Grindr
 
             while (startZone == this.i.Data.PlayerZone)
             {
-                if (State.IsRunning == false)
+                if (this.i.State.IsRunning == false)
                 {
                     this.i.InputController.ReleaseKey(Keys.W);
                     return;

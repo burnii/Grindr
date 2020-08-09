@@ -24,12 +24,28 @@ namespace Grindr
             InitializeComponent();
         }
 
+        private List<BotUserControl> botUserControls = new List<BotUserControl>() { new BotUserControl(0) };
+
         private void AddBotButton_Click(object sender, RoutedEventArgs e)
         {
             var tabItem = new TabItem();
             tabItem.Header = "Bot";
-            tabItem.Content = new BotUserControl();
+            var control = new BotUserControl(this.BotTabControl.Items.Count - 1);
+            tabItem.Content = control;
+            botUserControls.Add(control);
             this.BotTabControl.Items.Add(tabItem);
+        }
+
+        private void RemoveBotButton_Click(object sender, RoutedEventArgs e)
+        {
+            var i = this.BotTabControl.SelectedIndex;
+
+            if (i > 0)
+            {
+                this.botUserControls[i].StopBot();
+                this.botUserControls.RemoveAt(i);
+                this.BotTabControl.Items.RemoveAt(i);
+            }
         }
     }
 }
