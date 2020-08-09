@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,17 +20,44 @@ namespace Grindr
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<BotUserControl> botUserControls = new List<BotUserControl>() { new BotUserControl(0) };
+
         public MainWindow()
         {
             InitializeComponent();
+
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    for (var i = 1; i < botUserControls.Count; i++)
+                    {
+                        var data = botUserControls[i].GetBotData();
+
+                        var playerName = "";
+                        playerName = data.PlayerName;
+                        if (string.IsNullOrWhiteSpace(playerName))
+                        {
+                            playerName = "Bot" + i;
+                        }
+
+                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            this.BotTabControl.Items.Cast<TabItem>().ToArray()[i].Header = playerName;
+                        }));
+
+                    }
+                    Thread.Sleep(2000);
+                }
+            });
+
         }
 
-        private List<BotUserControl> botUserControls = new List<BotUserControl>() { new BotUserControl(0) };
 
         private void AddBotButton_Click(object sender, RoutedEventArgs e)
         {
             var tabItem = new TabItem();
-            tabItem.Header = "Bot";
+            tabItem.Header = "Bot" + (this.BotTabControl.Items.Count);
             var control = new BotUserControl(this.BotTabControl.Items.Count - 1);
             tabItem.Content = control;
             botUserControls.Add(control);

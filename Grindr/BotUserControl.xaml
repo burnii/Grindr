@@ -127,6 +127,7 @@
             <TextBlock Text="{Binding FreeBagSlots}" ></TextBlock>
             <TextBlock Text="{Binding IsMounted}" ></TextBlock>
             <TextBlock Text="{Binding PlayerHealth}" ></TextBlock>
+            <TextBlock Text="{Binding PlayerName}" ></TextBlock>
         </StackPanel>
         <Button x:Name="runButton" Content="Start" HorizontalAlignment="Left" Margin="637,16,0,0" VerticalAlignment="Top" Width="145" Click="RunButton_Click" Height="46"/>
         <Button x:Name="launchButton" Content="Launch" HorizontalAlignment="Left" Margin="11,16,0,0" VerticalAlignment="Top" Width="55" Click="LaunchButton_Click" Height="43"/>

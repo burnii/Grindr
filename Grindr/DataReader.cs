@@ -158,8 +158,10 @@ namespace Grindr
                                 this.i.Data.FreeBagSlots = GetIntPixelValue(bmp, x + 42, y, rgbValues);
                                 this.i.Data.IsMounted = GetBoolPixelValue(bmp, x + 45, y, rgbValues);
                                 this.i.Data.PlayerHealth = GetIntPixelValue(bmp, x + 48, y, rgbValues);
-
-
+                                var playerName = "";
+                                playerName += GetStringPixelValues(bmp, y, rgbValues, x + 51/*, x + 90, x + 100, x + 110*/);
+                                playerName += GetStringPixelValues(bmp, y, rgbValues, x + 54/*, x + 90, x + 100, x + 110*/);
+                                this.i.Data.PlayerName = playerName;
 
                                 bmp.UnlockBits(bmpData);
                                 Thread.Sleep(100);

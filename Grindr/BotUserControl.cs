@@ -80,6 +80,11 @@ namespace Grindr
             ((INotifyCollectionChanged)this.coordinatesListBox.Items).CollectionChanged += CoordinatesCollectionChanged;
         }
 
+        public Data GetBotData()
+        {
+            return this.i.Data;
+        }
+
         private void CoordinatesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null && e.NewItems.Count > 0)
