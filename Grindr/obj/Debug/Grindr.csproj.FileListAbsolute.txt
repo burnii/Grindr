@@ -60,3 +60,5 @@ C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\Grindr.csproj.CopyComplete
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\Grindr.exe
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\Grindr.pdb
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\Grindr.csprojAssemblyReference.cache
+C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\BotUserControl.g.cs
+C:\Users\dbern\source\repos\Grindr\Grindr\obj\Debug\BotUserControl.baml

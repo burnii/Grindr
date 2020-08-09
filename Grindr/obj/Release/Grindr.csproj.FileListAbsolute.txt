@@ -24,3 +24,4 @@ C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\Grindr.csproj.CoreCompileI
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\Grindr.csproj.CopyComplete
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\Grindr.exe
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\Grindr.pdb
+C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\Grindr.csprojAssemblyReference.cache

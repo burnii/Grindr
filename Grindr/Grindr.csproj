@@ -89,12 +89,15 @@
     <Compile Include="Helper\ScreenRecorderHelper.cs" />
     <Compile Include="Controller\IWalkingController.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Recorder.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="State.cs" />
     <Compile Include="Controller\WalkingController.cs" />
     <Compile Include="WowActions.cs" />
-    <Page Include="MainWindow.xaml">
+    <Page Include="BotUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -106,10 +109,14 @@
     <Compile Include="DTOs\Data.cs" />
     <Compile Include="DataReader.cs" />
     <Compile Include="Controller\InputController.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="BotUserControl.cs">
+      <DependentUpon>BotUserControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
