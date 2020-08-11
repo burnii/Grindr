@@ -44,7 +44,9 @@ namespace Grindr
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            this.ModeComboBox.ItemsSource = Enum.GetValues(typeof(Mode));
+            this.ModeComboBox.DataContext = this.i.State;
+            this.ActionBindComboBox.ItemsSource = Enum.GetValues(typeof(Keys));
             this.loggingListBox.ItemsSource = this.i.Logger.Logs;
             ((INotifyCollectionChanged)loggingListBox.Items).CollectionChanged += LoggingCollectionChanged;
         }
@@ -94,6 +96,30 @@ namespace Grindr
             }
         }
 
+        private void ModeComboBox_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            var mode = (Mode)this.ModeComboBox.SelectedIndex;
+
+            switch (mode)
+            {
+                case Mode.Grind:
+                    this.assistTabControl.Visibility = Visibility.Hidden;
+                    this.grindTabControl.Visibility = Visibility.Visible;
+                    this.turretTabControl.Visibility = Visibility.Hidden;
+                    break;
+                case Mode.Assist:
+                    this.grindTabControl.Visibility = Visibility.Hidden;
+                    this.assistTabControl.Visibility = Visibility.Visible;
+                    this.turretTabControl.Visibility = Visibility.Hidden;
+                    break;
+                case Mode.Turret:
+                    this.grindTabControl.Visibility = Visibility.Hidden;
+                    this.assistTabControl.Visibility = Visibility.Hidden;
+                    this.turretTabControl.Visibility = Visibility.Visible;
+                    break;
+            }
+        }
+
         private void LaunchButton_Click(object sender, RoutedEventArgs e)
         {
             this.Initialize();
@@ -129,51 +155,25 @@ namespace Grindr
             });
         }
 
-        private void MarkAsCombatNodeButton_Click(object sender, RoutedEventArgs e)
-        {
-            var i = this.coordinatesListBox.SelectedIndex;
-            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.Combat);
-        }
-
-        private void MarkAsWayPointButton_Click(object sender, RoutedEventArgs e)
-        {
-            var i = this.coordinatesListBox.SelectedIndex;
-            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.WayPoint);
-        }
-
-        private void MarkAsZoneChangeButton_Click(object sender, RoutedEventArgs e)
-        {
-            var i = this.coordinatesListBox.SelectedIndex;
-            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.ZoneChange);
-        }
-
-        private void MarkAsUnstuckButton_Click(object sender, RoutedEventArgs e)
-        {
-            var i = this.coordinatesListBox.SelectedIndex;
-            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.Unstuck);
-        }
-
-        private void MarkAsLootButton_Click(object sender, RoutedEventArgs e)
-        {
-            var i = this.coordinatesListBox.SelectedIndex;
-            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.Loot);
-        }
-
-        private void MarkAsResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            var i = this.coordinatesListBox.SelectedIndex;
-            this.i.Grinder.MarkNavigationNode(this.i.Grinder.NavigationNodes[i], NavigationNodeType.Reset);
-        }
-
         private void DeleteNavigatioNNodeButton_Click(object sender, RoutedEventArgs e)
         {
             this.i.Grinder.DeleteNavigationNode(this.coordinatesListBox.SelectedIndex);
         }
 
+        private void NavigationNodeListBox_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            NavigationNode node = null;
+            if (this.i.Grinder.NavigationNodes.Count > this.coordinatesListBox.SelectedIndex && this.coordinatesListBox.SelectedIndex >= 0)
+            {
+                node = this.i.Grinder.NavigationNodes[this.coordinatesListBox.SelectedIndex];
+            }
+
+            this.NavigationNodePropertiesGroupBox.DataContext = node;
+        }
+
         public void StopBot()
         {
             this.i.State.IsRunning = false;
-            this.stop = true;
         }
 
         private async void RunButton_Click(object sender, RoutedEventArgs e)
@@ -189,10 +189,12 @@ namespace Grindr
                         await this.i.Grinder.StartJourney();
                         break;
                     case Mode.Assist:
-                        await this.i.Assister.Assist("bla");
+                        await this.i.Assister.Assist();
+                        break;
+                    case Mode.Turret:
+                        await this.RunTurretTask();
                         break;
                 }
-
 
                 this.runButton.Content = "Start";
                 this.i.State.IsRunning = false;
@@ -238,21 +240,7 @@ namespace Grindr
             }
         }
 
-        private void GrindButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.assistTabControl.Visibility = Visibility.Hidden;
-            this.grindTabControl.Visibility = Visibility.Visible;
 
-            this.i.State.Mode = Mode.Grind;
-        }
-
-        private void AssistButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.grindTabControl.Visibility = Visibility.Hidden;
-            this.assistTabControl.Visibility = Visibility.Visible;
-
-            this.i.State.Mode = Mode.Assist;
-        }
 
         private void RecordButton_Click(object sender, RoutedEventArgs e)
         {
@@ -268,20 +256,8 @@ namespace Grindr
             }
         }
 
-
-        private bool stop = true;
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private Task RunTurretTask()
         {
-            if (stop == true)
-            {
-                stop = false;
-            }
-            else
-            {
-                stop = true;
-            }
-
             var keyArray = new Keys[]
                 {
                     Keys.D1,
@@ -291,41 +267,9 @@ namespace Grindr
                     Keys.D6
                 };
 
-            //Task.Run(() =>
-            //{
-            //    while (!stop)
-            //    {
-            //        this.i.InputController.TapKey(Keys.Tab);
-            //        Thread.Sleep(2000);
-            //    }
-            //});
-
-            //Task.Run(() =>
-            //{
-            //    var i = 0;
-            //    while (!stop)
-            //    {
-            //        if (i > 4)
-            //        {
-            //            i = 0;
-            //        }
-
-            //        if (this.i.Data.PlayerHealth < 70 || this.i.Data.PlayerHealth > 500)
-            //        {
-            //            this.i.InputController.TapKey(Keys.D2);
-            //        }
-            //        else
-            //        {
-            //            this.i.InputController.TapKey(keyArray[i]);
-            //            i++;
-            //        }
-            //        Thread.Sleep(700);
-            //    }
-            //});
-
-            Task.Run(() =>
+            return Task.Run(() =>
             {
-                while (!stop)
+                while (this.i.State.IsRunning)
                 {
                     this.i.InputController.TapKey(Keys.Tab);
                     this.i.InputController.TapKey(Keys.D1);
@@ -344,8 +288,32 @@ namespace Grindr
                     this.i.InputController.TapKey(Keys.D4);
                     this.i.InputController.TapKey(Keys.D3);
                     Thread.Sleep(1500);
+                    this.i.InputController.TapKey(Keys.D5);
+                    Thread.Sleep(1500);
+                    this.i.InputController.TapKey(Keys.D6);
+                    Thread.Sleep(1500);
                 }
             });
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.i.InputController.TapKey(Keys.I);
+            Thread.Sleep(100);
+            this.i.InputController.LeftMouseClick(58, 264);
+            Thread.Sleep(100);
+            this.i.InputController.LeftMouseClick(185, 157);
+            Thread.Sleep(100);
+            this.i.InputController.LeftMouseClick(167, 319);
+            Thread.Sleep(100);
+            this.i.InputController.TapKey(Keys.I);
+            this.i.InputController.TapKey(Keys.J);
+            this.i.InputController.TapKey(Keys.K);
+            Thread.Sleep(100);
+            this.i.InputController.LeftMouseClick(164, 300);
+            Thread.Sleep(100);
+            this.i.InputController.LeftMouseClick(298, 319);
+
         }
 
         private void HealIfNeeded()
@@ -355,6 +323,11 @@ namespace Grindr
                 this.i.InputController.TapKey(Keys.D2);
                 Thread.Sleep(1000);
             }
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.i.Grinder.NavigationNodes.Clear();
         }
     }
 }

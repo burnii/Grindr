@@ -9,6 +9,7 @@ namespace Grindr.Enums
     public enum Mode
     { 
         Grind,
-        Assist
+        Assist,
+        Turret
     }
 }

@@ -16,7 +16,7 @@ namespace Grindr
             this.i = instance;
         }
 
-        public Task Assist(string name)
+        public Task Assist()
         {
             return Task.Run(() =>
             {

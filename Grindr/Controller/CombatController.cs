@@ -33,21 +33,21 @@ namespace Grindr
                 coordinates = this.i.Data.PlayerCoordinate;
                 this.Fight();
                 TryToLootEnemy();
-             
+
             }
 
             return coordinates;
         }
 
-        public void FightWhileInCombat()
+        public void FightWhileInCombat(bool turret = false)
         {
             this.i.Logger.AddLogEntry($"Start fighting until out of combat");
-            
+
             while (this.i.Data.PlayerIsInCombat)
             {
                 this.i.WowActions.CloseMap();
                 this.SearchForAttackingTarget();
-                this.Fight();
+                this.Fight(turret);
                 TryToLootEnemy();
                 Thread.Sleep(1000);
             }
@@ -69,7 +69,7 @@ namespace Grindr
                 this.i.InputController.TapKey(Keys.Y);
                 this.i.InputController.TapKey(Keys.Y);
             }
-            
+
             Thread.Sleep(1000);
         }
 
@@ -93,16 +93,21 @@ namespace Grindr
             }
         }
 
-        public void Fight()
+        public void Fight(bool turret = false)
         {
             this.i.Logger.AddLogEntry($"Fight current target");
 
             while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.Data.IsTargetAttackingPlayer)
             {
-                this.i.InputController.TapKey(Keys.Y);
+                if (!turret)
+                {
+                    this.i.InputController.TapKey(Keys.Y);
+                }
                 this.i.InputController.TapKey(Keys.D3);
                 this.i.InputController.TapKey(Keys.D2);
                 this.i.InputController.TapKey(Keys.D1);
+                this.i.InputController.TapKey(Keys.D4);
+                this.i.InputController.TapKey(Keys.D5);
                 Thread.Sleep(1000);
             }
 

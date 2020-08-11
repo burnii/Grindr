@@ -30,54 +30,7 @@ namespace Grindr
         internal void MarkLastNavigationNodeAsZoneChangeNode(string playerZone)
         {
             var lastNodeFromZone = this.GetLastNavigationNodeFromZone(this.NavigationNodes.Last(), playerZone);
-            this.MarkNavigationNode(lastNodeFromZone, NavigationNodeType.ZoneChange);
-        }
-
-        public void MarkNavigationNode(NavigationNode node, NavigationNodeType type)
-        {
-            node.Type = type;
-            this.UpdateNavigationNodeColor(node);
-        }
-
-        private void UpdateNavigationNodeColor(NavigationNode node)
-        {
-            var i = this.NavigationNodes.IndexOf(node);
-            var item = this.i.NavigationCoordinatesListBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
-            if (item != null)
-            {
-                switch (node.Type)
-                {
-                    case NavigationNodeType.Combat:
-                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#FFB7B2") as Brush; }));
-                        break;
-                    case NavigationNodeType.WayPoint:
-                        if (item != null)
-                        {
-                            Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = null as Brush; }));
-                        }
-                        break;
-                    case NavigationNodeType.ZoneChange:
-                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#E2F0CB") as Brush; }));
-                        break;
-                    case NavigationNodeType.Dungeon:
-                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#C7CEEA") as Brush; }));
-                        break;
-                    case NavigationNodeType.Unstuck:
-                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#F9E79F") as Brush; }));
-                        break;
-                    case NavigationNodeType.Loot:
-                        Application.Current.Dispatcher.Invoke(new Action(() => { item.Background = new BrushConverter().ConvertFrom("#F9E79F") as Brush; }));
-                        break;
-                }
-            }
-        }
-
-        public void UpdateNavigationNodeColors()
-        {
-            foreach (var node in this.NavigationNodes)
-            {
-                this.UpdateNavigationNodeColor(node);
-            }
+            lastNodeFromZone.ZoneChange = true;
         }
 
         private NavigationNode GetLastNavigationNodeFromZone(NavigationNode node, string zone)
@@ -102,57 +55,73 @@ namespace Grindr
             return Task.Run(() =>
             {
                 this.i.Logger.AddLogEntry("Grinder started");
-                
+
+                var startNode = this.NavigationNodes[selectedIndex];
+                var currentNode = startNode;
+
                 while (this.i.State.IsRunning)
                 {
-                    for (int i = selectedIndex; i < this.NavigationNodes.Count; i++)
+
+                    if (this.i.State.IsRunning == false)
                     {
-                        if (this.i.State.IsRunning == false)
-                        {
-                            break;
-                        }
-
-                        IWalkingController wc;
-
-                        if (this.i.Data.IsInInstance)
-                        {
-                            wc = this.i.InstanceWalkingController;
-                        }
-                        else
-                        {
-                            wc = this.i.WalkingController;
-                        }
-
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.i.NavigationCoordinatesListBox.SelectedIndex = i; }));
-
-                        if (this.NavigationNodes[i].Type == NavigationNodeType.ZoneChange)
-                        {
-                            wc.Walk(this.NavigationNodes[i].Coordinates, false);
-                            wc.WalkUnitilZoneChange();
-                        }
-                        else
-                        {
-                            wc.Walk(this.NavigationNodes[i].Coordinates, false);
-                        }
-
-                        switch (this.NavigationNodes[i].Type)
-                        {
-                            case NavigationNodeType.Combat:
-                                this.i.CombatController.FightWhileInCombat();
-                                break;
-                            case NavigationNodeType.Unstuck:
-                                this.i.WowActions.Unstuck();
-                                break;
-                            case NavigationNodeType.Loot:
-                                this.i.WowActions.TryToLootWithMouseClick();
-                                break;
-                            case NavigationNodeType.Reset:
-                                this.i.WowActions.ResetInstances();
-                                break;
-                        }
-
-                        this.i.WowActions.SellItemsIfNeeded();
+                        break;
                     }
+
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.i.NavigationCoordinatesListBox.SelectedIndex = this.NavigationNodes.IndexOf(currentNode); }));
+
+                    IWalkingController wc;
+
+                    if (this.i.Data.IsInInstance)
+                    {
+                        wc = this.i.InstanceWalkingController;
+                    }
+                    else
+                    {
+                        wc = this.i.WalkingController;
+                    }
+
+                    if (currentNode.ZoneChange)
+                    {
+                        wc.Walk(currentNode.Coordinates, false);
+                        wc.WalkUnitilZoneChange();
+                    }
+                    else
+                    {
+                        wc.Walk(currentNode.Coordinates, false);
+                    }
+
+                    if (currentNode.CombatNode)
+                    {
+                        this.i.CombatController.FightWhileInCombat();
+                    }
+                    else if (currentNode.Turret)
+                    {
+                        this.i.CombatController.FightWhileInCombat(true);
+                    }
+
+                    if (currentNode.Unstuck)
+                    {
+                        this.i.WowActions.Unstuck();
+                    }
+
+                    if (currentNode.Loot)
+                    {
+                        this.i.WowActions.TryToLootWithMouseClick();
+                    }
+
+                    if (currentNode.Reset)
+                    {
+                        this.i.WowActions.ResetInstances();
+                    }
+
+                    if(currentNode.Action)
+                    {
+                        this.i.InputController.TapKey(currentNode.ActionHotKey);
+                    }
+
+                    this.i.WowActions.SellItemsIfNeeded();
+
+                    currentNode = GetNextNode(startNode, currentNode);
                 }
 
                 this.i.Logger.AddLogEntry("Grinder stopped");
@@ -160,32 +129,51 @@ namespace Grindr
             });
         }
 
-        public NavigationNode AddNavigationNode(Coordinate coordinate, NavigationNodeType type, string zone)
+        private static NavigationNode GetNextNode(NavigationNode startNode, NavigationNode currentNode)
+        {
+            if (currentNode.NextNode != null)
+            {
+                currentNode = currentNode.NextNode;
+            }
+            else
+            {
+                currentNode = startNode;
+            }
+
+            return currentNode;
+        }
+
+        public NavigationNode AddNavigationNode(Coordinate coordinate, string zone)
         {
             var index = this.GetIndexToInsert();
 
-            var node = new NavigationNode(
-                coordinate.X,
-                coordinate.Y,
-                type,
-                zone,
-                this.TryToGetNodeAtIndex(index),
-                this.TryToGetNodeAtIndex(index - 1)
-            );
+            var previousNode = this.TryToGetNodeAtIndex(index - 1);
 
+            var node = new NavigationNode
+            {
+                Coordinates = coordinate,
+                Zone = zone,
+                PreviousNode = previousNode
+            };
+
+            if (previousNode != null)
+            { 
+                previousNode.NextNode = node;
+            }
 
             this.i.Logger.AddLogEntry($"Recorded a navigationnode at {this.i.Logger.GetLogMessageForCoordinate(coordinate)}");
 
             this.NavigationNodes.Insert(index, node);
-
-            this.UpdateNavigationNodeColor(node);
 
             return node;
         }
 
         public void DeleteNavigationNode(int i)
         {
-            this.NavigationNodes.RemoveAt(i);
+            if (this.NavigationNodes.Count > i && i >= 0)
+            { 
+                this.NavigationNodes.RemoveAt(i);
+            }
         }
 
         private int GetIndexToInsert()

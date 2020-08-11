@@ -35,7 +35,7 @@ namespace Grindr
 
             while (this.i.Data.IsPlayerDead == true)
             {
-                this.i.InputController.TapKey(System.Windows.Forms.Keys.D7);
+                this.i.InputController.TapKey(Keys.D7);
                 Thread.Sleep(1000);
             }
         }

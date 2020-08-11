@@ -49,7 +49,7 @@ namespace Grindr
             Application.Current.Dispatcher.BeginInvoke(
                                 new Action(() =>
                                 {
-                                    this.i.Grinder.AddNavigationNode(coordinate, NavigationNodeType.WayPoint, this.i.Data.PlayerZone);
+                                    this.i.Grinder.AddNavigationNode(coordinate, this.i.Data.PlayerZone);
                                 })
                             );
         }

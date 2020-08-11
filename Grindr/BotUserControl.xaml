@@ -6,10 +6,18 @@
         xmlns:local="clr-namespace:Grindr"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Height="450" Width="800">
+        Height="313" Width="625">
 
     <Grid>
-        <TabControl x:Name="grindTabControl" HorizontalAlignment="Left" Height="253" Margin="11,71,0,0" VerticalAlignment="Top" Width="621">
+        <Button x:Name="launchButton" Content="Launch" HorizontalAlignment="Left" Margin="2,3,0,0" VerticalAlignment="Top" Width="55" Click="LaunchButton_Click" Height="43"/>
+        <Button x:Name="attachButton" Content="Attach" HorizontalAlignment="Left" Margin="62,3,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="AttachButton_Click"/>
+        
+        <ComboBox SelectedValue="{Binding Mode}" x:Name="ModeComboBox" HorizontalAlignment="Left" Margin="364,15,0,0" VerticalAlignment="Top" Width="109" Height="23" SelectionChanged="ModeComboBox_SelectionChanged"/>
+        <Button x:Name="runButton" Content="Start" HorizontalAlignment="Left" Margin="478,2,0,0" VerticalAlignment="Top" Width="145" Click="RunButton_Click" Height="46"/>
+
+        <Button Content="Button" HorizontalAlignment="Left" Margin="-306,108,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        
+        <TabControl x:Name="grindTabControl" HorizontalAlignment="Left" Height="253" Margin="2,58,0,0" VerticalAlignment="Top" Width="621">
             <TabItem Header="General">
                 <Grid>
                     <GroupBox Header="Login" HorizontalAlignment="Left" Height="81" Margin="9,69,0,0" VerticalAlignment="Top" Width="160">
@@ -38,105 +46,81 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Navigation">
-                <Grid>
-                    <GroupBox x:Name="groupBox" Header="NavigationNodes" HorizontalAlignment="Left" Height="221" Margin="2,2,0,0" VerticalAlignment="Top" Width="603">
+                <Grid Margin="0,0,1,0">
+
+
+                    <Button x:Name="clearButton" Content="Clear" HorizontalAlignment="Left" Margin="105,163,0,0" VerticalAlignment="Top" Width="87" Click="ClearButton_Click" Height="22"/>
+                    <Button x:Name="addCoordinateButton" Content="Add Coordinate" HorizontalAlignment="Left" VerticalAlignment="Top" Width="90" Margin="10,136,0,0" Click="AddNavigationNodeButton_Click" Height="22"/>
+                    <Button x:Name="recordButton" Content="Start recording" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Margin="105,136,0,0" Height="22" Click="RecordButton_Click"/>
+                    <Button x:Name="deleteButton" Content="Delete" HorizontalAlignment="Left" Margin="10,163,0,0" VerticalAlignment="Top" Width="90" Click="DeleteNavigatioNNodeButton_Click" Height="22"/>
+
+                    <ListBox x:Name="coordinatesListBox" HorizontalAlignment="Left" Height="121" Margin="10,10,0,0" VerticalAlignment="Top" Width="182" IsManipulationEnabled="True" SelectionChanged="NavigationNodeListBox_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0}, {1}">
+                                                <Binding Path="Coordinates.X"/>
+                                                <Binding Path="Coordinates.Y"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Delete" Click="DeleteNavigatioNNodeButton_Click"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                    <GroupBox x:Name="NavigationNodePropertiesGroupBox" Header="NavigationNodeProperties" HorizontalAlignment="Left" Height="185" Margin="197,0,0,0" VerticalAlignment="Top" Width="390">
                         <Grid>
-                            <Button x:Name="clearButton" Content="Clear" HorizontalAlignment="Left" Margin="4,165,0,0" VerticalAlignment="Top" Width="88"/>
-                            <Button x:Name="addCoordinateButton" Content="Add Coordinate" HorizontalAlignment="Left" VerticalAlignment="Top" Width="90" Margin="4,138,0,0" Click="AddNavigationNodeButton_Click" Height="22"/>
-                            <Button x:Name="recordButton" Content="Start recording" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Margin="99,138,0,0" Height="22" Click="RecordButton_Click"/>
-                            <ListBox x:Name="coordinatesListBox" HorizontalAlignment="Left" Height="121" Margin="4,10,0,0" VerticalAlignment="Top" Width="182" IsManipulationEnabled="True">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding StringFormat="{}{0}, {1}">
-                                                        <Binding Path="Coordinates.X"/>
-                                                        <Binding Path="Coordinates.Y"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-
-                                <ListBox.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Mark as CombatNode" Click="MarkAsCombatNodeButton_Click"/>
-                                        <MenuItem Header="Mark as WayPoint" Click="MarkAsWayPointButton_Click"/>
-                                        <MenuItem Header="Mark as ZoneChange" Click="MarkAsZoneChangeButton_Click"/>
-                                        <MenuItem Header="Mark as Unstuck" Click="MarkAsUnstuckButton_Click"/>
-                                        <MenuItem Header="Mark as Loot" Click="MarkAsLootButton_Click"/>
-                                        <MenuItem Header="Mark as Reset" Click="MarkAsResetButton_Click"/>
-                                        <MenuItem Header="Delete" Click="DeleteNavigatioNNodeButton_Click"/>
-                                    </ContextMenu>
-                                </ListBox.ContextMenu>
-                            </ListBox>
-
+                            <CheckBox IsChecked="{Binding CombatNode}" Content="Combat" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding Turret}" Content="Turret" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding ZoneChange}" Content="ZoneChange" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding Unstuck}" Content="Unstuck" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding Loot}" Content="Loot" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding Reset}" Content="Reset" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding Action}" Content="Action" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top"/>
+                            <ComboBox SelectedValue="{Binding ActionHotKey}" x:Name="ActionBindComboBox" HorizontalAlignment="Left" Margin="78,127,0,0" VerticalAlignment="Top" Width="90" Height="25"/>
                         </Grid>
                     </GroupBox>
+
                 </Grid>
             </TabItem>
-            <TabItem Header="Combat">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="121*"/>
-                        <ColumnDefinition Width="84*"/>
-                    </Grid.ColumnDefinitions>
+            <TabItem Header="Log">
+                <Grid ShowGridLines="False">
+                    <ListBox BorderThickness="0" x:Name="loggingListBox" HorizontalAlignment="Left" Height="205"  VerticalAlignment="Top" Width="595" Margin="10,10,0,0"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Chat">
+            <TabItem Header="Data">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="121*"/>
-                        <ColumnDefinition Width="84*"/>
-                    </Grid.ColumnDefinitions>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Statistics">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="121*"/>
-                        <ColumnDefinition Width="84*"/>
-                    </Grid.ColumnDefinitions>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Logs">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="121*"/>
-                        <ColumnDefinition Width="84*"/>
-                    </Grid.ColumnDefinitions>
+                    <WrapPanel Orientation="Vertical" x:Name="dataStackPanel" HorizontalAlignment="Left" Height="205" Margin="10" VerticalAlignment="Top" Width="595">
+                        <TextBlock Margin="0,0,10,0" Text="{Binding PlayerXCoordinate, StringFormat='XCoord: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding PlayerYCoordinate, StringFormat='YCoord: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding PlayerFacing, StringFormat='PlayerFacing: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding PlayerIsInCombat, StringFormat='PlayerIsInCombat: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding PlayerHasTarget, StringFormat='PlayerHasTarget: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding IsTargetDead, StringFormat='IsTargetDead: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding PlayerZone, StringFormat='PlayerZone: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding IsInInstance, StringFormat='IsInInstance: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding IsMapOpened, StringFormat='IsMapOpened: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding IsPlayerDead, StringFormat='IsPlayerDead: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding TargetIsInInteractRange, StringFormat='TargetIsInInteractRange: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding IsTargetAttackingPlayer, StringFormat='IsTargetAttackingPlayer: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding IsOutDoors, StringFormat='IsOutdoor: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding FreeBagSlots, StringFormat='FreeBagSlots: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding IsMounted, StringFormat='IsMounted: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding PlayerHealth, StringFormat='PlayerHealth: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding PlayerName, StringFormat='PlayerName: \{0\}'}" ></TextBlock>
+                    </WrapPanel>
                 </Grid>
             </TabItem>
         </TabControl>
-        <StackPanel x:Name="dataStackPanel" HorizontalAlignment="Left" Height="301" Margin="649,98,0,0" VerticalAlignment="Top" Width="121">
-            <TextBlock Text="{Binding PlayerXCoordinate}" ></TextBlock>
-            <TextBlock Text="{Binding PlayerYCoordinate}" ></TextBlock>
-            <TextBlock Text="{Binding PlayerFacing}" ></TextBlock>
-            <TextBlock Text="{Binding PlayerIsInCombat}" ></TextBlock>
-            <TextBlock Text="{Binding PlayerHasTarget}" ></TextBlock>
-            <TextBlock Text="{Binding IsTargetDead}" ></TextBlock>
-            <TextBlock Text="{Binding PlayerZone}" ></TextBlock>
-            <TextBlock Text="{Binding IsInInstance}" ></TextBlock>
-            <TextBlock Text="{Binding IsMapOpened}" ></TextBlock>
-            <TextBlock Text="{Binding IsPlayerDead}" ></TextBlock>
-            <TextBlock Text="{Binding TargetIsInInteractRange}" ></TextBlock>
-            <TextBlock Text="{Binding IsTargetAttackingPlayer}" ></TextBlock>
-            <TextBlock Text="{Binding IsOutDoors}" ></TextBlock>
-            <TextBlock Text="{Binding FreeBagSlots}" ></TextBlock>
-            <TextBlock Text="{Binding IsMounted}" ></TextBlock>
-            <TextBlock Text="{Binding PlayerHealth}" ></TextBlock>
-            <TextBlock Text="{Binding PlayerName}" ></TextBlock>
-        </StackPanel>
-        <Button x:Name="runButton" Content="Start" HorizontalAlignment="Left" Margin="637,16,0,0" VerticalAlignment="Top" Width="145" Click="RunButton_Click" Height="46"/>
-        <Button x:Name="launchButton" Content="Launch" HorizontalAlignment="Left" Margin="11,16,0,0" VerticalAlignment="Top" Width="55" Click="LaunchButton_Click" Height="43"/>
-        <GroupBox x:Name="dataGroupBox" Header="Data" HorizontalAlignment="Left" Height="326" Margin="637,83,0,0" VerticalAlignment="Top" Width="145"/>
-        <ListBox x:Name="loggingListBox" HorizontalAlignment="Left" Height="80" Margin="11,329,0,0" VerticalAlignment="Top" Width="621"/>
-        <Button x:Name="attachButton" Content="Attach" HorizontalAlignment="Left" Margin="71,16,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="AttachButton_Click"/>
-        <Button x:Name="grindButton" Content="Grind" HorizontalAlignment="Left" Margin="206,16,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="GrindButton_Click"/>
-        <Button x:Name="assistButton" Content="Assist" HorizontalAlignment="Left" Margin="266,16,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="AssistButton_Click"/>
-        <TabControl Visibility="Hidden" x:Name="assistTabControl" HorizontalAlignment="Left" Height="253" Margin="11,71,0,0" VerticalAlignment="Top" Width="621">
+        <TabControl Visibility="Hidden" x:Name="assistTabControl" HorizontalAlignment="Left" Height="253" Margin="2,58,0,0" VerticalAlignment="Top" Width="621">
             <TabItem Header="General">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -146,8 +130,19 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="541,29,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <Button x:Name="turretButton" Content="Turret" HorizontalAlignment="Left" Margin="326,16,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="Button_Click"/>
+        <TabControl Visibility="Hidden" x:Name="turretTabControl" HorizontalAlignment="Left" Height="253" Margin="2,58,0,0" VerticalAlignment="Top" Width="621">
+            <TabItem Header="General">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="121*"/>
+                        <ColumnDefinition Width="84*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        
+
+
 
     </Grid>
 </UserControl>

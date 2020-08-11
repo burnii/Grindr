@@ -71,7 +71,6 @@ namespace Grindr
 
         private void Move(Coordinate target, bool isGrinding)
         {
-            this.i.WowActions.MountUpIfNeeded();
             this.i.InputController.PressKey(Keys.W);
             this.i.InputController.PressKey(Keys.W);
             var targetDistance = CalculationHelper.CalculateDistance(this.i.Data.PlayerCoordinate, target);
@@ -119,9 +118,7 @@ namespace Grindr
         public void Walk(Coordinate target, bool isGrinding)
         {
             this.i.Logger.AddLogEntry($"Walk to next waypoint at {this.i.Logger.GetLogMessageForCoordinate(target)} from {this.i.Logger.GetLogMessageForCoordinate(target)}");
-            if (this.i.Data.PlayerZone == "ELW")
-            { 
-            }
+            this.i.WowActions.MountUpIfNeeded();
             this.Turn(target);
             this.Move(target, isGrinding);
         }

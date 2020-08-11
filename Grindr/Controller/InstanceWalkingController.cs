@@ -109,7 +109,7 @@ namespace Grindr
             {
                 this.i.WowActions.OpenMap();
             }
-
+            this.i.WowActions.MountUpIfNeeded();
             this.Turn(target);
             this.Move(target, isGrinding);
 
