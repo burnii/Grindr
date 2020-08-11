@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Grindr.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -23,10 +24,9 @@ namespace Grindr
         public Initializer Initializer { get; set; }
         public Logger Logger { get; set; }
         public Recorder Recorder { get; set; }
-        public Settings Settings { get; set; }
         public WowActions WowActions { get; set; }
         public ListBox NavigationCoordinatesListBox { get; set; }
-
+        public Profile Profile { get; set; }
         public State State { get; set; }
 
         public BotInstance(ListBox lb, int botIndex)
@@ -43,7 +43,7 @@ namespace Grindr
             this.Initializer = new Initializer(this);
             this.Logger = new Logger();
             this.Recorder = new Recorder(this);
-            this.Settings = new Settings();
+            this.Profile = new Profile(this);
             this.WowActions = new WowActions(this);
             this.NavigationCoordinatesListBox = lb;
             this.State = new State();

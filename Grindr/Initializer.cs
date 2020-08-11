@@ -30,9 +30,6 @@ namespace Grindr
 
         public Process Process { get; set; }
 
-        public static string Username { get; set; } = "fritz.bauer@muell.icu";
-        public static string Password { get; set; } = "Yh9tegjmg";
-
         public bool IsInitializing { get; set; } = false;
 
         public BotInstance i { get; set; }
@@ -63,7 +60,7 @@ namespace Grindr
                     Process.Kill();
                 }
 
-                Process = Process.Start(@"C:\Program Files (x86)\World of Warcraft\_retail_\Wow.exe");
+                Process = Process.Start(this.i.Profile.Settings.WowExePath);
                 Process.WaitForInputIdle();
                 WindowHandle = Process.MainWindowHandle;
 
@@ -78,9 +75,9 @@ namespace Grindr
                 });
 
                 Thread.Sleep(1000);
-                SendKeys.SendWait(Username);
+                SendKeys.SendWait(this.i.Profile.Settings.Username);
                 SendKeys.SendWait("{Tab}");
-                SendKeys.SendWait(Password);
+                SendKeys.SendWait(this.i.Profile.Settings.Password);
                 SendKeys.SendWait("{Enter}");
                 Thread.Sleep(10000);
                 SendKeys.SendWait("{Enter}");

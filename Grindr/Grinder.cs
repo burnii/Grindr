@@ -17,19 +17,16 @@ namespace Grindr
 {
     public class Grinder
     {
-        public ObservableCollection<NavigationNode> NavigationNodes { get; set; }
-
         public BotInstance i { get; set; }
 
         public Grinder(BotInstance instance)
         {
-            this.NavigationNodes = new ObservableCollection<NavigationNode>();
             this.i = instance;
         }
 
         internal void MarkLastNavigationNodeAsZoneChangeNode(string playerZone)
         {
-            var lastNodeFromZone = this.GetLastNavigationNodeFromZone(this.NavigationNodes.Last(), playerZone);
+            var lastNodeFromZone = this.GetLastNavigationNodeFromZone(this.i.Profile.NavigationNodes.Last(), playerZone);
             lastNodeFromZone.ZoneChange = true;
         }
 
@@ -56,7 +53,7 @@ namespace Grindr
             {
                 this.i.Logger.AddLogEntry("Grinder started");
 
-                var startNode = this.NavigationNodes[selectedIndex];
+                var startNode = this.i.Profile.NavigationNodes[selectedIndex];
                 var currentNode = startNode;
 
                 while (this.i.State.IsRunning)
@@ -67,7 +64,7 @@ namespace Grindr
                         break;
                     }
 
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.i.NavigationCoordinatesListBox.SelectedIndex = this.NavigationNodes.IndexOf(currentNode); }));
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.i.NavigationCoordinatesListBox.SelectedIndex = this.i.Profile.NavigationNodes.IndexOf(currentNode); }));
 
                     IWalkingController wc;
 
@@ -87,7 +84,7 @@ namespace Grindr
                     }
                     else
                     {
-                        wc.Walk(currentNode.Coordinates, false);
+                        wc.Walk(currentNode.Coordinates, this.i.Profile.Settings.AlwaysFight);
                     }
 
                     if (currentNode.CombatNode)
@@ -163,16 +160,16 @@ namespace Grindr
 
             this.i.Logger.AddLogEntry($"Recorded a navigationnode at {this.i.Logger.GetLogMessageForCoordinate(coordinate)}");
 
-            this.NavigationNodes.Insert(index, node);
+            this.i.Profile.NavigationNodes.Insert(index, node);
 
             return node;
         }
 
         public void DeleteNavigationNode(int i)
         {
-            if (this.NavigationNodes.Count > i && i >= 0)
-            { 
-                this.NavigationNodes.RemoveAt(i);
+            if (this.i.Profile.NavigationNodes.Count > i && i >= 0)
+            {
+                this.i.Profile.NavigationNodes.RemoveAt(i);
             }
         }
 
@@ -180,7 +177,7 @@ namespace Grindr
         {
             if (this.i.NavigationCoordinatesListBox.SelectedItem == null)
             {
-                return this.NavigationNodes.Count;
+                return this.i.Profile.NavigationNodes.Count;
             }
             else
             {
@@ -190,9 +187,9 @@ namespace Grindr
 
         private NavigationNode TryToGetNodeAtIndex(int i)
         {
-            if (NavigationNodes.Count >= (i + 1) && i >= 0)
+            if (this.i.Profile.NavigationNodes.Count >= (i + 1) && i >= 0)
             {
-                return NavigationNodes[i];
+                return this.i.Profile.NavigationNodes[i];
             }
             else
             {

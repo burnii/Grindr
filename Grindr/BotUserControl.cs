@@ -25,6 +25,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Cursor = System.Windows.Forms.Cursor;
 using Point = System.Drawing.Point;
+using Grindr.DTOs;
+using Newtonsoft.Json.Linq;
 
 namespace Grindr
 {
@@ -44,12 +46,22 @@ namespace Grindr
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            this.SetDataBidnings();
+            ((INotifyCollectionChanged)loggingListBox.Items).CollectionChanged += LoggingCollectionChanged;
+        }
+
+        private void SetDataBidnings()
+        {
             this.ModeComboBox.ItemsSource = Enum.GetValues(typeof(Mode));
             this.ModeComboBox.DataContext = this.i.State;
             this.AttachButton.DataContext = this.i.State;
+            this.GeneralGrid.DataContext = this.i.Profile.Settings;
             this.ActionBindComboBox.ItemsSource = Enum.GetValues(typeof(Keys));
             this.loggingListBox.ItemsSource = this.i.Logger.Logs;
-            ((INotifyCollectionChanged)loggingListBox.Items).CollectionChanged += LoggingCollectionChanged;
+
+            this.coordinatesListBox.DataContext = this.i.Profile.NavigationNodes;
+            this.coordinatesListBox.SetBinding(ItemsControl.ItemsSourceProperty, new System.Windows.Data.Binding());
+            ((INotifyCollectionChanged)this.coordinatesListBox.Items).CollectionChanged += CoordinatesCollectionChanged;
         }
 
         private void LoggingCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -77,10 +89,6 @@ namespace Grindr
         private void SetupBots()
         {
             this.i.DataReader.Start();
-
-            this.coordinatesListBox.DataContext = this.i.Grinder.NavigationNodes;
-            this.coordinatesListBox.SetBinding(ItemsControl.ItemsSourceProperty, new System.Windows.Data.Binding());
-            ((INotifyCollectionChanged)this.coordinatesListBox.Items).CollectionChanged += CoordinatesCollectionChanged;
         }
 
         public Data GetBotData()
@@ -165,9 +173,9 @@ namespace Grindr
         private void NavigationNodeListBox_SelectionChanged(object sender, RoutedEventArgs e)
         {
             NavigationNode node = null;
-            if (this.i.Grinder.NavigationNodes.Count > this.coordinatesListBox.SelectedIndex && this.coordinatesListBox.SelectedIndex >= 0)
+            if (this.i.Profile.NavigationNodes.Count > this.coordinatesListBox.SelectedIndex && this.coordinatesListBox.SelectedIndex >= 0)
             {
-                node = this.i.Grinder.NavigationNodes[this.coordinatesListBox.SelectedIndex];
+                node = this.i.Profile.NavigationNodes[this.coordinatesListBox.SelectedIndex];
             }
 
             this.NavigationNodePropertiesGroupBox.DataContext = node;
@@ -210,9 +218,10 @@ namespace Grindr
 
         private void SaveProfileButton_Click(object sender, RoutedEventArgs e)
         {
-            var serializedNavigationNodes = JsonConvert.SerializeObject(this.i.Grinder.NavigationNodes);
+            var serializedProfile = JsonConvert.SerializeObject(this.i.Profile);
 
-            File.WriteAllText(System.IO.Path.Combine(this.i.Settings.ProfilePath, this.profileNameTextBox.Text + ".json"), serializedNavigationNodes.ToString());
+            Directory.CreateDirectory(@".\Profiles");
+            File.WriteAllText(System.IO.Path.Combine(@".\Profiles\", this.profileNameTextBox.Text + ".json"), serializedProfile.ToString());
         }
 
         private void ImportProfileButton_Click(object sender, RoutedEventArgs e)
@@ -220,29 +229,22 @@ namespace Grindr
             var openFileDialog = new OpenFileDialog();
 
             var result = openFileDialog.ShowDialog();
-
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                var serializedNavigationNodes = File.ReadAllText(openFileDialog.FileName);
+                var serializedProfile = File.ReadAllText(openFileDialog.FileName);
 
-                this.i.Grinder.NavigationNodes.Clear();
+                this.i.Profile.NavigationNodes.Clear();
 
-                foreach (var navNode in JsonConvert.DeserializeObject<ObservableCollection<NavigationNode>>(serializedNavigationNodes))
-                {
-                    this.i.Grinder.NavigationNodes.Add(navNode);
-                }
+                var profile = JsonConvert.DeserializeObject<Profile>(serializedProfile);
 
-                Task.Run(() =>
-                {
-                    // Wait that the listBox list is synchronized with the navigationNodes list.
-                    // TODO NICOLAS FRAGEN
-                    //Thread.Sleep(2000);
-                    //this.grinder.UpdateNavigationNodeColors();
-                });
+                this.i.Profile.NavigationNodes = profile.NavigationNodes;
+                this.i.Profile.UpdatePreviousNodeNextNode();
+                this.i.Profile.Settings = profile.Settings;
+                this.i.Profile.Settings.Username = profile.Settings.Username;
+
+                this.SetDataBidnings();
             }
         }
-
-
 
         private void RecordButton_Click(object sender, RoutedEventArgs e)
         {
@@ -329,7 +331,20 @@ namespace Grindr
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            this.i.Grinder.NavigationNodes.Clear();
+            this.i.Profile.NavigationNodes.Clear();
+        }
+
+        private void WowPath_MouseDown(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                var result = dialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    this.WowPathTextBox.Text = dialog.SelectedPath;
+                }
+            }
         }
     }
 }

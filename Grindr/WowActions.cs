@@ -118,7 +118,7 @@ namespace Grindr
 
         public void MountUpIfNeeded()
         {
-            while (!this.i.Data.IsMounted && this.i.Data.IsOutDoors)
+            while (!this.i.Data.IsMounted && this.i.Data.IsOutDoors && this.i.Profile.Settings.ShouldUseMount)
             {
                 this.i.InputController.TapKey(Keys.U);
                 Thread.Sleep(5000);
