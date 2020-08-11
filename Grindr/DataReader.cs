@@ -88,7 +88,7 @@ namespace Grindr
                         {
                             this.i.Logger.AddLogEntry("Data reading started");
                             
-                            while (this.i.State.IsAttached)
+                            while (this.i.State.AttachState == Enums.AttachState.Detach)
                             {
                                 Point p = Cursor.Position;
 

@@ -94,7 +94,9 @@ namespace Grindr
         {
             return Task.Run(() =>
             {
+                this.i.State.AttachState = Enums.AttachState.Attaching;
                 this.i.Logger.AddLogEntry("Try to attach to focused wow process");
+
                 while (true)
                 {
                     var windowHandle = GetForegroundWindow();
@@ -105,7 +107,7 @@ namespace Grindr
                     {
                         WindowHandle = windowHandle;
                         Process = process;
-                        this.i.State.IsAttached = true;
+                        this.i.State.AttachState = Enums.AttachState.Detach;
                         this.i.Logger.AddLogEntry($"Attached to Wow process");
                         break;
                     }
@@ -118,7 +120,7 @@ namespace Grindr
         public void Detach()
         {
             this.i.Logger.AddLogEntry("Detached");
-            this.i.State.IsAttached = false;
+            this.i.State.AttachState = Enums.AttachState.Attach;
             this.Process = null;
             this.WindowHandle = null;
         }

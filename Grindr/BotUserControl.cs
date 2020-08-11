@@ -46,6 +46,7 @@ namespace Grindr
         {
             this.ModeComboBox.ItemsSource = Enum.GetValues(typeof(Mode));
             this.ModeComboBox.DataContext = this.i.State;
+            this.AttachButton.DataContext = this.i.State;
             this.ActionBindComboBox.ItemsSource = Enum.GetValues(typeof(Keys));
             this.loggingListBox.ItemsSource = this.i.Logger.Logs;
             ((INotifyCollectionChanged)loggingListBox.Items).CollectionChanged += LoggingCollectionChanged;
@@ -127,19 +128,20 @@ namespace Grindr
 
         private void AttachButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!this.i.State.IsAttached)
+            switch (this.i.State.AttachState)
             {
-                this.Attach();
-            }
-            else
-            {
-                this.Detach();
+                case AttachState.Attach:
+                    this.Attach();
+                    break;
+                case AttachState.Detach:
+                    this.Detach();
+                    break;
             }
         }
 
         private void Detach()
         {
-            this.i.State.IsAttached = false;
+            this.i.State.AttachState = AttachState.Attach;
         }
 
         private void AddNavigationNodeButton_Click(object sender, RoutedEventArgs e)
