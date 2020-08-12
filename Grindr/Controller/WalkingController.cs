@@ -115,10 +115,10 @@ namespace Grindr
             this.i.InputController.ReleaseKey(Keys.W);
         }
 
-        public void Walk(Coordinate target, bool isGrinding)
+        public void Walk(Coordinate target, bool isGrinding, bool walkStealthed = false)
         {
             this.i.Logger.AddLogEntry($"Walk to next waypoint at {this.i.Logger.GetLogMessageForCoordinate(target)} from {this.i.Logger.GetLogMessageForCoordinate(target)}");
-            this.i.WowActions.MountUpIfNeeded();
+            this.i.WowActions.MountUpIfNeeded(walkStealthed);
             this.Turn(target);
             this.Move(target, isGrinding);
         }

@@ -26,5 +26,6 @@ namespace Grindr
         public bool FastDungeonExit { get; set; }
         public Keys ActionHotKey { get; set; }
         public bool WaitForZoneChange { get; set; }
+        public bool WalkStealthed { get; set; }
     }
 }

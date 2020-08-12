@@ -26,3 +26,4 @@ C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\Grindr.exe
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\Grindr.pdb
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\BotUserControl.g.cs
 C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\BotUserControl.baml
+C:\Users\dbern\source\repos\Grindr\Grindr\obj\Release\Grindr.csprojAssemblyReference.cache

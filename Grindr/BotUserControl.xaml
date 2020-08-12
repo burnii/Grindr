@@ -97,6 +97,7 @@
                             <ComboBox SelectedValue="{Binding ActionHotKey}" x:Name="ActionBindComboBox" HorizontalAlignment="Left" Margin="78,127,0,0" VerticalAlignment="Top" Width="90" Height="25"/>
                             <CheckBox IsChecked="{Binding FastDungeonExit}" Content="Fast dungeon exit" HorizontalAlignment="Left" Margin="177,6,0,0" VerticalAlignment="Top"/>
                             <CheckBox IsChecked="{Binding WaitForZoneChange}" Content="WaitForZoneChange" HorizontalAlignment="Left" Margin="177,26,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding WalkStealthed}" Content="WalkStealthed" HorizontalAlignment="Left" Margin="177,46,0,0" VerticalAlignment="Top"/>
                         </Grid>
                     </GroupBox>
 
@@ -129,6 +130,11 @@
                         <TextBlock Margin="0,0,10,0" Text="{Binding PlayerName, StringFormat='PlayerName: \{0\}'}" ></TextBlock>
                         <TextBlock Margin="0,0,10,0" Text="{Binding PlayerIsInGroup, StringFormat='PlayerIsInGroup: \{0\}'}" ></TextBlock>
                         <TextBlock Margin="0,0,10,0" Text="{Binding DruidShapeshiftForm, StringFormat='DruidShapeshiftForm: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding Player1Health, StringFormat='Player1Health: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding Player2Health, StringFormat='Player2Health: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding Player3Health, StringFormat='Player3Health: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding Player4Health, StringFormat='Player4Health: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding IsStealthed, StringFormat='IsStealthed: \{0\}'}" ></TextBlock>
                     </WrapPanel>
                 </Grid>
             </TabItem>

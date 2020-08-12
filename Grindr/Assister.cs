@@ -28,7 +28,7 @@ namespace Grindr
 
                     if (this.i.Data.PlayerHasTarget && !this.i.Data.IsTargetDead)
                     {
-                        this.i.CombatController.Fight();
+                        this.i.CombatController.Fight(false, true);
                     }
                 }
             });

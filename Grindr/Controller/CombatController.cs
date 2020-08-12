@@ -92,7 +92,7 @@ namespace Grindr
             }
         }
 
-        public void Fight(bool turret = false)
+        public void Fight(bool turret = false, bool assist = false)
         {
             this.i.Logger.AddLogEntry($"Fight current target");
             if (this.i.Profile.Settings.ShouldUseBearForm)
@@ -104,8 +104,13 @@ namespace Grindr
 
             Task.Run(() =>
             {
-                while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.Data.IsTargetAttackingPlayer && this.i.State.IsRunning)
+                while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.State.IsRunning)
                 {
+                    if (!assist && !this.i.Data.IsTargetAttackingPlayer)
+                    {
+                        break;
+                    }
+
                     var current = DateTime.Now;
 
                     if (!turret || (current - start).TotalMilliseconds > 20000)
@@ -118,9 +123,13 @@ namespace Grindr
             });
 
            
-            while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.Data.IsTargetAttackingPlayer && this.i.State.IsRunning)
+            while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.State.IsRunning)
             {
-                
+                if (!assist && !this.i.Data.IsTargetAttackingPlayer)
+                {
+                    break;
+                }
+
                 //this.i.InputController.TapKey(Keys.D3);
                 this.i.InputController.TapKey(Keys.D2);
                 this.i.InputController.TapKey(Keys.D1);

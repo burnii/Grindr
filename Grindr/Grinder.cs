@@ -54,7 +54,7 @@ namespace Grindr
                 this.i.Logger.AddLogEntry("Grinder started");
                 var startIndex = 0;
 
-                if (this.i.Profile.Settings.StartFromSelectedNode)
+                if (this.i.Profile.Settings.StartFromSelectedNode && selectedIndex >= 0)
                 {
                     startIndex = selectedIndex;
                 }
@@ -89,12 +89,12 @@ namespace Grindr
 
                         if (currentNode.ZoneChange)
                         {
-                            wc.Walk(currentNode.Coordinates, false);
+                            wc.Walk(currentNode.Coordinates, false, currentNode.WalkStealthed);
                             wc.WalkUnitilZoneChange();
                         }
                         else
                         {
-                            wc.Walk(currentNode.Coordinates, this.i.Profile.Settings.AlwaysFight);
+                            wc.Walk(currentNode.Coordinates, this.i.Profile.Settings.AlwaysFight, currentNode.WalkStealthed);
                         }
 
                         if (currentNode.CombatNode)
@@ -131,7 +131,12 @@ namespace Grindr
                             this.i.WowActions.WaitForZoneChange();
                         }
 
-                        this.i.WowActions.SellItemsIfNeeded();
+                        this.i.WowActions.SellItemsIfNeeded(30, 90);
+
+                        if (i == this.i.Profile.NavigationNodes.Count - 1)
+                        {
+                            i = 0;
+                        }
                     }
                 }
 

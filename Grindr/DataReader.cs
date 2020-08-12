@@ -165,6 +165,11 @@ namespace Grindr
                                 this.i.Data.PlayerName = playerName;
                                 this.i.Data.PlayerIsInGroup = GetBoolPixelValue(bmp, x + 57, y, rgbValues);
                                 this.i.Data.DruidShapeshiftForm = (DruidShapeshiftForm)GetIntPixelValue(bmp, x + 60, y, rgbValues);
+                                this.i.Data.Party1Health = GetIntPixelValue(bmp, x + 63, y, rgbValues);
+                                this.i.Data.Party2Health = GetIntPixelValue(bmp, x + 66, y, rgbValues);
+                                this.i.Data.Party3Health = GetIntPixelValue(bmp, x + 69, y, rgbValues);
+                                this.i.Data.Party4Health = GetIntPixelValue(bmp, x + 72, y, rgbValues);
+                                this.i.Data.IsStealthed = GetBoolPixelValue(bmp, x + 75, y, rgbValues);
 
                                 bmp.UnlockBits(bmpData);
                                 Thread.Sleep(50);

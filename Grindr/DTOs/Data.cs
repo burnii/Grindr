@@ -314,5 +314,81 @@ namespace Grindr
                 OnPropertyChanged();
             }
         }
+
+        private int party1Health;
+        public int Party1Health
+        {
+            get
+            {
+                return party1Health;
+            }
+            set
+            {
+                party1Health = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        private int party2Health;
+        public int Party2Health
+        {
+            get
+            {
+                return party2Health;
+            }
+            set
+            {
+                party2Health = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        private int party3Health;
+        public int Party3Health
+        {
+            get
+            {
+                return party3Health;
+            }
+            set
+            {
+                party3Health = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        private int party4Health;
+        public int Party4Health
+        {
+            get
+            {
+                return party4Health;
+            }
+            set
+            {
+                party4Health = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        private bool isStealthed;
+        public bool IsStealthed
+        {
+            get
+            {
+                return isStealthed;
+            }
+            set
+            {
+                isStealthed = value;
+
+                OnPropertyChanged();
+            }
+        }
+
     }
 }

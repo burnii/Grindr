@@ -8,7 +8,7 @@ namespace Grindr
 {
     public interface IWalkingController
     {
-        void Walk(Coordinate target, bool isGrinding);
+        void Walk(Coordinate target, bool isGrinding, bool walkStealthed = false);
         void WalkUnitilZoneChange();
     }
 }

@@ -72,13 +72,13 @@ namespace Grindr
             }
         }
 
-        public void SellItemsIfNeeded()
+        public void SellItemsIfNeeded(int startSlots, int endSlots)
         {
-            if (this.i.Data.IsOutDoors && this.i.Data.FreeBagSlots < 30 && !this.i.Data.PlayerIsInCombat)
+            if (this.i.Data.IsOutDoors && this.i.Data.FreeBagSlots < startSlots && !this.i.Data.PlayerIsInCombat)
             {
                 this.CloseMap();
 
-                while (this.i.Data.IsOutDoors && this.i.Data.FreeBagSlots < 30 && this.i.State.IsRunning)
+                while (this.i.Data.IsOutDoors && this.i.Data.FreeBagSlots < startSlots && this.i.State.IsRunning)
                 {
                     while (!this.i.Data.IsMounted && this.i.State.IsRunning && this.i.State.IsRunning)
                     {
@@ -86,7 +86,7 @@ namespace Grindr
                         Thread.Sleep(5000);
                     }
 
-                    while (this.i.Data.IsMounted && this.i.Data.FreeBagSlots < 90 && this.i.State.IsRunning)
+                    while (this.i.Data.IsMounted && this.i.Data.FreeBagSlots < endSlots && this.i.State.IsRunning)
                     {
                         this.i.InputController.TapKey(Keys.D9);
                         Thread.Sleep(1000);
@@ -126,7 +126,7 @@ namespace Grindr
         {
             this.CloseMap();
             this.i.InputController.TapKey(Keys.F8);
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 2; i++)
             {
                 Thread.Sleep(200);
                 this.i.InputController.RightMouseClick(202, 258);
@@ -136,7 +136,7 @@ namespace Grindr
                 this.i.InputController.RightMouseClick(251, 253);
                 Thread.Sleep(100);
                 this.i.InputController.RightMouseClick(235, 225);
-                Thread.Sleep(2000);
+                Thread.Sleep(3000);
             }
             this.i.InputController.TapKey(Keys.F8);
             this.OpenMap();
@@ -146,10 +146,14 @@ namespace Grindr
         {
             var startZone = this.i.Data.PlayerZone;
 
+            this.CloseMap();
             while (startZone == this.i.Data.PlayerZone)
             {
+                this.SellItemsIfNeeded(90, 100);
+                this.Stealth();
                 Thread.Sleep(1000);
             }
+            Thread.Sleep(3000);
         }
 
         public void ResetInstances()
@@ -179,14 +183,27 @@ namespace Grindr
                 this.i.InputController.LeftMouseClick(298, 319);
                 Thread.Sleep(1000);
             }
-            
+
             this.i.InputController.TapKey(Keys.D5);
             this.OpenMap();
         }
 
-        public void MountUpIfNeeded()
+        public void Stealth()
         {
-            if (!this.i.Profile.Settings.ShouldUseTravelForm)
+            while (!this.i.Data.IsStealthed)
+            { 
+                this.i.InputController.TapKey(Keys.F5);
+                Thread.Sleep(1000);
+            }
+        }
+
+        public void MountUpIfNeeded(bool shouldStealth)
+        {
+            if (shouldStealth)
+            {
+                this.Stealth();
+            }
+            else if (!this.i.Profile.Settings.ShouldUseTravelForm)
             {
                 while (!this.i.Data.IsMounted && this.i.Data.IsOutDoors && this.i.Profile.Settings.ShouldUseMount && this.i.State.IsRunning)
                 {
