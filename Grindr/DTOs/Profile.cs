@@ -23,17 +23,6 @@ namespace Grindr.DTOs
             this.i = instance;
         }
 
-        public void UpdatePreviousNodeNextNode()
-        {
-            for (var i = 0; i < this.NavigationNodes.Count; i++)
-            {
-                var previousNode = this.TryToGetNodeAtIndex(i - 1);
-                var nextNode = this.TryToGetNodeAtIndex(i + 1);
-                this.NavigationNodes[i].PreviousNode = previousNode;
-                this.NavigationNodes[i].NextNode = nextNode;
-            }
-        }
-
         private NavigationNode TryToGetNodeAtIndex(int i)
         {
             if (this.i.Profile.NavigationNodes.Count >= (i + 1) && i >= 0)

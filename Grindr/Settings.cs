@@ -27,6 +27,9 @@ namespace Grindr
         public string Password { get; set; } = "Password";
         public bool ShouldUseMount { get; set; } = true;
         public bool AlwaysFight { get; set; } = false;
+        public bool ShouldUseTravelForm { get; set; } = false;
+        public bool ShouldUseBearForm { get; set; } = false;
+        public bool StartFromSelectedNode { get; set; } = false;
 
     }
 }

@@ -238,7 +238,6 @@ namespace Grindr
                 var profile = JsonConvert.DeserializeObject<Profile>(serializedProfile);
 
                 this.i.Profile.NavigationNodes = profile.NavigationNodes;
-                this.i.Profile.UpdatePreviousNodeNextNode();
                 this.i.Profile.Settings = profile.Settings;
                 this.i.Profile.Settings.Username = profile.Settings.Username;
 
@@ -275,54 +274,50 @@ namespace Grindr
             {
                 while (this.i.State.IsRunning)
                 {
-                    this.i.InputController.TapKey(Keys.Tab);
-                    this.i.InputController.TapKey(Keys.D1);
-                    Thread.Sleep(1500);
-                    this.HealIfNeeded();
-                    if (this.i.Data.PlayerHasTarget == false)
+                    while (this.i.State.IsRunning && !this.i.Data.PlayerHasTarget)
                     {
-                        this.i.InputController.TapKey(Keys.Tab);
+                        this.HealIfNeeded();
+                        this.i.InputController.TapKey(Keys.D4);
+                        Thread.Sleep(200);
                     }
-                    this.i.InputController.TapKey(Keys.D3);
-                    Thread.Sleep(1500);
-                    if (this.i.Data.PlayerHasTarget == false)
+
+                    while (this.i.State.IsRunning && this.i.Data.PlayerHasTarget && !this.i.Data.IsTargetDead)
                     {
-                        this.i.InputController.TapKey(Keys.Tab);
+                        this.HealIfNeeded();
+                        this.i.InputController.TapKey(Keys.D3);
+                        this.i.InputController.TapKey(Keys.D1);
+                        Thread.Sleep(200);
                     }
-                    this.i.InputController.TapKey(Keys.D4);
-                    this.i.InputController.TapKey(Keys.D3);
-                    Thread.Sleep(1500);
-                    this.i.InputController.TapKey(Keys.D5);
-                    Thread.Sleep(1500);
-                    this.i.InputController.TapKey(Keys.D6);
-                    Thread.Sleep(1500);
+                    //this.i.InputController.TapKey(Keys.Tab);
+                    //this.i.InputController.TapKey(Keys.D1);
+                    //Thread.Sleep(1500);
+                    //this.HealIfNeeded();
+                    //if (this.i.Data.PlayerHasTarget == false)
+                    //{
+                    //    this.i.InputController.TapKey(Keys.Tab);
+                    //}
+                    //this.i.InputController.TapKey(Keys.D3);
+                    //Thread.Sleep(1500);
+                    //if (this.i.Data.PlayerHasTarget == false)
+                    //{
+                    //    this.i.InputController.TapKey(Keys.Tab);
+                    //}
+                    //this.i.InputController.TapKey(Keys.D4);
+                    //this.i.InputController.TapKey(Keys.D3);
+                    //Thread.Sleep(1500);
+                    //this.i.InputController.TapKey(Keys.D5);
+                    //Thread.Sleep(1500);
+                    //this.i.InputController.TapKey(Keys.D6);
+                    //Thread.Sleep(1500);
                 }
+
+                
             });
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            this.i.InputController.TapKey(Keys.I);
-            Thread.Sleep(100);
-            this.i.InputController.LeftMouseClick(58, 264);
-            Thread.Sleep(100);
-            this.i.InputController.LeftMouseClick(185, 157);
-            Thread.Sleep(100);
-            this.i.InputController.LeftMouseClick(167, 319);
-            Thread.Sleep(100);
-            this.i.InputController.TapKey(Keys.I);
-            this.i.InputController.TapKey(Keys.J);
-            this.i.InputController.TapKey(Keys.K);
-            Thread.Sleep(100);
-            this.i.InputController.LeftMouseClick(164, 300);
-            Thread.Sleep(100);
-            this.i.InputController.LeftMouseClick(298, 319);
-
         }
 
         private void HealIfNeeded()
         {
-            while (this.i.Data.PlayerHealth < 70 || this.i.Data.PlayerHealth > 500)
+            while (this.i.Data.PlayerHealth < 70 || this.i.Data.PlayerHealth > 500 && this.i.State.IsRunning)
             {
                 this.i.InputController.TapKey(Keys.D2);
                 Thread.Sleep(1000);

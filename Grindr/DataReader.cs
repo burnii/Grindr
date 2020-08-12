@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Grindr.Enums;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -162,9 +163,11 @@ namespace Grindr
                                 playerName += GetStringPixelValues(bmp, y, rgbValues, x + 51/*, x + 90, x + 100, x + 110*/);
                                 playerName += GetStringPixelValues(bmp, y, rgbValues, x + 54/*, x + 90, x + 100, x + 110*/);
                                 this.i.Data.PlayerName = playerName;
+                                this.i.Data.PlayerIsInGroup = GetBoolPixelValue(bmp, x + 57, y, rgbValues);
+                                this.i.Data.DruidShapeshiftForm = (DruidShapeshiftForm)GetIntPixelValue(bmp, x + 60, y, rgbValues);
 
                                 bmp.UnlockBits(bmpData);
-                                Thread.Sleep(100);
+                                Thread.Sleep(50);
                             }
                             this.i.Logger.AddLogEntry("Data reading stopped");
                         }

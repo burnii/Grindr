@@ -1,5 +1,6 @@
 ﻿
 
+using Grindr.Enums;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -284,5 +285,34 @@ namespace Grindr
             }
         }
 
+        private bool playerIsInGroup;
+        public bool PlayerIsInGroup
+        {
+            get
+            {
+                return playerIsInGroup;
+            }
+            set
+            {
+                playerIsInGroup = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        private DruidShapeshiftForm druidShapeshiftForm;
+        public DruidShapeshiftForm DruidShapeshiftForm
+        {
+            get
+            {
+                return druidShapeshiftForm;
+            }
+            set
+            {
+                druidShapeshiftForm = value;
+
+                OnPropertyChanged();
+            }
+        }
     }
 }

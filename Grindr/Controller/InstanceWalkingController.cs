@@ -91,7 +91,7 @@ namespace Grindr
 
                 Thread.Sleep(100);
             }
-            while (targetDistance > distanceToStart);
+            while (targetDistance > distanceToStart && this.i.State.IsRunning);
             Console.WriteLine(targetDistance);
             Console.WriteLine(distanceToStart);
             this.i.Logger.AddLogEntry($"Moved to {this.i.Logger.GetLogMessageForCoordinate(target)}");
@@ -105,7 +105,7 @@ namespace Grindr
         {
             this.i.Logger.AddLogEntry($"Walk to next waypoint at {this.i.Logger.GetLogMessageForCoordinate(target)} from {this.i.Logger.GetLogMessageForCoordinate(target)}");
 
-            while (this.i.Data.IsMapOpened == false || this.i.Data.PlayerXCoordinate == int.MaxValue || this.i.Data.PlayerYCoordinate == int.MaxValue)
+            while (this.i.Data.IsMapOpened == false || this.i.Data.PlayerXCoordinate == int.MaxValue || this.i.Data.PlayerYCoordinate == int.MaxValue && this.i.State.IsRunning)
             {
                 this.i.WowActions.OpenMap();
             }
@@ -121,7 +121,7 @@ namespace Grindr
             var startZone = this.i.Data.PlayerZone;
             this.i.InputController.PressKey(Keys.W);
 
-            while (startZone == this.i.Data.PlayerZone)
+            while (startZone == this.i.Data.PlayerZone && this.i.State.IsRunning)
             {
                 if (this.i.State.IsRunning == false)
                 {

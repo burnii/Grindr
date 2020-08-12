@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuickGraph;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,16 +44,16 @@ namespace Grindr
         {
             this.i.Logger.AddLogEntry($"Start fighting until out of combat");
 
-            while (this.i.Data.PlayerIsInCombat)
+            while (this.i.Data.PlayerIsInCombat && this.i.State.IsRunning)
             {
                 this.i.WowActions.CloseMap();
                 this.SearchForAttackingTarget();
                 this.Fight(turret);
-                TryToLootEnemy();
-                Thread.Sleep(1000);
+                //TryToLootEnemy();
+                //Thread.Sleep(1000);
             }
             this.i.Logger.AddLogEntry($"Out of combat");
-            TryToLootEnemy();
+            //TryToLootEnemy();
             this.i.WowActions.OpenMap();
         }
 
@@ -66,8 +67,6 @@ namespace Grindr
             if (this.i.Data.IsTargetDead == true)
             {
                 this.i.InputController.TapKey(Keys.Y);
-                this.i.InputController.TapKey(Keys.Y);
-                this.i.InputController.TapKey(Keys.Y);
             }
 
             Thread.Sleep(1000);
@@ -80,11 +79,11 @@ namespace Grindr
 
         public void SearchForAttackingTarget()
         {
-            while (this.i.Data.PlayerIsInCombat)
+            while (this.i.Data.PlayerIsInCombat && this.i.State.IsRunning)
             {
                 this.TryToFindTarget();
 
-                if (this.i.Data.PlayerHasTarget && this.i.Data.IsTargetAttackingPlayer)
+                if (this.i.Data.PlayerHasTarget && this.i.Data.IsTargetAttackingPlayer && !this.i.Data.IsTargetDead)
                 {
                     break;
                 }
@@ -96,19 +95,38 @@ namespace Grindr
         public void Fight(bool turret = false)
         {
             this.i.Logger.AddLogEntry($"Fight current target");
+            if (this.i.Profile.Settings.ShouldUseBearForm)
+            { 
+                this.i.WowActions.Shapeshift(Enums.DruidShapeshiftForm.Bear);
+            }
 
-            while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.Data.IsTargetAttackingPlayer)
+            var start = DateTime.Now;
+
+            Task.Run(() =>
             {
-                if (!turret)
+                while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.Data.IsTargetAttackingPlayer && this.i.State.IsRunning)
                 {
-                    this.i.InputController.TapKey(Keys.Y);
+                    var current = DateTime.Now;
+
+                    if (!turret || (current - start).TotalMilliseconds > 20000)
+                    {
+                        this.i.InputController.TapKey(Keys.Y);
+                    }
+
+                    Thread.Sleep(2000);
                 }
-                this.i.InputController.TapKey(Keys.D3);
+            });
+
+           
+            while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.Data.IsTargetAttackingPlayer && this.i.State.IsRunning)
+            {
+                
+                //this.i.InputController.TapKey(Keys.D3);
                 this.i.InputController.TapKey(Keys.D2);
                 this.i.InputController.TapKey(Keys.D1);
-                this.i.InputController.TapKey(Keys.D4);
-                this.i.InputController.TapKey(Keys.D5);
-                Thread.Sleep(1000);
+                //this.i.InputController.TapKey(Keys.D4);
+                //this.i.InputController.TapKey(Keys.D5);
+                Thread.Sleep(100);
             }
 
             this.i.Logger.AddLogEntry($"Killed target");

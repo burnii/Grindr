@@ -107,7 +107,7 @@ namespace Grindr
                 distanceDelta = Math.Abs(distanceToStart - targetDistance);
                 Thread.Sleep(100);
             }
-            while (targetDistance > distanceToStart - 0.001);
+            while (targetDistance > distanceToStart && this.i.State.IsRunning);
             this.i.Logger.AddLogEntry($"Moved to {this.i.Logger.GetLogMessageForCoordinate(target)}");
 
             this.i.InputController.ReleaseKey(Keys.W);
@@ -129,7 +129,7 @@ namespace Grindr
             var startZone = this.i.Data.PlayerZone;
             this.i.InputController.PressKey(Keys.W);
 
-            while (startZone == this.i.Data.PlayerZone)
+            while (startZone == this.i.Data.PlayerZone && this.i.State.IsRunning)
             {
                 if (this.i.State.IsRunning == false)
                 {
@@ -142,7 +142,6 @@ namespace Grindr
             this.i.InputController.ReleaseKey(Keys.W);
 
             this.i.Logger.AddLogEntry($"Arrived at zone '{this.i.Data.PlayerZone}'");
-
         }
     }
 }

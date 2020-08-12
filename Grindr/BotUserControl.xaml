@@ -15,36 +15,44 @@
         <ComboBox SelectedValue="{Binding Mode}" x:Name="ModeComboBox" HorizontalAlignment="Left" Margin="364,15,0,0" VerticalAlignment="Top" Width="109" Height="23" SelectionChanged="ModeComboBox_SelectionChanged"/>
         <Button x:Name="runButton" Content="Start" HorizontalAlignment="Left" Margin="478,2,0,0" VerticalAlignment="Top" Width="145" Click="RunButton_Click" Height="46"/>
 
-        <Button Content="Button" HorizontalAlignment="Left" Margin="-306,108,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-
         <TabControl x:Name="grindTabControl" HorizontalAlignment="Left" Height="253" Margin="2,58,0,0" VerticalAlignment="Top" Width="621">
             <TabItem Header="General">
-                <Grid x:Name="GeneralGrid">
-                    
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid x:Name="GeneralGrid">
 
-                    <TextBox x:Name="WowPathTextBox" HorizontalAlignment="Left" Height="22" Margin="213,10,0,0" TextWrapping="Wrap" Text="{Binding WowExePath}" VerticalAlignment="Top" Width="385" PreviewMouseDoubleClick="WowPath_MouseDown"/>
-                    <TextBox x:Name="profileNameTextBox" HorizontalAlignment="Left" Height="22" Margin="9,9,0,0" TextWrapping="Wrap" Text="Profilename" VerticalAlignment="Top" Width="138"/>
-                    <Button x:Name="exportProfileButton" Content="Save" HorizontalAlignment="Left" Margin="9,36,0,0" VerticalAlignment="Top" Width="66" Height="22" Click="SaveProfileButton_Click"/>
-                    <Button x:Name="importProfileButton" Content="Load" HorizontalAlignment="Left" Margin="81,36,0,0" VerticalAlignment="Top" Width="66" Height="22" Click="ImportProfileButton_Click"/>
-                    <GroupBox Header="Login" HorizontalAlignment="Left" Height="81" Margin="18,69,0,0" VerticalAlignment="Top" Width="190">
-                        <Grid>
-                            <TextBox x:Name="userNameTextBox" HorizontalAlignment="Left" Height="22" Margin="4,4,0,0" TextWrapping="Wrap" Text="{Binding Username}" VerticalAlignment="Top" Width="138"/>
-                            <TextBox x:Name="passwordTextBox" HorizontalAlignment="Left" Height="22" Margin="4,31,0,0" TextWrapping="Wrap" Text="{Binding Password}" VerticalAlignment="Top" Width="138"/>
 
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Header="Combat" HorizontalAlignment="Left" Height="81" Margin="408,69,0,0" VerticalAlignment="Top" Width="190">
-                        <Grid>
-                            <CheckBox IsChecked="{Binding AlwaysFight}" Content="Always fight" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Header="Movement" HorizontalAlignment="Left" Height="81" Margin="213,69,0,0" VerticalAlignment="Top" Width="190">
-                        <Grid>
-                            <CheckBox IsChecked="{Binding ShouldUseMount}" Content="UseMount" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+                        <TextBox x:Name="WowPathTextBox" HorizontalAlignment="Left" Height="22" Margin="213,10,0,0" TextWrapping="Wrap" Text="{Binding WowExePath}" VerticalAlignment="Top" Width="385" PreviewMouseDoubleClick="WowPath_MouseDown"/>
+                        <TextBox x:Name="profileNameTextBox" HorizontalAlignment="Left" Height="22" Margin="9,9,0,0" TextWrapping="Wrap" Text="Profilename" VerticalAlignment="Top" Width="138"/>
+                        <Button x:Name="exportProfileButton" Content="Save" HorizontalAlignment="Left" Margin="9,36,0,0" VerticalAlignment="Top" Width="66" Height="22" Click="SaveProfileButton_Click"/>
+                        <Button x:Name="importProfileButton" Content="Load" HorizontalAlignment="Left" Margin="81,36,0,0" VerticalAlignment="Top" Width="66" Height="22" Click="ImportProfileButton_Click"/>
+                        <GroupBox Header="Login" HorizontalAlignment="Left" Height="81" Margin="18,69,0,0" VerticalAlignment="Top" Width="190">
+                            <Grid>
+                                <TextBox x:Name="userNameTextBox" HorizontalAlignment="Left" Height="22" Margin="4,4,0,0" TextWrapping="Wrap" Text="{Binding Username}" VerticalAlignment="Top" Width="138"/>
+                                <TextBox x:Name="passwordTextBox" HorizontalAlignment="Left" Height="22" Margin="4,31,0,0" TextWrapping="Wrap" Text="{Binding Password}" VerticalAlignment="Top" Width="138"/>
 
-                        </Grid>
-                    </GroupBox>
-                </Grid>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="Combat" HorizontalAlignment="Left" Height="81" Margin="408,69,0,0" VerticalAlignment="Top" Width="190">
+                            <Grid>
+                                <CheckBox IsChecked="{Binding AlwaysFight}" Content="Always fight" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                                <CheckBox IsChecked="{Binding ShouldUseBearForm}" Content="Use Bear Form" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="Movement" HorizontalAlignment="Left" Height="81" Margin="213,69,0,0" VerticalAlignment="Top" Width="190">
+                            <Grid>
+                                <CheckBox IsChecked="{Binding ShouldUseMount}" Content="UseMount" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+                                <CheckBox IsChecked="{Binding ShouldUseTravelForm}" Content="UseTravelForm" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0"/>
+
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="Combat" HorizontalAlignment="Left" Height="81" Margin="18,153,0,-9" VerticalAlignment="Top" Width="190">
+                            <Grid>
+                                <CheckBox IsChecked="{Binding StartFromSelectedNode}" Content="StartFromSelectedNode" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </ScrollViewer>
+                
             </TabItem>
             <TabItem Header="Navigation">
                 <Grid Margin="0,0,1,0">
@@ -87,6 +95,8 @@
                             <CheckBox IsChecked="{Binding Reset}" Content="Reset" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top"/>
                             <CheckBox IsChecked="{Binding Action}" Content="Action" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top"/>
                             <ComboBox SelectedValue="{Binding ActionHotKey}" x:Name="ActionBindComboBox" HorizontalAlignment="Left" Margin="78,127,0,0" VerticalAlignment="Top" Width="90" Height="25"/>
+                            <CheckBox IsChecked="{Binding FastDungeonExit}" Content="Fast dungeon exit" HorizontalAlignment="Left" Margin="177,6,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding WaitForZoneChange}" Content="WaitForZoneChange" HorizontalAlignment="Left" Margin="177,26,0,0" VerticalAlignment="Top"/>
                         </Grid>
                     </GroupBox>
 
@@ -117,6 +127,8 @@
                         <TextBlock Margin="0,0,10,0" Text="{Binding IsMounted, StringFormat='IsMounted: \{0\}'}" ></TextBlock>
                         <TextBlock Margin="0,0,10,0" Text="{Binding PlayerHealth, StringFormat='PlayerHealth: \{0\}'}" ></TextBlock>
                         <TextBlock Margin="0,0,10,0" Text="{Binding PlayerName, StringFormat='PlayerName: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding PlayerIsInGroup, StringFormat='PlayerIsInGroup: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding DruidShapeshiftForm, StringFormat='DruidShapeshiftForm: \{0\}'}" ></TextBlock>
                     </WrapPanel>
                 </Grid>
             </TabItem>

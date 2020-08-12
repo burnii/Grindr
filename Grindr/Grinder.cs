@@ -1,10 +1,12 @@
-﻿using System;
+﻿using QuickGraph;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,24 +28,22 @@ namespace Grindr
 
         internal void MarkLastNavigationNodeAsZoneChangeNode(string playerZone)
         {
-            var lastNodeFromZone = this.GetLastNavigationNodeFromZone(this.i.Profile.NavigationNodes.Last(), playerZone);
+            var lastNodeFromZone = this.GetLastNavigationNodeFromZone(playerZone);
             lastNodeFromZone.ZoneChange = true;
         }
 
-        private NavigationNode GetLastNavigationNodeFromZone(NavigationNode node, string zone)
+        private NavigationNode GetLastNavigationNodeFromZone(string zone)
         {
-            if (node.Zone == zone)
+            for (var i = 0; i < this.i.Profile.NavigationNodes.Count; i++)
             {
-                return node;
+                var node = this.i.Profile.NavigationNodes[i];
+                if (node.Zone == zone && this.i.Profile.NavigationNodes[i + 1].Zone != zone)
+                {
+                    return node;
+                }
             }
-            else if (node.PreviousNode == null)
-            {
-                return null;
-            }
-            else
-            {
-                return this.GetLastNavigationNodeFromZone(node.PreviousNode, zone);
-            }
+
+            return null;
         }
 
         public Task StartJourney()
@@ -52,92 +52,92 @@ namespace Grindr
             return Task.Run(() =>
             {
                 this.i.Logger.AddLogEntry("Grinder started");
+                var startIndex = 0;
 
-                var startNode = this.i.Profile.NavigationNodes[selectedIndex];
-                var currentNode = startNode;
+                if (this.i.Profile.Settings.StartFromSelectedNode)
+                {
+                    startIndex = selectedIndex;
+                }
 
                 while (this.i.State.IsRunning)
                 {
-
-                    if (this.i.State.IsRunning == false)
+                    for (int i = startIndex; i < this.i.Profile.NavigationNodes.Count; i++)
                     {
-                        break;
-                    }
+                        var currentNode = this.i.Profile.NavigationNodes[i];
+                        if (this.i.State.IsRunning == false)
+                        {
+                            break;
+                        }
 
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.i.NavigationCoordinatesListBox.SelectedIndex = this.i.Profile.NavigationNodes.IndexOf(currentNode); }));
+                        Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.i.NavigationCoordinatesListBox.SelectedIndex = this.i.Profile.NavigationNodes.IndexOf(currentNode); }));
 
-                    IWalkingController wc;
+                        IWalkingController wc;
 
-                    if (this.i.Data.IsInInstance)
-                    {
-                        wc = this.i.InstanceWalkingController;
-                    }
-                    else
-                    {
-                        wc = this.i.WalkingController;
-                    }
+                        if (currentNode.Reset)
+                        {
+                            this.i.WowActions.ResetInstances();
+                        }
 
-                    if (currentNode.ZoneChange)
-                    {
-                        wc.Walk(currentNode.Coordinates, false);
-                        wc.WalkUnitilZoneChange();
-                    }
-                    else
-                    {
-                        wc.Walk(currentNode.Coordinates, this.i.Profile.Settings.AlwaysFight);
-                    }
+                        if (this.i.Data.IsInInstance)
+                        {
+                            wc = this.i.InstanceWalkingController;
+                        }
+                        else
+                        {
+                            wc = this.i.WalkingController;
+                        }
 
-                    if (currentNode.CombatNode)
-                    {
-                        this.i.CombatController.FightWhileInCombat();
-                    }
-                    else if (currentNode.Turret)
-                    {
-                        this.i.CombatController.FightWhileInCombat(true);
-                    }
+                        if (currentNode.ZoneChange)
+                        {
+                            wc.Walk(currentNode.Coordinates, false);
+                            wc.WalkUnitilZoneChange();
+                        }
+                        else
+                        {
+                            wc.Walk(currentNode.Coordinates, this.i.Profile.Settings.AlwaysFight);
+                        }
 
-                    if (currentNode.Unstuck)
-                    {
-                        this.i.WowActions.Unstuck();
+                        if (currentNode.CombatNode)
+                        {
+                            this.i.CombatController.FightWhileInCombat();
+                        }
+                        else if (currentNode.Turret)
+                        {
+                            this.i.CombatController.FightWhileInCombat(true);
+                        }
+
+                        if (currentNode.Unstuck)
+                        {
+                            this.i.WowActions.Unstuck();
+                        }
+
+                        if (currentNode.Loot)
+                        {
+                            this.i.WowActions.TryToLootWithMouseClick();
+                        }
+
+                        if (currentNode.Action)
+                        {
+                            this.i.InputController.TapKey(currentNode.ActionHotKey);
+                        }
+
+                        if (currentNode.FastDungeonExit)
+                        {
+                            this.i.WowActions.FastExitDungeon();
+                        }
+
+                        if (currentNode.WaitForZoneChange)
+                        {
+                            this.i.WowActions.WaitForZoneChange();
+                        }
+
+                        this.i.WowActions.SellItemsIfNeeded();
                     }
-
-                    if (currentNode.Loot)
-                    {
-                        this.i.WowActions.TryToLootWithMouseClick();
-                    }
-
-                    if (currentNode.Reset)
-                    {
-                        this.i.WowActions.ResetInstances();
-                    }
-
-                    if(currentNode.Action)
-                    {
-                        this.i.InputController.TapKey(currentNode.ActionHotKey);
-                    }
-
-                    this.i.WowActions.SellItemsIfNeeded();
-
-                    currentNode = GetNextNode(startNode, currentNode);
                 }
 
                 this.i.Logger.AddLogEntry("Grinder stopped");
 
             });
-        }
-
-        private static NavigationNode GetNextNode(NavigationNode startNode, NavigationNode currentNode)
-        {
-            if (currentNode.NextNode != null)
-            {
-                currentNode = currentNode.NextNode;
-            }
-            else
-            {
-                currentNode = startNode;
-            }
-
-            return currentNode;
         }
 
         public NavigationNode AddNavigationNode(Coordinate coordinate, string zone)
@@ -150,13 +150,7 @@ namespace Grindr
             {
                 Coordinates = coordinate,
                 Zone = zone,
-                PreviousNode = previousNode
             };
-
-            if (previousNode != null)
-            { 
-                previousNode.NextNode = node;
-            }
 
             this.i.Logger.AddLogEntry($"Recorded a navigationnode at {this.i.Logger.GetLogMessageForCoordinate(coordinate)}");
 
