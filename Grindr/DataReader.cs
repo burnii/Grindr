@@ -170,6 +170,7 @@ namespace Grindr
                                 this.i.Data.Party3Health = GetIntPixelValue(bmp, x + 69, y, rgbValues);
                                 this.i.Data.Party4Health = GetIntPixelValue(bmp, x + 72, y, rgbValues);
                                 this.i.Data.IsStealthed = GetBoolPixelValue(bmp, x + 75, y, rgbValues);
+                                this.i.Data.Gold = GetIntPixelValue(bmp, x + 78, y, rgbValues);
 
                                 bmp.UnlockBits(bmpData);
                                 Thread.Sleep(50);

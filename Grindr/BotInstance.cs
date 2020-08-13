@@ -28,6 +28,7 @@ namespace Grindr
         public ListBox NavigationCoordinatesListBox { get; set; }
         public Profile Profile { get; set; }
         public State State { get; set; }
+        public Statistics Statistics { get; set; }
 
         public BotInstance(ListBox lb, int botIndex)
         {
@@ -47,6 +48,7 @@ namespace Grindr
             this.WowActions = new WowActions(this);
             this.NavigationCoordinatesListBox = lb;
             this.State = new State();
+            this.Statistics = new Statistics(this);
         }
     }
 }

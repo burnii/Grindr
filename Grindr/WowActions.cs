@@ -130,13 +130,13 @@ namespace Grindr
             {
                 Thread.Sleep(200);
                 this.i.InputController.RightMouseClick(202, 258);
-                Thread.Sleep(100);
-                this.i.InputController.RightMouseClick(190, 242);
-                Thread.Sleep(100);
-                this.i.InputController.RightMouseClick(251, 253);
-                Thread.Sleep(100);
-                this.i.InputController.RightMouseClick(235, 225);
-                Thread.Sleep(3000);
+                //Thread.Sleep(100);
+                //this.i.InputController.RightMouseClick(190, 242);
+                //Thread.Sleep(100);
+                //this.i.InputController.RightMouseClick(251, 253);
+                //Thread.Sleep(100);
+                //this.i.InputController.RightMouseClick(235, 225);
+                //Thread.Sleep(3000);
             }
             this.i.InputController.TapKey(Keys.F8);
             this.OpenMap();

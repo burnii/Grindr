@@ -390,5 +390,20 @@ namespace Grindr
             }
         }
 
+        private int gold;
+        public int Gold
+        {
+            get
+            {
+                return gold;
+            }
+            set
+            {
+                gold = value;
+
+                OnPropertyChanged();
+            }
+        }
+
     }
 }

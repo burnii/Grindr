@@ -58,6 +58,7 @@ namespace Grindr
             this.GeneralGrid.DataContext = this.i.Profile.Settings;
             this.ActionBindComboBox.ItemsSource = Enum.GetValues(typeof(Keys));
             this.loggingListBox.ItemsSource = this.i.Logger.Logs;
+            this.Statistics.DataContext = this.i.Statistics;
 
             this.coordinatesListBox.DataContext = this.i.Profile.NavigationNodes;
             this.coordinatesListBox.SetBinding(ItemsControl.ItemsSourceProperty, new System.Windows.Data.Binding());
@@ -193,6 +194,7 @@ namespace Grindr
                 this.i.State.IsRunning = true;
                 this.runButton.Content = "Stop";
 
+                this.i.Statistics.Track();
                 switch (this.i.State.Mode)
                 {
                     case Mode.Grind:
