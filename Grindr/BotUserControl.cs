@@ -85,6 +85,22 @@ namespace Grindr
             await this.i.Initializer.Attach();
 
             this.SetupBots();
+
+            if (File.Exists(@".\Profiles\hdbnew.json"))
+            {
+                var serializedProfile = File.ReadAllText(@".\Profiles\hdbnew.json");
+
+                this.i.Profile.NavigationNodes.Clear();
+
+                var profile = JsonConvert.DeserializeObject<Profile>(serializedProfile);
+
+                this.i.Profile.NavigationNodes = profile.NavigationNodes;
+                this.i.Profile.Settings = profile.Settings;
+                this.i.Profile.Settings.Username = profile.Settings.Username;
+
+                this.SetDataBidnings();
+            }
+
         }
 
         private void SetupBots()
@@ -206,6 +222,19 @@ namespace Grindr
                     case Mode.Turret:
                         await this.RunTurretTask();
                         break;
+                    case Mode.Healer:
+                        await this.i.Healer.Start();
+                        break;
+                    case Mode.AntiAfk:
+                        await Task.Run(() =>
+                        {
+                            while (this.i.State.IsRunning)
+                            {
+                                this.i.InputController.TapKey(Keys.Space);
+                                Thread.Sleep(300000);
+                            }
+                        });
+                        break;
                 }
 
                 this.runButton.Content = "Start";
@@ -276,20 +305,37 @@ namespace Grindr
             {
                 while (this.i.State.IsRunning)
                 {
-                    while (this.i.State.IsRunning && !this.i.Data.PlayerHasTarget)
-                    {
-                        this.HealIfNeeded();
-                        this.i.InputController.TapKey(Keys.D4);
-                        Thread.Sleep(200);
-                    }
+                    this.i.InputController.TapKey(Keys.Tab);
+                    Console.WriteLine("TAB pressed");
 
+                    //while (this.i.State.IsRunning && !this.i.Data.PlayerHasTarget)
+                    //{
+                    //    this.HealIfNeeded();
+                    //    this.i.InputController.TapKey(Keys.D4);
+                    //    Thread.Sleep(200);
+                    //}
+                    Thread.Sleep(200);
                     while (this.i.State.IsRunning && this.i.Data.PlayerHasTarget && !this.i.Data.IsTargetDead)
                     {
                         this.HealIfNeeded();
+                        if (this.i.Profile.Settings.ShouldUseBearForm)
+                        {
+                            this.i.WowActions.Shapeshift(DruidShapeshiftForm.Bear);
+
+                            if (this.i.Data.PlayerHealth < 50)
+                            {
+                                this.i.InputController.TapKey(Keys.D4);
+                            }
+                            this.i.InputController.TapKey(Keys.D6);
+                            this.i.InputController.TapKey(Keys.D5);
+                        }
+
+
                         this.i.InputController.TapKey(Keys.D3);
                         this.i.InputController.TapKey(Keys.D1);
                         Thread.Sleep(200);
                     }
+
                     //this.i.InputController.TapKey(Keys.Tab);
                     //this.i.InputController.TapKey(Keys.D1);
                     //Thread.Sleep(1500);
@@ -313,13 +359,13 @@ namespace Grindr
                     //Thread.Sleep(1500);
                 }
 
-                
+
             });
         }
 
         private void HealIfNeeded()
         {
-            while (this.i.Data.PlayerHealth < 70 || this.i.Data.PlayerHealth > 500 && this.i.State.IsRunning)
+            while (this.i.Data.PlayerHealth < 60 || this.i.Data.PlayerHealth > 500 && this.i.State.IsRunning)
             {
                 this.i.InputController.TapKey(Keys.D2);
                 Thread.Sleep(1000);
@@ -333,13 +379,26 @@ namespace Grindr
 
         private void WowPath_MouseDown(object sender, RoutedEventArgs e)
         {
-            using (var dialog = new FolderBrowserDialog())
+            using (var dialog = new OpenFileDialog())
             {
                 var result = dialog.ShowDialog();
 
                 if (result == DialogResult.OK)
                 {
-                    this.WowPathTextBox.Text = dialog.SelectedPath;
+                    this.i.Profile.Settings.WowExePath = dialog.FileName;
+                }
+            }
+        }
+
+        private void VendorProfile_MouseDown(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new OpenFileDialog())
+            {
+                var result = dialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    this.i.Profile.Settings.VendorProfilePath = dialog.FileName;
                 }
             }
         }

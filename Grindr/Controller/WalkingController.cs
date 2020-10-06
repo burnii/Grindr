@@ -44,7 +44,7 @@ namespace Grindr
             {
 
             }
-            Console.WriteLine(stop);
+
             this.i.Logger.AddLogEntry($"Start turning to {this.i.Logger.GetLogMessageForCoordinate(target)}");
             //Thread.Sleep(turnTime);
             this.i.Logger.AddLogEntry($"Turned to {this.i.Logger.GetLogMessageForCoordinate(target)}");
@@ -80,6 +80,36 @@ namespace Grindr
 
             var distanceDelta = distanceToStart - targetDistance;
             this.i.Logger.AddLogEntry($"Start moving to {this.i.Logger.GetLogMessageForCoordinate(target)}");
+
+            var moving = true;
+            var isStuck = false;
+
+            Task.Run(() =>
+            {
+                var sameCoordinateCounter = 0;
+                var lastXCoordinate = this.i.Data.PlayerXCoordinate;
+                var lastYCoordinate = this.i.Data.PlayerYCoordinate;
+                while (moving && !isStuck)
+                {
+                    if (lastXCoordinate == this.i.Data.PlayerXCoordinate && lastYCoordinate == this.i.Data.PlayerYCoordinate)
+                    {
+                        sameCoordinateCounter++;
+                    }
+                    else
+                    {
+                        sameCoordinateCounter = 0;
+                        lastXCoordinate = this.i.Data.PlayerXCoordinate;
+                        lastYCoordinate = this.i.Data.PlayerYCoordinate;
+                    }
+
+                    if (sameCoordinateCounter >= 5)
+                    {
+                        isStuck = true;
+                    }
+                    Thread.Sleep(1000);
+                }
+            });
+
             do
             {
                 this.i.InputController.PressKey(Keys.W);
@@ -87,6 +117,19 @@ namespace Grindr
                 if (this.i.State.IsRunning == false)
                 {
                     break;
+                }
+
+                if (isStuck)
+                {
+                    this.i.Logger.AddLogEntry("Stuck detected!!");
+                    this.Turn(startCoordinate);
+                    this.Move(startCoordinate, false);
+                    this.Turn(target);
+                    this.i.InputController.PressKey(Keys.W);
+                    this.i.InputController.PressKey(Keys.W);
+                    this.i.InputController.PressKey(Keys.W);
+                    isStuck = false;
+                    this.i.Logger.AddLogEntry("Unstuck finished");
                 }
 
                 if (isGrinding)
@@ -117,6 +160,7 @@ namespace Grindr
 
         public void Walk(Coordinate target, bool isGrinding, bool walkStealthed = false)
         {
+            this.i.WowActions.CloseMap();
             this.i.Logger.AddLogEntry($"Walk to next waypoint at {this.i.Logger.GetLogMessageForCoordinate(target)} from {this.i.Logger.GetLogMessageForCoordinate(target)}");
             this.i.WowActions.MountUpIfNeeded(walkStealthed);
             this.Turn(target);
@@ -142,6 +186,18 @@ namespace Grindr
             this.i.InputController.ReleaseKey(Keys.W);
 
             this.i.Logger.AddLogEntry($"Arrived at zone '{this.i.Data.PlayerZone}'");
+        }
+
+        public void WalkOutOfInstance()
+        {
+            this.i.InputController.PressKey(Keys.W);
+
+            while (this.i.State.IsRunning && this.i.Data.IsInInstance)
+            {
+                Thread.Sleep(300);
+            }
+
+            this.i.InputController.ReleaseKey(Keys.W);
         }
     }
 }

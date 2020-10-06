@@ -14,7 +14,7 @@ namespace Grindr
 
         public void AddLogEntry(string entry)
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() => Logs.Add($"{DateTime.Now} - {entry}")));
+            //Application.Current.Dispatcher.BeginInvoke(new Action(() => Logs.Add($"{DateTime.Now} - {entry}")));
         }
 
         public string GetLogMessageForCoordinate(Coordinate coordinate)

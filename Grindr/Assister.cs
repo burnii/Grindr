@@ -22,8 +22,8 @@ namespace Grindr
             {
                 while (this.i.State.IsRunning)
                 {
-                    this.i.InputController.TapKey(Keys.D4);
-                    this.i.InputController.TapKey(Keys.D5);
+                    this.i.InputController.TapKey(Keys.F3);
+                    this.i.InputController.TapKey(Keys.F4);
                     Thread.Sleep(500);
 
                     if (this.i.Data.PlayerHasTarget && !this.i.Data.IsTargetDead)

@@ -49,6 +49,36 @@ namespace Grindr
             }
         }
 
+        private int runs = 0;
+        public int Runs
+        {
+            get
+            {
+                return runs;
+            }
+            set
+            {
+                runs = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        private double goldPerRun = 0;
+        public double GoldPerRun
+        {
+            get
+            {
+                return goldPerRun;
+            }
+            set
+            {
+                goldPerRun = value;
+
+                OnPropertyChanged();
+            }
+        }
+
         private double goldPerHour = 0;
         public double GoldPerHour
         {
@@ -77,6 +107,8 @@ namespace Grindr
                 var startGold = this.i.Data.Gold;
                 var startTime = DateTime.Now;
                 this.GoldPerHour = 0;
+                this.runs = 0;
+                this.GoldPerRun = 0;
 
                 var runtimeInMin = 0.0;
 
@@ -87,7 +119,12 @@ namespace Grindr
                     runtimeInMin = (DateTime.Now - startTime).TotalMinutes;
                     if (this.EarnedGold > 0 && runtimeInMin > 0)
                     {
-                        this.GoldPerHour = Math.Round((double)this.EarnedGold / (double)runtimeInMin, 2);
+                        this.GoldPerHour = Math.Round((double)(this.EarnedGold / (double)runtimeInMin) * 60, 2);
+                    }
+
+                    if (this.EarnedGold > 0 && runs > 0)
+                    {
+                        this.GoldPerRun = Math.Round((double)this.EarnedGold / (double)runs, 2);
                     }
 
                     this.Runtime = $"{diff.Hours}:{diff.Minutes}:{diff.Seconds}";

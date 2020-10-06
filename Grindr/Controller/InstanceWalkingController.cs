@@ -24,6 +24,7 @@ namespace Grindr
 
         private void Turn(Coordinate target)
         {
+            this.i.WowActions.OpenMap();
             var direction1 = CalculationHelper.GetAngle(this.i.Data.PlayerCoordinate.X, this.i.Data.PlayerCoordinate.Y - 5, target.X, target.Y, this.i.Data.PlayerCoordinate.X, this.i.Data.PlayerCoordinate.Y);
             var diff = this.DetermineShortestTurnAngle(direction1, out Keys bestTurnKey);
 
@@ -55,6 +56,7 @@ namespace Grindr
 
         private void Move(Coordinate target, bool isGrinding)
         {
+            this.i.WowActions.OpenMap();
             this.i.InputController.PressKey(Keys.W);
             this.i.InputController.PressKey(Keys.W);
             this.i.InputController.PressKey(Keys.W);
@@ -103,11 +105,15 @@ namespace Grindr
 
                 if (isStuck)
                 {
+                    this.i.Logger.AddLogEntry("Stuck detected!!");
                     this.Turn(startCoordinate);
                     this.Move(startCoordinate, false);
                     this.Turn(target);
                     this.i.InputController.PressKey(Keys.W);
+                    this.i.InputController.PressKey(Keys.W);
+                    this.i.InputController.PressKey(Keys.W);
                     isStuck = false;
+                    this.i.Logger.AddLogEntry("Unstuck finished");
                 }
 
                 if (isGrinding)
@@ -131,8 +137,7 @@ namespace Grindr
             }
             while (targetDistance > distanceToStart && this.i.State.IsRunning);
             moving = false;
-            Console.WriteLine(targetDistance);
-            Console.WriteLine(distanceToStart);
+
             this.i.Logger.AddLogEntry($"Moved to {this.i.Logger.GetLogMessageForCoordinate(target)}");
 
             this.i.InputController.ReleaseKey(Keys.W);
@@ -144,7 +149,7 @@ namespace Grindr
         {
             this.i.Logger.AddLogEntry($"Walk to next waypoint at {this.i.Logger.GetLogMessageForCoordinate(target)} from {this.i.Logger.GetLogMessageForCoordinate(target)}");
 
-            while (this.i.Data.IsMapOpened == false || this.i.Data.PlayerXCoordinate == int.MaxValue || this.i.Data.PlayerYCoordinate == int.MaxValue && this.i.State.IsRunning)
+            while ((this.i.Data.IsMapOpened == false || this.i.Data.PlayerXCoordinate == int.MaxValue || this.i.Data.PlayerYCoordinate == int.MaxValue) && this.i.State.IsRunning)
             {
                 this.i.WowActions.OpenMap();
             }
@@ -174,6 +179,18 @@ namespace Grindr
 
             this.i.Logger.AddLogEntry($"Arrived at zone '{this.i.Data.PlayerZone}'");
 
+        }
+
+        public void WalkOutOfInstance()
+        {
+            this.i.InputController.PressKey(Keys.W);
+
+            while (this.i.State.IsRunning && this.i.Data.IsInInstance)
+            {
+                Thread.Sleep(300);
+            }
+
+            this.i.InputController.ReleaseKey(Keys.W);
         }
     }
 }

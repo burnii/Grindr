@@ -1,8 +1,11 @@
-﻿using QuickGraph;
+﻿using Grindr.DTOs;
+using Newtonsoft.Json;
+using QuickGraph;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -12,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Brush = System.Windows.Media.Brush;
 
@@ -46,6 +50,138 @@ namespace Grindr
             return null;
         }
 
+        private void RunProfile(Profile profile, int startIndex, bool shouldRepeat = true)
+        {
+            for (int i = startIndex; i < profile.NavigationNodes.Count; i++)
+            {
+                var currentNode = profile.NavigationNodes[i];
+                if (this.i.State.IsRunning == false)
+                {
+                    break;
+                }
+
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.i.NavigationCoordinatesListBox.SelectedIndex = profile.NavigationNodes.IndexOf(currentNode); }));
+
+                IWalkingController wc;
+
+                if (currentNode.Reset)
+                {
+                    this.i.WowActions.ResetInstances();
+                }
+
+                if (currentNode.Action)
+                {
+                    this.i.InputController.TapKey(currentNode.ActionHotKey);
+                }
+
+                if (this.i.Data.IsInInstance)
+                {
+                    wc = this.i.InstanceWalkingController;
+                }
+                else
+                {
+                    wc = this.i.WalkingController;
+                }
+
+                if (currentNode.VendorNode)
+                {
+                    var serializedProfile = File.ReadAllText(this.i.Profile.Settings.VendorProfilePath);
+
+                    var vendorProfile = JsonConvert.DeserializeObject<Profile>(serializedProfile);
+                    this.RunProfile(vendorProfile, 0, false);
+                }
+                else if (currentNode.WalkNode)
+                {
+                    this.i.WowActions.CloseMap();
+                    this.i.InputController.PressKey(Keys.W);
+                    Thread.Sleep(2000);
+                    this.i.InputController.ReleaseKey(Keys.W);
+                }
+                else if (currentNode.TurnNode)
+                {
+                    this.i.InputController.PressKey(System.Windows.Forms.Keys.D);
+                    Thread.Sleep(1000);
+                    this.i.InputController.ReleaseKey(System.Windows.Forms.Keys.D);
+                    wc.WalkUnitilZoneChange();
+                    Thread.Sleep(1000);
+                }
+                else if (currentNode.ZoneChange)
+                {
+                    wc.Walk(currentNode.Coordinates, false, currentNode.WalkStealthed);
+                    wc.WalkOutOfInstance();
+                    Thread.Sleep(2000);
+                }
+                else
+                {
+                    wc.Walk(currentNode.Coordinates, profile.Settings.AlwaysFight, currentNode.WalkStealthed);
+                }
+
+                if (currentNode.CombatNode)
+                {
+                    this.i.CombatController.FightWhileInCombat();
+                }
+                else if (currentNode.Turret)
+                {
+                    this.i.CombatController.FightWhileInCombat(true);
+                }
+
+                if (currentNode.Unstuck)
+                {
+                    this.i.WowActions.Unstuck();
+                }
+
+                if (currentNode.Loot)
+                {
+                    this.i.WowActions.TryToLootWithMouseClick();
+                }
+
+                if (currentNode.FastDungeonExit)
+                {
+                    this.i.WowActions.FastExitDungeon();
+                }
+
+                if (currentNode.WaitForZoneChange)
+                {
+                    this.i.WowActions.WaitForZoneChange();
+                }
+
+                if (currentNode.SellNode)
+                {
+                    this.i.WowActions.SellItems(100);
+                }
+
+                if(currentNode.SleepNode)
+                {
+                    Thread.Sleep(5000);
+                }
+
+                this.i.WowActions.SellItemsIfNeeded(30, 90);
+
+                if (shouldRepeat && i == profile.NavigationNodes.Count - 1)
+                {
+                    this.i.Statistics.Runs++;
+                    i = 0;
+                }
+            }
+        }
+
+        public Task UnstuckTask()
+        {
+            return Task.Run(() =>
+            {
+                while (this.i.State.IsRunning)
+                {
+                    var coordinate1 = this.i.Data.PlayerCoordinate;
+                    Thread.Sleep(30000);
+                    if (coordinate1.Equals(this.i.Data.PlayerCoordinate))
+                    {
+                        this.i.WowActions.CloseMap();
+                        this.i.WowActions.OpenMap();
+                    }
+                }
+            });
+        }
+
         public Task StartJourney()
         {
             var selectedIndex = this.i.NavigationCoordinatesListBox.SelectedIndex;
@@ -59,85 +195,22 @@ namespace Grindr
                     startIndex = selectedIndex;
                 }
 
+                //Task.Run(() => {
+                //    var startTime = DateTime.Now;
+                //    while (this.i.State.IsRunning)
+                //    {
+                //        if ((DateTime.Now - startTime).TotalMinutes > 2)
+                //        {
+                //            this.i.WowActions.FastExitDungeon();
+                //        }
+
+                //        Thread.Sleep(2000);
+                //    }
+                //});
+
                 while (this.i.State.IsRunning)
                 {
-                    for (int i = startIndex; i < this.i.Profile.NavigationNodes.Count; i++)
-                    {
-                        var currentNode = this.i.Profile.NavigationNodes[i];
-                        if (this.i.State.IsRunning == false)
-                        {
-                            break;
-                        }
-
-                        Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.i.NavigationCoordinatesListBox.SelectedIndex = this.i.Profile.NavigationNodes.IndexOf(currentNode); }));
-
-                        IWalkingController wc;
-
-                        if (currentNode.Reset)
-                        {
-                            this.i.WowActions.ResetInstances();
-                        }
-
-                        if (this.i.Data.IsInInstance)
-                        {
-                            wc = this.i.InstanceWalkingController;
-                        }
-                        else
-                        {
-                            wc = this.i.WalkingController;
-                        }
-
-                        if (currentNode.ZoneChange)
-                        {
-                            wc.Walk(currentNode.Coordinates, false, currentNode.WalkStealthed);
-                            wc.WalkUnitilZoneChange();
-                        }
-                        else
-                        {
-                            wc.Walk(currentNode.Coordinates, this.i.Profile.Settings.AlwaysFight, currentNode.WalkStealthed);
-                        }
-
-                        if (currentNode.CombatNode)
-                        {
-                            this.i.CombatController.FightWhileInCombat();
-                        }
-                        else if (currentNode.Turret)
-                        {
-                            this.i.CombatController.FightWhileInCombat(true);
-                        }
-
-                        if (currentNode.Unstuck)
-                        {
-                            this.i.WowActions.Unstuck();
-                        }
-
-                        if (currentNode.Loot)
-                        {
-                            this.i.WowActions.TryToLootWithMouseClick();
-                        }
-
-                        if (currentNode.Action)
-                        {
-                            this.i.InputController.TapKey(currentNode.ActionHotKey);
-                        }
-
-                        if (currentNode.FastDungeonExit)
-                        {
-                            this.i.WowActions.FastExitDungeon();
-                        }
-
-                        if (currentNode.WaitForZoneChange)
-                        {
-                            this.i.WowActions.WaitForZoneChange();
-                        }
-
-                        this.i.WowActions.SellItemsIfNeeded(30, 90);
-
-                        if (i == this.i.Profile.NavigationNodes.Count - 1)
-                        {
-                            i = 0;
-                        }
-                    }
+                    this.RunProfile(this.i.Profile, startIndex);
                 }
 
                 this.i.Logger.AddLogEntry("Grinder stopped");

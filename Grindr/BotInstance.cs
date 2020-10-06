@@ -20,6 +20,7 @@ namespace Grindr
         public Data Data { get; set; }
         public Assister Assister { get; set; }
         public Grinder Grinder { get; set; }
+        public Healer Healer { get; set; }
         public DataReader DataReader { get; set; }
         public Initializer Initializer { get; set; }
         public Logger Logger { get; set; }
@@ -49,6 +50,7 @@ namespace Grindr
             this.NavigationCoordinatesListBox = lb;
             this.State = new State();
             this.Statistics = new Statistics(this);
+            this.Healer = new Healer(this);
         }
     }
 }

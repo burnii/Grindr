@@ -83,6 +83,7 @@
     <Compile Include="Enums\AttachState.cs" />
     <Compile Include="Enums\BotMode.cs" />
     <Compile Include="Enums\DruidShapeshiftForm.cs" />
+    <Compile Include="Healer.cs" />
     <Compile Include="Helper\CalculationHelper.cs" />
     <Compile Include="Controller\CombatController.cs" />
     <Compile Include="Initializer.cs" />

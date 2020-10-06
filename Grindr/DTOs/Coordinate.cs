@@ -16,5 +16,10 @@ namespace Grindr
             this.X = x;
             this.Y = y;
         }
+
+        public bool Equals(Coordinate coordinate)
+        {
+            return this.X == coordinate.X && this.Y == coordinate.Y;
+        }
     }
 }

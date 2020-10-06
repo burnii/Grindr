@@ -27,9 +27,18 @@ namespace Grindr
         public string Password { get; set; } = "Password";
         public bool ShouldUseMount { get; set; } = true;
         public bool AlwaysFight { get; set; } = false;
-        public bool ShouldUseTravelForm { get; set; } = false;
-        public bool ShouldUseBearForm { get; set; } = false;
+        private bool shouldUseTravelForm = false;
+        public bool ShouldUseTravelForm { get { return shouldUseTravelForm; } set { this.shouldUseTravelForm = value; this.OnPropertyChanged(); } }
+        private bool shouldUseBearForm = false;
+        public bool ShouldUseBearForm { get { return shouldUseBearForm; } set { this.shouldUseBearForm = value; this.OnPropertyChanged(); } }
         public bool StartFromSelectedNode { get; set; } = false;
+        private string vendorProfilePath = @"C:\Users\dbern\source\repos\Grindr\Grindr\bin\Debug\Profiles\grimgrimi.json";
+        public string VendorProfilePath { get { return vendorProfilePath; } set { this.vendorProfilePath = value; this.OnPropertyChanged(); } }
+        private bool shouldVendorItems = false;
+        public bool ShouldVendorItems { get { return shouldVendorItems; } set { this.shouldVendorItems = value; this.OnPropertyChanged(); } }
+        public bool ShouldUseVendorMount { get; set; } = false;
+        private bool shouldUseCatFormMovement = false;
+        public bool ShouldUseCatFormMovement { get { return shouldUseCatFormMovement; } set { this.shouldUseCatFormMovement = value; this.OnPropertyChanged(); } }
 
     }
 }

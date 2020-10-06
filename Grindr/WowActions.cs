@@ -23,6 +23,12 @@ namespace Grindr
         {
             while (this.i.Data.IsPlayerDead == false && this.i.State.IsRunning)
             {
+                this.CloseMap();
+
+                if (this.i.Data.PlayerIsInCombat)
+                {
+                    this.i.CombatController.FightWhileInCombat();
+                }
                 this.i.Logger.AddLogEntry("Unstuck player to return to dungeon entrance");
                 this.i.InputController.LeftMouseClick(474, 451);
                 Thread.Sleep(1000);
@@ -56,10 +62,10 @@ namespace Grindr
 
         public void OpenMap()
         {
-            while (this.i.Data.IsMapOpened == false)
+            while (this.i.Data.IsMapOpened == false || this.i.Data.PlayerXCoordinate > 100000 || this.i.Data.PlayerYCoordinate > 10000)
             {
                 this.i.InputController.TapKey(Keys.M);
-                Thread.Sleep(200);
+                Thread.Sleep(1000);
             }
         }
 
@@ -68,36 +74,62 @@ namespace Grindr
             while (this.i.Data.IsMapOpened == true)
             {
                 this.i.InputController.TapKey(Keys.M);
-                Thread.Sleep(400);
+                Thread.Sleep(1000);
             }
         }
 
         public void SellItemsIfNeeded(int startSlots, int endSlots)
         {
-            if (this.i.Data.IsOutDoors && this.i.Data.FreeBagSlots < startSlots && !this.i.Data.PlayerIsInCombat)
+            if (this.i.Profile.Settings.ShouldVendorItems && this.i.Data.IsOutDoors && this.i.Data.FreeBagSlots < startSlots && !this.i.Data.PlayerIsInCombat)
             {
                 this.CloseMap();
 
                 while (this.i.Data.IsOutDoors && this.i.Data.FreeBagSlots < startSlots && this.i.State.IsRunning)
                 {
-                    while (!this.i.Data.IsMounted && this.i.State.IsRunning && this.i.State.IsRunning)
+                    while (!this.i.Data.IsMounted && this.i.State.IsRunning)
                     {
                         this.i.InputController.TapKey(Keys.D8);
                         Thread.Sleep(5000);
                     }
 
-                    while (this.i.Data.IsMounted && this.i.Data.FreeBagSlots < endSlots && this.i.State.IsRunning)
+                    this.i.InputController.TapKey(Keys.D9);
+
+                    while (!this.i.Data.PlayerHasTarget)
                     {
                         this.i.InputController.TapKey(Keys.D9);
                         Thread.Sleep(1000);
-                        this.i.InputController.TapKey(Keys.Y);
+                    }
+
+                    this.i.InputController.TapKey(Keys.Y);
+                    this.i.InputController.TapKey(Keys.Y);
+                    this.i.InputController.TapKey(Keys.Y);
+
+                    while (this.i.Data.IsMounted && this.i.Data.FreeBagSlots < endSlots && this.i.State.IsRunning && this.i.Data.IsOutDoors)
+                    {
+                        if (!this.i.Data.PlayerHasTarget)
+                        {
+                            this.i.InputController.TapKey(Keys.D9);
+                            Thread.Sleep(1000);
+                            this.i.InputController.TapKey(Keys.Y);
+                        }
+
                         Thread.Sleep(1000);
                         this.i.InputController.TapKey(Keys.D0);
                     }
 
                 }
+            }
+        }
 
-                this.OpenMap();
+        public void SellItems(int endSlots)
+        {
+            while (this.i.Data.FreeBagSlots < endSlots && this.i.State.IsRunning)
+            {
+                this.i.InputController.TapKey(Keys.D9);
+                Thread.Sleep(1000);
+                this.i.InputController.TapKey(Keys.Y);
+                Thread.Sleep(1000);
+                this.i.InputController.TapKey(Keys.D0);
             }
         }
 
@@ -112,6 +144,9 @@ namespace Grindr
                     break;
                 case DruidShapeshiftForm.Travel:
                     hotkey = Keys.U;
+                    break;
+                case DruidShapeshiftForm.Cat:
+                    hotkey = Keys.F2;
                     break;
             }
 
@@ -129,7 +164,7 @@ namespace Grindr
             for (int i = 0; i < 2; i++)
             {
                 Thread.Sleep(200);
-                this.i.InputController.RightMouseClick(202, 258);
+                this.i.InputController.LeftMouseClick(202, 258);
                 //Thread.Sleep(100);
                 //this.i.InputController.RightMouseClick(190, 242);
                 //Thread.Sleep(100);
@@ -154,6 +189,10 @@ namespace Grindr
                 Thread.Sleep(1000);
             }
             Thread.Sleep(3000);
+            while (this.i.Data.IsInInstance)
+            {
+                Thread.Sleep(1000);
+            }
         }
 
         public void ResetInstances()
@@ -163,25 +202,35 @@ namespace Grindr
 
         public void FastExitDungeon()
         {
+            var attempts = 0;
+
             this.CloseMap();
             while (!this.i.Data.PlayerIsInGroup && this.i.State.IsRunning)
             {
+                if (attempts > 4)
+                {
+                    this.i.InputController.TapKey(Keys.F6);
+                    Thread.Sleep(5000);
+                    attempts = 0;
+                }
+
                 this.i.InputController.TapKey(Keys.I);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 this.i.InputController.LeftMouseClick(58, 264);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 this.i.InputController.LeftMouseClick(185, 157);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 this.i.InputController.LeftMouseClick(167, 319);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 this.i.InputController.TapKey(Keys.I);
                 this.i.InputController.TapKey(Keys.J);
                 this.i.InputController.TapKey(Keys.K);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 this.i.InputController.LeftMouseClick(164, 300);
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 this.i.InputController.LeftMouseClick(298, 319);
                 Thread.Sleep(1000);
+                attempts++;
             }
 
             this.i.InputController.TapKey(Keys.D5);
@@ -190,10 +239,12 @@ namespace Grindr
 
         public void Stealth()
         {
-            while (!this.i.Data.IsStealthed)
-            { 
+            var i = 0;
+            while (this.i.State.IsRunning && !this.i.Data.IsStealthed && !this.i.Data.PlayerIsInCombat && i < 2)
+            {
                 this.i.InputController.TapKey(Keys.F5);
                 Thread.Sleep(1000);
+                i++;
             }
         }
 
@@ -203,17 +254,21 @@ namespace Grindr
             {
                 this.Stealth();
             }
-            else if (!this.i.Profile.Settings.ShouldUseTravelForm)
+            else if (this.i.Profile.Settings.ShouldUseCatFormMovement)
+            {
+                this.i.WowActions.Shapeshift(DruidShapeshiftForm.Cat);
+            }
+            else if (this.i.Profile.Settings.ShouldUseTravelForm)
+            {
+                this.i.WowActions.Shapeshift(DruidShapeshiftForm.Travel);
+            }
+            else
             {
                 while (!this.i.Data.IsMounted && this.i.Data.IsOutDoors && this.i.Profile.Settings.ShouldUseMount && this.i.State.IsRunning)
                 {
                     this.i.InputController.TapKey(Keys.U);
                     Thread.Sleep(5000);
                 }
-            }
-            else
-            {
-                this.i.WowActions.Shapeshift(DruidShapeshiftForm.Travel);
             }
         }
     }

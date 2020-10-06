@@ -27,5 +27,10 @@ namespace Grindr
         public Keys ActionHotKey { get; set; }
         public bool WaitForZoneChange { get; set; }
         public bool WalkStealthed { get; set; }
+        public bool TurnNode { get; set; }
+        public bool WalkNode { get; set; }
+        public bool VendorNode { get; set; }
+        public bool SellNode { get; set; }
+        public bool SleepNode { get; set; }
     }
 }

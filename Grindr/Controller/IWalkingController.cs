@@ -10,5 +10,6 @@ namespace Grindr
     {
         void Walk(Coordinate target, bool isGrinding, bool walkStealthed = false);
         void WalkUnitilZoneChange();
+        void WalkOutOfInstance();
     }
 }

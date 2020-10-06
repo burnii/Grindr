@@ -10,6 +10,8 @@ namespace Grindr.Enums
     { 
         Grind,
         Assist,
-        Turret
+        Turret,
+        Healer,
+        AntiAfk
     }
 }

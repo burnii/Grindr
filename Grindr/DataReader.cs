@@ -93,15 +93,15 @@ namespace Grindr
                             {
                                 Point p = Cursor.Position;
 
-                                if (rect.Contains(p))
-                                {
-                                    var x1 = Cursor.Position.X - rect.Left;
-                                    var y1 = Cursor.Position.Y - rect.Top;
-                                    Console.WriteLine(x1);
-                                    Console.WriteLine(y1);
-                                    //new InputController(Initializer.WindowHandle.Value).MouseClick(x1, y1);
+                                //if (rect.Contains(p))
+                                //{
+                                //    var x1 = Cursor.Position.X - rect.Left;
+                                //    var y1 = Cursor.Position.Y - rect.Top;
+                                //    Console.WriteLine(x1);
+                                //    Console.WriteLine(y1);
+                                //    //new InputController(Initializer.WindowHandle.Value).MouseClick(x1, y1);
 
-                                }
+                                //}
 
                                 GetWindowRect(this.i.Initializer.WindowHandle.Value, out srcRect);
                                 recorder.RecordScreen(
@@ -131,10 +131,10 @@ namespace Grindr
 
                                     //if ((Data.IsMapOpened == false) && State.IsRunning)
                                     //{
-                                        
-                                    //        inputController.TapKey(Keys.M);
-                                    //        Thread.Sleep(1000);
-                                        
+
+                                    //    inputController.TapKey(Keys.M);
+                                    //    Thread.Sleep(1000);
+
                                     //}
                                     var playerCoordinate = GetPixelCoordinate(rgbValues, bmpData, out var angle);
 

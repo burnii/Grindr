@@ -6,53 +6,70 @@
         xmlns:local="clr-namespace:Grindr"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Height="313" Width="625">
+        Height="397" Width="625">
 
-    <Grid>
+    <Grid Margin="0,0,0,-81">
         <Button x:Name="launchButton" Content="Launch" HorizontalAlignment="Left" Margin="2,3,0,0" VerticalAlignment="Top" Width="55" Click="LaunchButton_Click" Height="43"/>
         <Button x:Name="AttachButton" Content="{Binding AttachState}" HorizontalAlignment="Left" Margin="62,3,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="AttachButton_Click"/>
 
         <ComboBox SelectedValue="{Binding Mode}" x:Name="ModeComboBox" HorizontalAlignment="Left" Margin="364,15,0,0" VerticalAlignment="Top" Width="109" Height="23" SelectionChanged="ModeComboBox_SelectionChanged"/>
         <Button x:Name="runButton" Content="Start" HorizontalAlignment="Left" Margin="478,2,0,0" VerticalAlignment="Top" Width="145" Click="RunButton_Click" Height="46"/>
 
-        <TabControl x:Name="grindTabControl" HorizontalAlignment="Left" Height="253" Margin="2,58,0,0" VerticalAlignment="Top" Width="621">
+        <TabControl x:Name="grindTabControl" HorizontalAlignment="Left" Height="336" Margin="2,58,0,0" VerticalAlignment="Top" Width="621">
             <TabItem Header="General">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid x:Name="GeneralGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="98*"/>
+                            <ColumnDefinition Width="517*"/>
+                        </Grid.ColumnDefinitions>
 
 
-                        <TextBox x:Name="WowPathTextBox" HorizontalAlignment="Left" Height="22" Margin="213,10,0,0" TextWrapping="Wrap" Text="{Binding WowExePath}" VerticalAlignment="Top" Width="385" PreviewMouseDoubleClick="WowPath_MouseDown"/>
-                        <TextBox x:Name="profileNameTextBox" HorizontalAlignment="Left" Height="22" Margin="9,9,0,0" TextWrapping="Wrap" Text="Profilename" VerticalAlignment="Top" Width="138"/>
+                        <TextBox x:Name="WowPathTextBox" HorizontalAlignment="Left" Height="22" Margin="115,10,0,0" TextWrapping="Wrap" Text="{Binding WowExePath}" VerticalAlignment="Top" Width="385" PreviewMouseDoubleClick="WowPath_MouseDown" Grid.Column="1"/>
+                        <TextBox x:Name="profileNameTextBox" HorizontalAlignment="Left" Height="22" Margin="9,9,0,0" TextWrapping="Wrap" Text="Profilename" VerticalAlignment="Top" Width="138" Grid.ColumnSpan="2"/>
                         <Button x:Name="exportProfileButton" Content="Save" HorizontalAlignment="Left" Margin="9,36,0,0" VerticalAlignment="Top" Width="66" Height="22" Click="SaveProfileButton_Click"/>
-                        <Button x:Name="importProfileButton" Content="Load" HorizontalAlignment="Left" Margin="81,36,0,0" VerticalAlignment="Top" Width="66" Height="22" Click="ImportProfileButton_Click"/>
-                        <GroupBox Header="Login" HorizontalAlignment="Left" Height="81" Margin="18,69,0,0" VerticalAlignment="Top" Width="190">
+                        <Button x:Name="importProfileButton" Content="Load" HorizontalAlignment="Left" Margin="81,36,0,0" VerticalAlignment="Top" Width="66" Height="22" Click="ImportProfileButton_Click" Grid.ColumnSpan="2"/>
+                        <GroupBox Header="Login" HorizontalAlignment="Left" Height="81" Margin="18,69,0,0" VerticalAlignment="Top" Width="190" Grid.ColumnSpan="2">
                             <Grid>
                                 <TextBox x:Name="userNameTextBox" HorizontalAlignment="Left" Height="22" Margin="4,4,0,0" TextWrapping="Wrap" Text="{Binding Username}" VerticalAlignment="Top" Width="138"/>
                                 <TextBox x:Name="passwordTextBox" HorizontalAlignment="Left" Height="22" Margin="4,31,0,0" TextWrapping="Wrap" Text="{Binding Password}" VerticalAlignment="Top" Width="138"/>
 
                             </Grid>
                         </GroupBox>
-                        <GroupBox Header="Combat" HorizontalAlignment="Left" Height="81" Margin="408,69,0,0" VerticalAlignment="Top" Width="190">
+                        <GroupBox Header="Combat" HorizontalAlignment="Left" Height="101" Margin="310,69,0,0" VerticalAlignment="Top" Width="190" Grid.Column="1">
                             <Grid>
                                 <CheckBox IsChecked="{Binding AlwaysFight}" Content="Always fight" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                                 <CheckBox IsChecked="{Binding ShouldUseBearForm}" Content="Use Bear Form" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                                <CheckBox IsChecked="{Binding ShouldUseCatFormCombat}" Content="Use Cat Form" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
-                        <GroupBox Header="Movement" HorizontalAlignment="Left" Height="81" Margin="213,69,0,0" VerticalAlignment="Top" Width="190">
+                        <GroupBox Header="Movement" HorizontalAlignment="Left" Height="101" Margin="115,69,0,0" VerticalAlignment="Top" Width="190" Grid.Column="1">
                             <Grid>
                                 <CheckBox IsChecked="{Binding ShouldUseMount}" Content="UseMount" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
                                 <CheckBox IsChecked="{Binding ShouldUseTravelForm}" Content="UseTravelForm" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0"/>
+                                <CheckBox IsChecked="{Binding ShouldUseCatFormMovement}" Content="Use Cat Form" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0"/>
 
                             </Grid>
                         </GroupBox>
-                        <GroupBox Header="Combat" HorizontalAlignment="Left" Height="81" Margin="18,153,0,-9" VerticalAlignment="Top" Width="190">
+                        <GroupBox Header="Vendor" HorizontalAlignment="Left" Height="101" Margin="115,175,0,0" VerticalAlignment="Top" Width="385" Grid.Column="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="31*"/>
+                                    <ColumnDefinition Width="147*"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox IsChecked="{Binding ShouldVendorItems}" Content="Vendor Items" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,36,0,0" Grid.ColumnSpan="2"/>
+                                <TextBox x:Name="VendorProfileTextBox" HorizontalAlignment="Left" Height="22" Margin="0,10,0,0" TextWrapping="Wrap" Text="{Binding VendorProfilePath}" VerticalAlignment="Top" Width="363" PreviewMouseDoubleClick="VendorProfile_MouseDown" Grid.ColumnSpan="2"/>
+                                <CheckBox IsChecked="{Binding ShouldUseVendorMount}" Content="Use Vendor Mount" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,56,0,0"/>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="Combat" HorizontalAlignment="Left" Height="81" Margin="18,153,0,-9" VerticalAlignment="Top" Width="190" Grid.ColumnSpan="2">
                             <Grid>
                                 <CheckBox IsChecked="{Binding StartFromSelectedNode}" Content="StartFromSelectedNode" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                             </Grid>
                         </GroupBox>
                     </Grid>
                 </ScrollViewer>
-                
+
             </TabItem>
             <TabItem Header="Navigation">
                 <Grid Margin="0,0,1,0">
@@ -98,6 +115,11 @@
                             <CheckBox IsChecked="{Binding FastDungeonExit}" Content="Fast dungeon exit" HorizontalAlignment="Left" Margin="177,6,0,0" VerticalAlignment="Top"/>
                             <CheckBox IsChecked="{Binding WaitForZoneChange}" Content="WaitForZoneChange" HorizontalAlignment="Left" Margin="177,26,0,0" VerticalAlignment="Top"/>
                             <CheckBox IsChecked="{Binding WalkStealthed}" Content="WalkStealthed" HorizontalAlignment="Left" Margin="177,46,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding TurnNode}" Content="TurnNode" HorizontalAlignment="Left" Margin="177,66,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding WalkNode}" Content="WalkNode" HorizontalAlignment="Left" Margin="177,86,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding VendorNode}" Content="VendorNode" HorizontalAlignment="Left" Margin="177,106,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding SellNode}" Content="SellNode" HorizontalAlignment="Left" Margin="177,126,0,0" VerticalAlignment="Top"/>
+                            <CheckBox IsChecked="{Binding SleepNode}" Content="SleepNode" HorizontalAlignment="Left" Margin="177,146,0,0" VerticalAlignment="Top"/>
                         </Grid>
                     </GroupBox>
 
@@ -130,10 +152,10 @@
                         <TextBlock Margin="0,0,10,0" Text="{Binding PlayerName, StringFormat='PlayerName: \{0\}'}" ></TextBlock>
                         <TextBlock Margin="0,0,10,0" Text="{Binding PlayerIsInGroup, StringFormat='PlayerIsInGroup: \{0\}'}" ></TextBlock>
                         <TextBlock Margin="0,0,10,0" Text="{Binding DruidShapeshiftForm, StringFormat='DruidShapeshiftForm: \{0\}'}" ></TextBlock>
-                        <TextBlock Margin="0,0,10,0" Text="{Binding Player1Health, StringFormat='Player1Health: \{0\}'}" ></TextBlock>
-                        <TextBlock Margin="0,0,10,0" Text="{Binding Player2Health, StringFormat='Player2Health: \{0\}'}" ></TextBlock>
-                        <TextBlock Margin="0,0,10,0" Text="{Binding Player3Health, StringFormat='Player3Health: \{0\}'}" ></TextBlock>
-                        <TextBlock Margin="0,0,10,0" Text="{Binding Player4Health, StringFormat='Player4Health: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding Party1Health, StringFormat='Player1Health: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding Party2Health, StringFormat='Party2Health: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding Party3Health, StringFormat='Party3Health: \{0\}'}" ></TextBlock>
+                        <TextBlock Margin="0,0,10,0" Text="{Binding Party4Health, StringFormat='Party4Health: \{0\}'}" ></TextBlock>
                         <TextBlock Margin="0,0,10,0" Text="{Binding IsStealthed, StringFormat='IsStealthed: \{0\}'}" ></TextBlock>
                         <TextBlock Margin="0,0,10,0" Text="{Binding Gold, StringFormat='Gold: \{0\}'}" ></TextBlock>
                     </WrapPanel>
@@ -142,8 +164,10 @@
             <TabItem Header="Statistics">
                 <WrapPanel x:Name="Statistics" Orientation="Vertical">
                     <TextBlock Margin="0,0,10,0" Text="{Binding Runtime, StringFormat='Runtime: \{0\}'}" ></TextBlock>
+                    <TextBlock Margin="0,0,10,0" Text="{Binding Runs, StringFormat='Runs: \{0\}'}" ></TextBlock>
                     <TextBlock Margin="0,0,10,0" Text="{Binding EarnedGold, StringFormat='EarnedGold: \{0\}'}" ></TextBlock>
                     <TextBlock Margin="0,0,10,0" Text="{Binding GoldPerHour, StringFormat='GolPerHour: \{0\}'}" ></TextBlock>
+                    <TextBlock Margin="0,0,10,0" Text="{Binding GoldPerRun, StringFormat='GoldPerRun: \{0\}'}" ></TextBlock>
                 </WrapPanel>
             </TabItem>
         </TabControl>
