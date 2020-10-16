@@ -26,7 +26,8 @@ namespace Grindr
                     this.i.InputController.TapKey(Keys.F4);
                     Thread.Sleep(500);
 
-                    if (this.i.Data.PlayerHasTarget && !this.i.Data.IsTargetDead)
+                    if (this.i.Data.PlayerHasTarget 
+                    && !this.i.Data.IsTargetDead)
                     {
                         this.i.CombatController.Fight(false, true);
                     }

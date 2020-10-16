@@ -402,5 +402,10 @@ namespace Grindr
                 }
             }
         }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.i.WowActions.Unstuck();
+        }
     }
 }

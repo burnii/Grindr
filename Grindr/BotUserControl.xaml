@@ -10,6 +10,7 @@
     <Grid >
         <Button x:Name="launchButton" Content="Launch" HorizontalAlignment="Left" Margin="2,3,0,0" VerticalAlignment="Top" Width="55" Click="LaunchButton_Click" Height="43"/>
         <Button x:Name="AttachButton" Content="{Binding AttachState}" HorizontalAlignment="Left" Margin="62,3,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="AttachButton_Click"/>
+        <Button x:Name="TestButton" HorizontalAlignment="Left" Margin="131,3,0,0" VerticalAlignment="Top" Width="55" Height="43" Click="TestButton_Click"/>
 
         <ComboBox SelectedValue="{Binding Mode}" x:Name="ModeComboBox" HorizontalAlignment="Left" Margin="364,15,0,0" VerticalAlignment="Top" Width="109" Height="23" SelectionChanged="ModeComboBox_SelectionChanged"/>
         <Button x:Name="runButton" Content="Start" HorizontalAlignment="Left" Margin="478,2,0,0" VerticalAlignment="Top" Width="145" Click="RunButton_Click" Height="46"/>

@@ -28,6 +28,9 @@ namespace Grindr
             var direction1 = CalculationHelper.GetAngle(this.i.Data.PlayerCoordinate.X, this.i.Data.PlayerCoordinate.Y - 5, target.X, target.Y, this.i.Data.PlayerCoordinate.X, this.i.Data.PlayerCoordinate.Y);
             var diff = this.DetermineShortestTurnAngle(direction1, out Keys bestTurnKey);
 
+            // Warum "0.003141" ?
+            var coeff = 0.003141;
+            
             var turnTime = Convert.ToInt32(Math.Abs(diff) / 0.003141);
 
             this.i.InputController.PressKey(bestTurnKey);
@@ -57,9 +60,11 @@ namespace Grindr
         private void Move(Coordinate target, bool isGrinding)
         {
             this.i.WowActions.OpenMap();
+
             this.i.InputController.PressKey(Keys.W);
             this.i.InputController.PressKey(Keys.W);
             this.i.InputController.PressKey(Keys.W);
+
             var targetDistance = CalculationHelper.CalculateDistance(this.i.Data.PlayerCoordinate, target);
 
             var startCoordinate = this.i.Data.PlayerCoordinate;
@@ -77,6 +82,7 @@ namespace Grindr
                 var lastYCoordinate = this.i.Data.PlayerYCoordinate;
                 while (moving && !isStuck)
                 {
+
                     if (lastXCoordinate == this.i.Data.PlayerXCoordinate && lastYCoordinate == this.i.Data.PlayerYCoordinate)
                     {
                         sameCoordinateCounter++;
@@ -98,6 +104,7 @@ namespace Grindr
 
             do
             {
+                //this.i.WowActions.CloseMap();
                 if (this.i.State.IsRunning == false)
                 {
                     break;
@@ -129,12 +136,13 @@ namespace Grindr
                         this.i.InputController.PressKey(Keys.W);
                     }
                 }
-
+                //this.i.WowActions.OpenMap();
                 distanceToStart = CalculationHelper.CalculateDistance(this.i.Data.PlayerCoordinate, startCoordinate);
                 distanceDelta = Math.Abs(distanceToStart - targetDistance);
 
                 Thread.Sleep(100);
             }
+
             while (targetDistance > distanceToStart && this.i.State.IsRunning);
             moving = false;
 
@@ -153,10 +161,10 @@ namespace Grindr
             {
                 this.i.WowActions.OpenMap();
             }
+
             this.i.WowActions.MountUpIfNeeded(walkStealthed);
             this.Turn(target);
             this.Move(target, isGrinding);
-
         }
 
         public void WalkUnitilZoneChange()

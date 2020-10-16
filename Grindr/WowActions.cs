@@ -21,7 +21,7 @@ namespace Grindr
 
         public void Unstuck()
         {
-            while (this.i.Data.IsPlayerDead == false && this.i.State.IsRunning)
+            while (this.i.Data.IsPlayerDead == false /*&& this.i.State.IsRunning*/)
             {
                 this.CloseMap();
 
@@ -32,15 +32,17 @@ namespace Grindr
                 this.i.Logger.AddLogEntry("Unstuck player to return to dungeon entrance");
                 this.i.InputController.LeftMouseClick(474, 451);
                 Thread.Sleep(1000);
-                this.i.InputController.LeftMouseClick(199, 163);
+                this.i.InputController.LeftMouseClick(199, 160);
                 Thread.Sleep(1000);
                 this.i.InputController.LeftMouseClick(29, 225);
                 Thread.Sleep(1000);
-                this.i.InputController.LeftMouseClick(294, 310);
+
+                // 335 Zum Friedhof teleportieren
+                this.i.InputController.LeftMouseClick(294, 335);
                 Thread.Sleep(12000);
             }
 
-            while (this.i.Data.IsPlayerDead == true && this.i.State.IsRunning)
+            while (this.i.Data.IsPlayerDead == true /*&& this.i.State.IsRunning*/)
             {
                 this.i.InputController.TapKey(Keys.D7);
                 Thread.Sleep(1000);

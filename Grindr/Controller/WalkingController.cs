@@ -26,7 +26,6 @@ namespace Grindr
         {
             var direction1 = CalculationHelper.CalculateWowDirection(this.i.Data.PlayerXCoordinate, this.i.Data.PlayerYCoordinate, target.X, target.Y);
             var diff = this.DetermineShortestTurnAngle(direction1, out Keys bestTurnKey);
-
             
             var turnTime = Convert.ToInt32(Math.Abs(diff) / 0.0030);
 

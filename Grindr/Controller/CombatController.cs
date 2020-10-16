@@ -131,7 +131,9 @@ namespace Grindr
 
             Task.Run(() =>
             {
-                while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.State.IsRunning)
+                while (this.i.Data.PlayerHasTarget 
+                    && !this.i.Data.IsTargetDead 
+                    && this.i.State.IsRunning)
                 {
                     if (assist)
                     {
@@ -155,7 +157,9 @@ namespace Grindr
 
             var i = 0;
             var j = false;
-            while (this.i.Data.PlayerHasTarget == true && !this.i.Data.IsTargetDead && this.i.State.IsRunning)
+
+            while (this.i.Data.PlayerHasTarget == true 
+                && !this.i.Data.IsTargetDead && this.i.State.IsRunning)
             {
                 if (!assist && !this.i.Data.IsTargetAttackingPlayer)
                 {
@@ -200,6 +204,5 @@ namespace Grindr
 
             this.i.Logger.AddLogEntry($"Killed target");
         }
-
     }
 }
