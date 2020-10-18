@@ -1,32 +1,16 @@
 ﻿using Newtonsoft.Json;
 using Grindr.Enums;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Cursor = System.Windows.Forms.Cursor;
-using Point = System.Drawing.Point;
 using Grindr.DTOs;
-using Newtonsoft.Json.Linq;
+using Gma.System.MouseKeyHook;
+using static Grindr.DataReader;
 
 namespace Grindr
 {
@@ -36,12 +20,25 @@ namespace Grindr
     public partial class BotUserControl : System.Windows.Controls.UserControl
     {
         public BotInstance i { get; set; }
+        public Point CurrentMousePoint { get; set; }
+        public Point CurrentCalculatedMousePoint { get; set; }
+
+
+        /// <summary>
+        /// Global Mouse Hook Interface-Events
+        /// </summary>
+        private IKeyboardMouseEvents m_GlobalHook;
+
 
         public BotUserControl(int botIndex)
         {
             InitializeComponent();
             i = new BotInstance(this.coordinatesListBox, botIndex);
             this.dataStackPanel.DataContext = this.i.Data;
+
+            m_GlobalHook = Hook.GlobalEvents();
+            m_GlobalHook.MouseMove += M_GlobalHook_MouseMove;
+            m_GlobalHook.MouseClick += M_GlobalHook_MouseClick;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -58,7 +55,10 @@ namespace Grindr
             this.GeneralGrid.DataContext = this.i.Profile.Settings;
             this.ActionBindComboBox.ItemsSource = Enum.GetValues(typeof(Keys));
             this.loggingListBox.ItemsSource = this.i.Logger.Logs;
+            this.positionListBox.ItemsSource = this.i.LastClickedPoints;
+
             this.Statistics.DataContext = this.i.Statistics;
+            this.Positioning.DataContext = this.i.Statistics;
 
             this.coordinatesListBox.DataContext = this.i.Profile.NavigationNodes;
             this.coordinatesListBox.SetBinding(ItemsControl.ItemsSourceProperty, new System.Windows.Data.Binding());
@@ -78,6 +78,36 @@ namespace Grindr
             await this.i.Initializer.Initialize();
 
             this.SetupBots();
+        }
+
+        private void M_GlobalHook_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (this.i.Statistics.CaptureMouseClickEnabled)
+            {
+                this.i.LastClickedPoints.Add(new Point(CurrentCalculatedMousePoint.X, CurrentCalculatedMousePoint.Y));
+            }
+        }
+
+        private void M_GlobalHook_MouseMove(object sender, MouseEventArgs e)
+        {
+            CurrentMousePoint = new Point(e.X, e.Y);
+
+            // Calculate Pos of window handle
+            if (this.i.Initializer.WindowHandle != null)
+            {
+                RECT rect;
+                GetWindowRect((IntPtr)this.i.Initializer.WindowHandle.Value, out rect);
+
+                var offsetY = 30;
+                var offsetX = 8;
+
+                var width = rect.Right - rect.Left;
+
+                var x = (int)CurrentMousePoint.X - rect.Right + width - offsetX;
+                var y = (int)CurrentMousePoint.Y - rect.Top - offsetY;
+
+                CurrentCalculatedMousePoint = new Point(x, y);
+            }
         }
 
         private async void Attach()
@@ -100,7 +130,6 @@ namespace Grindr
 
                 this.SetDataBidnings();
             }
-
         }
 
         private void SetupBots()
@@ -401,6 +430,22 @@ namespace Grindr
                     this.i.Profile.Settings.VendorProfilePath = dialog.FileName;
                 }
             }
+        }
+
+        private void ClearLastClicks(object sender, RoutedEventArgs e)
+        {
+            // Clear datasource
+            this.i.LastClickedPoints.Clear();
+        }
+
+        private void SimulateSelectedClick(object sender, RoutedEventArgs e)
+        {
+            var selectedIndex = this.positionListBox.SelectedIndex;
+
+            var x = this.i.LastClickedPoints[selectedIndex].X;
+            var y = this.i.LastClickedPoints[selectedIndex].Y;
+
+            this.i.InputController.LeftMouseClick((int)x, (int)y);
         }
     }
 }
