@@ -1,24 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Security.Principal;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
 
 namespace Grindr
 {
     public class InputController
     {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Rect
+        {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool GetWindowRect(IntPtr hWnd, ref Rect Rect);
+
         [DllImport("user32.dll")]
         public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         private BotInstance i { get; set; }
-
 
         const uint WM_KEYDOWN = 0x100;
         const uint WM_KEYUP = 0x0101;
@@ -58,8 +66,10 @@ namespace Grindr
         {
             Task.Run(() =>
             {
-                PostMessage(this.i.Initializer.WindowHandle.Value, WM_LBUTTONDOWN, (IntPtr)0, (IntPtr)MakeLParam(x,y));
-                PostMessage(this.i.Initializer.WindowHandle.Value, WM_LBUTTONUP, (IntPtr)1, (IntPtr)MakeLParam(x,y));
+                PostMessage(this.i.Initializer.WindowHandle.Value, WM_LBUTTONDOWN, (IntPtr)0, (IntPtr)MakeLParam(x, y));
+                var rand = new Random().Next(100, 1000);
+                Task.Delay(rand);
+                PostMessage(this.i.Initializer.WindowHandle.Value, WM_LBUTTONUP, (IntPtr)1, (IntPtr)MakeLParam(x, y));
             });
         }
 
@@ -74,8 +84,144 @@ namespace Grindr
 
         public void TapKey(Keys key)
         {
-            this.PressKey(key);          
+            this.PressKey(key);
             this.ReleaseKey(key);
+        }
+
+        public async Task<bool> ClickAndFindTemplate(Bitmap template, IntPtr windowHandle, bool doClick = false)
+        {
+            return await Task.Run(() =>
+            {
+                var ret = false;
+                int foundX = 0;
+                int foundY = 0;
+                bool templateFound = false;
+                int counter = 0;
+
+                while (!templateFound && counter < 15)
+                {
+                    this.AnalyseScreenshot(template, windowHandle, out foundX, out foundY, out templateFound);
+                    counter++;
+                    Thread.Sleep(100);
+                }
+
+                if (templateFound)
+                {
+                    if (doClick)
+                    {
+                        this.LeftMouseClick(foundX, foundY);
+                    }
+                    ret = true;
+                }
+                else
+                {
+                    // Write To log, message to user etc.
+                }
+
+                return ret;
+            });
+        }
+
+        /// <summary>
+        /// Analysiert den aktuellen Screenshot und vergleicht diesen mit einem template
+        /// </summary>
+        private void AnalyseScreenshot(Bitmap searchedTemplate, IntPtr windowHandle, out int foundX, out int foundY, out bool templateFound)
+        {
+            foundX = 0;
+            foundY = 0;
+            templateFound = false;
+
+            try
+            {
+                var screenshot = this.CurrentScreenshotFromScreen(windowHandle);
+                Bitmap temp = (Bitmap)screenshot.Clone();
+
+                Image<Bgr, byte> clonedScreenshot = new Image<Bgr, byte>(temp);
+                Image<Bgr, byte> template = new Image<Bgr, byte>(searchedTemplate);
+
+                this.FindTemplate(template, clonedScreenshot, out foundX, out foundY, out templateFound);
+
+                temp.Dispose();
+            }
+            catch (Exception ex)
+            {
+                // Write To Log
+            }
+        }
+
+        private Bitmap CurrentScreenshotFromScreen(IntPtr windowHandle)
+        {
+            var rect = new Rect();
+            InputController.GetWindowRect(windowHandle, ref rect);
+
+            var offSetX = 14;
+            var offSetY = 38;
+
+            var width = rect.right - rect.left - offSetX;
+            var height = rect.bottom - rect.top - offSetY;
+
+            Bitmap bitmap = new Bitmap(width, height);
+            Graphics graphics = Graphics.FromImage(bitmap as Image);
+
+            graphics.CopyFromScreen(rect.left + (offSetX / 2), rect.top + 32, 0, 0, bitmap.Size);
+            graphics.Dispose();
+
+            return bitmap;
+        }
+
+        private void FindTemplate(Image<Bgr, byte> template, Image<Bgr, byte> source, out int foundX, out int foundY, out bool templateFound)
+        {
+            templateFound = false;
+            foundX = 0;
+            foundY = 0;
+
+            using (Image<Gray, float> result = source.MatchTemplate(template, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
+            {
+                this.CalculateTemplateCoeff(template, result, out foundX, out foundY, out templateFound);
+            }
+        }
+
+        /// <summary>
+        /// Kalkuliert den Koeffizienten --> Zu wie viel Anteil an % stimmt das Template mit dem zu vergleichenden Screenshot überein
+        /// </summary>
+        /// <param name="template"></param>
+        /// <param name="result"></param>
+        /// <param name="windowHandle"></param>
+        /// <param name="foundX"></param>
+        /// <param name="foundY"></param>
+        /// <param name="templateFound"></param>
+        /// <param name="imageToShow"></param>
+        private void CalculateTemplateCoeff(
+            Image<Bgr, byte> template,
+            Image<Gray, float> result,
+            out int foundX,
+            out int foundY,
+            out bool templateFound,
+            Image<Bgr, byte> imageToShow = null
+            )
+        {
+            foundX = 0;
+            foundY = 0;
+
+            double[] minValues, maxValues;
+            Point[] minLocations, maxLocations;
+
+            result.MinMax(out minValues, out maxValues, out minLocations, out maxLocations);
+
+            // You can try different values of the threshold. I guess somewhere between 0.75 and 0.95 would be good.
+            if (maxValues[0] > 0.85)
+            {
+                Rectangle match = new Rectangle(maxLocations[0], template.Size);
+                // X und Y (centered) of the found template
+                foundX = match.Left + match.Width / 2;
+                foundY = match.Top + match.Height / 2;
+
+                templateFound = true;
+            }
+            else
+            {
+                templateFound = false;
+            }
         }
     }
 }

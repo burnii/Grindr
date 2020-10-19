@@ -19,7 +19,8 @@ namespace Grindr
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private string wowExePath = @"C:\Program Files (x86)\World of Warcraft\_retail_\Wow.exe";
+        //private string wowExePath = @"C:\Program Files (x86)\World of Warcraft\_retail_\Wow.exe";
+        private string wowExePath = @"D:\Battle.net\Games\World of Warcraft\_retail_\Wow.exe";
         public string WowExePath { get { return this.wowExePath; } set { this.wowExePath = value; this.OnPropertyChanged(); } }
 
         private string username = "Username";

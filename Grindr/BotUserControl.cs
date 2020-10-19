@@ -75,9 +75,16 @@ namespace Grindr
 
         private async void Initialize()
         {
-            await this.i.Initializer.Initialize();
+            try
+            {
+                await this.i.Initializer.Initialize();
 
-            this.SetupBots();
+                this.SetupBots();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message, "Fehler");
+            }
         }
 
         private async void Attach()

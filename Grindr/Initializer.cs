@@ -15,9 +15,6 @@ namespace Grindr
     public class Initializer
     {
         [DllImport("user32.dll")]
-        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
-        [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
@@ -34,14 +31,6 @@ namespace Grindr
 
         public BotInstance i { get; set; }
 
-        public struct RECT
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-        }
-
         public Initializer(BotInstance instance)
         {
             this.i = instance;
@@ -54,7 +43,7 @@ namespace Grindr
                 this.i.Logger.AddLogEntry("Initializing ...");
                 IsInitializing = true;
 
-                if (Process != null)
+                if (Process != null && Process.Responding == true)
                 {
                     this.i.Logger.AddLogEntry($"Kill WoW process with PID: {Process.Id}");
                     Process.Kill();
@@ -74,13 +63,81 @@ namespace Grindr
                     }
                 });
 
-                Thread.Sleep(1000);
+
+                var found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.usernameField_484x461, WindowHandle.Value,true);
+
+                var counter = 10;
+                while(found.Result != true)
+                {
+                    Thread.Sleep(1000);
+
+                    if(counter == 0)
+                    {
+                        throw new Exception("Cant login after 10 seconds");
+                    }
+
+                    counter--;
+                }
+
                 SendKeys.SendWait(this.i.Profile.Settings.Username);
-                SendKeys.SendWait("{Tab}");
-                SendKeys.SendWait(this.i.Profile.Settings.Password);
-                SendKeys.SendWait("{Enter}");
-                Thread.Sleep(10000);
-                SendKeys.SendWait("{Enter}");
+                Thread.Sleep(100);
+
+                found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordField_484x461, WindowHandle.Value, true);
+
+                if (found.Result == true)
+                {
+                    SendKeys.SendWait(this.i.Profile.Settings.Password);
+                    Thread.Sleep(100);
+                }
+
+                found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.loginButton_484x461, WindowHandle.Value,false);
+
+                if (found.Result == true)
+                {
+                    SendKeys.SendWait("{Enter}");
+                    Thread.Sleep(100);
+                }
+
+                found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordWrong_484x461, WindowHandle.Value, false);
+
+                if (found.Result == true)
+                {
+                    IsInitializing = false;
+                    throw new Exception("Wrong password");
+                }
+
+                found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.cantFindBlizzAccount_484x461, WindowHandle.Value, false);
+
+                if (found.Result == true)
+                {
+                    IsInitializing = false;
+                    throw new Exception("No Blizzard-Account found");
+                }
+
+                found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow7_484x461, WindowHandle.Value, true);
+
+                if (found.Result == true)
+                {
+                    IsInitializing = false;
+                    // Write to Log (WowAccount 1 ausgewählt)
+                }
+
+                found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.acceptAccount_484x461, WindowHandle.Value, true);
+
+                if (found.Result == true)
+                {
+                    IsInitializing = false;
+                    // Write to Log (accept)
+                }
+
+
+                //Thread.Sleep(1000);
+                //SendKeys.SendWait(this.i.Profile.Settings.Username);
+                //SendKeys.SendWait("{Tab}");
+                //SendKeys.SendWait(this.i.Profile.Settings.Password);
+                //SendKeys.SendWait("{Enter}");
+                //Thread.Sleep(10000);
+                //SendKeys.SendWait("{Enter}");
 
                 this.i.Logger.AddLogEntry("Initialized");
                 IsInitializing = false;
