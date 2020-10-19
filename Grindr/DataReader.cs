@@ -53,7 +53,7 @@ namespace Grindr
 
             if ((this.i.BotIndex + 1) * height1 > maxWidth)
             {
-                row++;    
+                row++;
             }
 
             if (this.i.BotIndex * height1 > maxWidth * 2)
@@ -83,12 +83,12 @@ namespace Grindr
 
                         Bitmap bmp = new Bitmap(width, height);
 
-                        var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);                    
+                        var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
 
                         using (var screenG = Graphics.FromImage(bmp))
                         {
                             this.i.Logger.AddLogEntry("Data reading started");
-                            
+
                             while (this.i.State.AttachState == Enums.AttachState.Detach)
                             {
                                 Point p = Cursor.Position;
@@ -182,7 +182,7 @@ namespace Grindr
             });
         }
 
-        private Coordinate GetPixelCoordinate(byte[] rgbValues, BitmapData bmpData,out double angle)
+        private Coordinate GetPixelCoordinate(byte[] rgbValues, BitmapData bmpData, out double angle)
         {
             var stride = bmpData.Stride;
             int count = 0;
@@ -252,16 +252,19 @@ namespace Grindr
 
                 var bmp = recorder.TakeScreenshot(this.i);
 
-                for (x = 0; x < bmp.Width; x++)
+                if (null != bmp)
                 {
-                    for (y = 0; y < bmp.Height; y++)
+                    for (x = 0; x < bmp.Width; x++)
                     {
-                        var value = GetPixelValueAt(bmp, x, y);
-
-                        if (value == rootColorHex)
+                        for (y = 0; y < bmp.Height; y++)
                         {
-                            this.i.Logger.AddLogEntry($"Root coordinates: x: {x}, y: {y}");
-                            return;
+                            var value = GetPixelValueAt(bmp, x, y);
+
+                            if (value == rootColorHex)
+                            {
+                                this.i.Logger.AddLogEntry($"Root coordinates: x: {x}, y: {y}");
+                                return;
+                            }
                         }
                     }
                 }
@@ -318,7 +321,7 @@ namespace Grindr
             return locationString;
         }
 
-        private  int GetIntPixelValue(Bitmap bmp, int x, int y, byte[] rgbValues)
+        private int GetIntPixelValue(Bitmap bmp, int x, int y, byte[] rgbValues)
         {
             var hex = RgbToHex(x, y, rgbValues);
 

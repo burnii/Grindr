@@ -119,6 +119,7 @@ namespace Grindr
                 if (found.Result == true)
                 {
                     IsInitializing = false;
+                    Thread.Sleep(100);
                     // Write to Log (WowAccount 1 ausgewählt)
                 }
 
@@ -127,17 +128,9 @@ namespace Grindr
                 if (found.Result == true)
                 {
                     IsInitializing = false;
+                    Thread.Sleep(100);
                     // Write to Log (accept)
                 }
-
-
-                //Thread.Sleep(1000);
-                //SendKeys.SendWait(this.i.Profile.Settings.Username);
-                //SendKeys.SendWait("{Tab}");
-                //SendKeys.SendWait(this.i.Profile.Settings.Password);
-                //SendKeys.SendWait("{Enter}");
-                //Thread.Sleep(10000);
-                //SendKeys.SendWait("{Enter}");
 
                 this.i.Logger.AddLogEntry("Initialized");
                 IsInitializing = false;
