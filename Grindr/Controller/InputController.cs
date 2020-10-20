@@ -24,6 +24,9 @@ namespace Grindr
         public static extern bool GetWindowRect(IntPtr hWnd, ref Rect Rect);
 
         [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         private BotInstance i { get; set; }
@@ -98,7 +101,7 @@ namespace Grindr
                 bool templateFound = false;
                 int counter = 0;
 
-                while (!templateFound && counter < 15)
+                while (!templateFound && counter < 10)
                 {
                     this.AnalyseScreenshot(template, windowHandle, out foundX, out foundY, out templateFound);
                     counter++;
@@ -109,6 +112,7 @@ namespace Grindr
                 {
                     if (doClick)
                     {
+                        SetForegroundWindow(windowHandle);
                         this.LeftMouseClick(foundX, foundY);
                     }
                     ret = true;
@@ -153,6 +157,7 @@ namespace Grindr
         {
             var rect = new Rect();
             InputController.GetWindowRect(windowHandle, ref rect);
+            SetForegroundWindow(windowHandle);
 
             var offSetX = 14;
             var offSetY = 38;

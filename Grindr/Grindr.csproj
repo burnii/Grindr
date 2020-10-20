@@ -99,7 +99,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="UI\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
@@ -120,7 +120,7 @@
     <Compile Include="Helper\ScreenRecorderHelper.cs" />
     <Compile Include="Controller\IWalkingController.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Recorder.cs" />
@@ -129,11 +129,11 @@
     <Compile Include="Controller\WalkingController.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="WowActions.cs" />
-    <Page Include="BotUserControl.xaml">
+    <Page Include="UI\BotUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="UI\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -141,11 +141,11 @@
     <Compile Include="DTOs\Data.cs" />
     <Compile Include="DataReader.cs" />
     <Compile Include="Controller\InputController.cs" />
-    <Compile Include="BotUserControl.cs">
+    <Compile Include="UI\BotUserControl.cs">
       <DependentUpon>BotUserControl.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MainWindow.xaml">
+    <Page Include="UI\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,7 +178,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="License-LGPL.txt" />
+    <Resource Include="EmguLicense\License-LGPL.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\connecting_484x461.png" />

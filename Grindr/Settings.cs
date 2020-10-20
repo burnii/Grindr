@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Grindr
 {
@@ -26,6 +21,9 @@ namespace Grindr
         private string username = "Username";
         public string Username { get { return username; } set { this.username = value; this.OnPropertyChanged(); } }
         public string Password { get; set; } = "Password";
+
+        public int CharacterPosition { get; set; } = 1;
+        public int BlizzAccountIndex { get; set; } = 1;
         public bool ShouldUseMount { get; set; } = true;
         public bool AlwaysFight { get; set; } = false;
         private bool shouldUseTravelForm = false;

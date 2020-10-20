@@ -114,13 +114,47 @@ namespace Grindr
                     throw new Exception("No Blizzard-Account found");
                 }
 
-                found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow7_484x461, WindowHandle.Value, true);
-
-                if (found.Result == true)
+                switch (this.i.Profile.Settings.BlizzAccountIndex)
                 {
-                    IsInitializing = false;
-                    Thread.Sleep(100);
-                    // Write to Log (WowAccount 1 ausgewählt)
+                    case 1:
+                        found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow1_484x461, WindowHandle.Value, true);
+                        break;
+                    case 2:
+                        found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow2_484x461, WindowHandle.Value, true);
+                        break;
+                    case 3:
+                        found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow3_484x461, WindowHandle.Value, true);
+                        break;
+                    case 4:
+                        found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow4_484x461, WindowHandle.Value, true);
+                        break;
+                    case 5:
+                        found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow5_484x461, WindowHandle.Value, true);
+                        break;
+                    case 6:
+                        found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow6_484x461, WindowHandle.Value, true);
+                        break;
+                    case 7:
+                        found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow7_484x461, WindowHandle.Value, true);
+                        break;
+                    default:
+                        break;
+                }
+
+                while (!found.IsCompleted || found.Result == false)
+                {
+                    Console.WriteLine($" IsCompleted: {found.IsCompleted}");
+                    Console.WriteLine($" Result     : {found.Result}");
+                    if (found.Result && found.IsCompleted)
+                    {
+                        IsInitializing = false;
+                        Thread.Sleep(1200);
+                        // Write to Log (WowAccount 1 ausgewählt)
+                    }
+                    else if(found.IsFaulted || found.IsCanceled)
+                    {
+                        // Write to Log
+                    }
                 }
 
                 found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.acceptAccount_484x461, WindowHandle.Value, true);
