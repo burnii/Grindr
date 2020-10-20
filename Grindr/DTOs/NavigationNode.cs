@@ -23,8 +23,8 @@ namespace Grindr
         public bool Loot { get; set; }
         public bool Reset { get; set; }
         public bool Action { get; set; }
-        public bool FastDungeonExit { get; set; }
         public Keys ActionHotKey { get; set; }
+        public bool FastDungeonExit { get; set; }
         public bool WaitForZoneChange { get; set; }
         public bool WalkStealthed { get; set; }
         public bool TurnNode { get; set; }

@@ -182,7 +182,7 @@ namespace Grindr
             var startZone = this.i.Data.PlayerZone;
 
             this.CloseMap();
-            while (startZone == this.i.Data.PlayerZone)
+            while (startZone == this.i.Data.PlayerZone && this.i.Data.IsOutDoors == true)
             {
                 this.SellItemsIfNeeded(90, 100);
                 this.Stealth();
@@ -216,25 +216,27 @@ namespace Grindr
 
                 this.i.InputController.TapKey(Keys.I);
                 Thread.Sleep(200);
-                this.i.InputController.LeftMouseClick(58, 264);
+                this.i.InputController.LeftMouseClick(103, 256);
                 Thread.Sleep(200);
-                this.i.InputController.LeftMouseClick(185, 157);
+                this.i.InputController.LeftMouseClick(195, 253);
                 Thread.Sleep(200);
-                this.i.InputController.LeftMouseClick(167, 319);
+                this.i.InputController.LeftMouseClick(190, 319);
                 Thread.Sleep(200);
                 this.i.InputController.TapKey(Keys.I);
                 this.i.InputController.TapKey(Keys.J);
                 this.i.InputController.TapKey(Keys.K);
                 Thread.Sleep(200);
-                this.i.InputController.LeftMouseClick(164, 300);
+                this.i.InputController.LeftMouseClick(302, 318);
                 Thread.Sleep(200);
-                this.i.InputController.LeftMouseClick(298, 319);
+                this.i.InputController.LeftMouseClick(341, 76);
                 Thread.Sleep(1000);
                 attempts++;
             }
 
-            this.i.InputController.TapKey(Keys.D5);
-            this.OpenMap();
+            this.i.InputController.RightMouseClick(45, 31);
+            Thread.Sleep(200);
+            this.i.InputController.LeftMouseClick(75, 213);
+
         }
 
         public void Stealth()

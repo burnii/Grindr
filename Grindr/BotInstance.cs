@@ -1,11 +1,5 @@
 ﻿using Grindr.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows.Controls;
 
 namespace Grindr
@@ -24,6 +18,8 @@ namespace Grindr
         public DataReader DataReader { get; set; }
         public Initializer Initializer { get; set; }
         public Logger Logger { get; set; }
+
+        public BindingList<System.Windows.Point> LastClickedPoints { get; set; } = new BindingList<System.Windows.Point>();
         public Recorder Recorder { get; set; }
         public WowActions WowActions { get; set; }
         public ListBox NavigationCoordinatesListBox { get; set; }

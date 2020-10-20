@@ -12,6 +12,7 @@ namespace Grindr.Enums
         Assist,
         Turret,
         Healer,
-        AntiAfk
+        AntiAfk,
+        Level
     }
 }

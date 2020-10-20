@@ -27,7 +27,6 @@ namespace Grindr
             Thread.Sleep(1000);
             if (this.i.Data.PlayerHasTarget == true)
             {
-
                 this.i.Logger.AddLogEntry($"Found enemy, stop walking");
                 this.i.InputController.ReleaseKey(Keys.W);
                 this.i.InputController.ReleaseKey(Keys.W);
@@ -58,7 +57,7 @@ namespace Grindr
                 }
                 this.i.Logger.AddLogEntry($"Out of combat");
                 TryToLootEnemy();
-                this.i.WowActions.OpenMap();
+                //this.i.WowActions.OpenMap();
             }
             
         }
@@ -119,6 +118,30 @@ namespace Grindr
             }
         }
 
+        public void Fight()
+        {
+            while (this.i.Data.PlayerIsInCombat && this.i.State.IsRunning) 
+            {
+                Thread.Sleep(1000);
+                if (this.i.Data.TargetIsInInteractRange && this.i.Data.IsTargetAttackingPlayer)
+                {
+                    this.i.InputController.TapKey(Keys.Y);
+                }
+
+                if (this.i.Profile.Settings.ShouldUseBearForm)
+                {
+                    this.i.WowActions.Shapeshift(Enums.DruidShapeshiftForm.Bear);
+                }
+
+                if (this.i.Data.PlayerHealth < 50)
+                {
+                    this.i.InputController.TapKey(Keys.D3);
+                }
+
+                this.i.InputController.TapKey(Keys.D2);
+                this.i.InputController.TapKey(Keys.D1);
+            }
+        }
         public void Fight(bool turret = false, bool assist = false)
         {
             this.i.Logger.AddLogEntry($"Fight current target");

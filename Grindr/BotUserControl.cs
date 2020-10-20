@@ -1,32 +1,16 @@
 ﻿using Newtonsoft.Json;
 using Grindr.Enums;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Cursor = System.Windows.Forms.Cursor;
-using Point = System.Drawing.Point;
 using Grindr.DTOs;
-using Newtonsoft.Json.Linq;
+using Gma.System.MouseKeyHook;
+using static Grindr.DataReader;
 
 namespace Grindr
 {
@@ -36,12 +20,25 @@ namespace Grindr
     public partial class BotUserControl : System.Windows.Controls.UserControl
     {
         public BotInstance i { get; set; }
+        public Point CurrentMousePoint { get; set; }
+        public Point CurrentCalculatedMousePoint { get; set; }
+
+
+        /// <summary>
+        /// Global Mouse Hook Interface-Events
+        /// </summary>
+        private IKeyboardMouseEvents m_GlobalHook;
+
 
         public BotUserControl(int botIndex)
         {
             InitializeComponent();
             i = new BotInstance(this.coordinatesListBox, botIndex);
             this.dataStackPanel.DataContext = this.i.Data;
+
+            m_GlobalHook = Hook.GlobalEvents();
+            m_GlobalHook.MouseMove += M_GlobalHook_MouseMove;
+            m_GlobalHook.MouseClick += M_GlobalHook_MouseClick;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -58,7 +55,10 @@ namespace Grindr
             this.GeneralGrid.DataContext = this.i.Profile.Settings;
             this.ActionBindComboBox.ItemsSource = Enum.GetValues(typeof(Keys));
             this.loggingListBox.ItemsSource = this.i.Logger.Logs;
+            this.positionListBox.ItemsSource = this.i.LastClickedPoints;
+
             this.Statistics.DataContext = this.i.Statistics;
+            this.Positioning.DataContext = this.i.Statistics;
 
             this.coordinatesListBox.DataContext = this.i.Profile.NavigationNodes;
             this.coordinatesListBox.SetBinding(ItemsControl.ItemsSourceProperty, new System.Windows.Data.Binding());
@@ -78,6 +78,36 @@ namespace Grindr
             await this.i.Initializer.Initialize();
 
             this.SetupBots();
+        }
+
+        private void M_GlobalHook_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (this.i.Statistics.CaptureMouseClickEnabled)
+            {
+                this.i.LastClickedPoints.Add(new Point(CurrentCalculatedMousePoint.X, CurrentCalculatedMousePoint.Y));
+            }
+        }
+
+        private void M_GlobalHook_MouseMove(object sender, MouseEventArgs e)
+        {
+            CurrentMousePoint = new Point(e.X, e.Y);
+
+            // Calculate Pos of window handle
+            if (this.i.Initializer.WindowHandle != null)
+            {
+                RECT rect;
+                GetWindowRect((IntPtr)this.i.Initializer.WindowHandle.Value, out rect);
+
+                var offsetY = 30;
+                var offsetX = 8;
+
+                var width = rect.Right - rect.Left;
+
+                var x = (int)CurrentMousePoint.X - rect.Right + width - offsetX;
+                var y = (int)CurrentMousePoint.Y - rect.Top - offsetY;
+
+                CurrentCalculatedMousePoint = new Point(x, y);
+            }
         }
 
         private async void Attach()
@@ -100,7 +130,6 @@ namespace Grindr
 
                 this.SetDataBidnings();
             }
-
         }
 
         private void SetupBots()
@@ -139,9 +168,9 @@ namespace Grindr
                     this.turretTabControl.Visibility = Visibility.Hidden;
                     break;
                 case Mode.Turret:
-                    this.grindTabControl.Visibility = Visibility.Hidden;
+                    this.grindTabControl.Visibility = Visibility.Visible;
                     this.assistTabControl.Visibility = Visibility.Hidden;
-                    this.turretTabControl.Visibility = Visibility.Visible;
+                    this.turretTabControl.Visibility = Visibility.Hidden;
                     break;
             }
         }
@@ -220,7 +249,7 @@ namespace Grindr
                         await this.i.Assister.Assist();
                         break;
                     case Mode.Turret:
-                        await this.RunTurretTask();
+                        await this.RunFARM();
                         break;
                     case Mode.Healer:
                         await this.i.Healer.Start();
@@ -234,6 +263,9 @@ namespace Grindr
                                 Thread.Sleep(300000);
                             }
                         });
+                        break;
+                    case Mode.Level:
+                        await this.RunLevelTask();
                         break;
                 }
 
@@ -290,77 +322,187 @@ namespace Grindr
             }
         }
 
-        private Task RunTurretTask()
+        private Task RunFARM()
         {
-            var keyArray = new Keys[]
+            bool loot = false;
+
+            Task.Run(() =>
+            {
+                while (this.i.State.IsRunning)
                 {
-                    Keys.D1,
-                    Keys.D3,
-                    Keys.D4,
-                    Keys.D5,
-                    Keys.D6
-                };
+                    Thread.Sleep(120000);
+                    loot = true;
+                }
+            });
 
             return Task.Run(() =>
             {
                 while (this.i.State.IsRunning)
                 {
-                    this.i.InputController.TapKey(Keys.Tab);
-                    Console.WriteLine("TAB pressed");
-
-                    //while (this.i.State.IsRunning && !this.i.Data.PlayerHasTarget)
-                    //{
-                    //    this.HealIfNeeded();
-                    //    this.i.InputController.TapKey(Keys.D4);
-                    //    Thread.Sleep(200);
-                    //}
-                    Thread.Sleep(200);
-                    while (this.i.State.IsRunning && this.i.Data.PlayerHasTarget && !this.i.Data.IsTargetDead)
+                    if (loot)
                     {
-                        this.HealIfNeeded();
-                        if (this.i.Profile.Settings.ShouldUseBearForm)
+                        for (int i = 0; i < 3; i++)
                         {
-                            this.i.WowActions.Shapeshift(DruidShapeshiftForm.Bear);
-
-                            if (this.i.Data.PlayerHealth < 50)
-                            {
-                                this.i.InputController.TapKey(Keys.D4);
-                            }
-                            this.i.InputController.TapKey(Keys.D6);
-                            this.i.InputController.TapKey(Keys.D5);
+                            Thread.Sleep(3500);
+                            this.i.InputController.TapKey(Keys.D2);
                         }
 
-
-                        this.i.InputController.TapKey(Keys.D3);
+                        loot = false;
+                    }
+                    else
+                    {
                         this.i.InputController.TapKey(Keys.D1);
-                        Thread.Sleep(200);
+                        Thread.Sleep(500);
                     }
 
-                    //this.i.InputController.TapKey(Keys.Tab);
-                    //this.i.InputController.TapKey(Keys.D1);
-                    //Thread.Sleep(1500);
-                    //this.HealIfNeeded();
-                    //if (this.i.Data.PlayerHasTarget == false)
-                    //{
-                    //    this.i.InputController.TapKey(Keys.Tab);
-                    //}
-                    //this.i.InputController.TapKey(Keys.D3);
-                    //Thread.Sleep(1500);
-                    //if (this.i.Data.PlayerHasTarget == false)
-                    //{
-                    //    this.i.InputController.TapKey(Keys.Tab);
-                    //}
-                    //this.i.InputController.TapKey(Keys.D4);
-                    //this.i.InputController.TapKey(Keys.D3);
-                    //Thread.Sleep(1500);
-                    //this.i.InputController.TapKey(Keys.D5);
-                    //Thread.Sleep(1500);
-                    //this.i.InputController.TapKey(Keys.D6);
-                    //Thread.Sleep(1500);
+                    if (this.i.Data.FreeBagSlots < 50)
+                    {
+                        while (this.i.State.IsRunning && this.i.Data.PlayerIsInCombat)
+                        {
+                            this.i.InputController.TapKey(Keys.D4);
+                            Thread.Sleep(500);
+                        }
+
+                        this.i.WowActions.SellItemsIfNeeded(50, 100);
+                    }
                 }
-
-
             });
+        }
+
+        private Task RunLevelTask()
+        {
+            //return Task.Run(() =>
+            //{
+            //    while (this.i.State.IsRunning)
+            //    {
+            //        if (!this.i.Data.PlayerHasTarget || this.i.Data.IsTargetDead)
+            //        {
+            //            this.i.InputController.TapKey(Keys.Tab);
+            //        }
+
+            //        if (this.i.Data.PlayerHealth < 60)
+            //        {
+            //            this.i.InputController.TapKey(Keys.D3);
+            //        }
+            //        else
+            //        {
+            //            this.i.InputController.TapKey(Keys.D1);
+            //            this.i.InputController.TapKey(Keys.D2);
+            //        }
+
+            //        Thread.Sleep(500);
+            //    }
+            //});
+
+            return Task.Run(() =>
+            {
+                while (this.i.State.IsRunning)
+                {
+                    if (this.i.Data.PlayerHealth < 60)
+                    {
+                        this.i.InputController.TapKey(Keys.D3);
+                    }
+                    else
+                    {
+                        this.i.InputController.TapKey(Keys.D1);
+                        this.i.InputController.TapKey(Keys.D2);
+                    }
+
+                    Thread.Sleep(500);
+                }
+            });
+            
+        }
+
+        private Task RunTurretTask()
+        {
+            return this.RunFARM();
+            //var keyArray = new Keys[]
+            //    {
+            //        Keys.D1,
+            //        Keys.D3,
+            //        Keys.D4,
+            //        Keys.D5,
+            //        Keys.D6
+            //    };
+
+            //return Task.Run(() =>
+            //{
+            //    while (this.i.State.IsRunning)
+            //    {
+            //        if (!this.i.Data.PlayerHasTarget || this.i.Data.IsTargetDead)
+            //        { 
+            //            this.i.InputController.TapKey(Keys.Tab);
+            //        }
+
+            //        if (this.i.Data.PlayerHealth < 60)
+            //        {
+            //            this.i.InputController.TapKey(Keys.D3);
+            //        }
+            //        else
+            //        { 
+            //            this.i.InputController.TapKey(Keys.D1);
+            //            this.i.InputController.TapKey(Keys.D2);
+            //        }
+
+            //        Thread.Sleep(500);
+
+            //        //this.i.InputController.TapKey(Keys.Tab);
+            //        //Console.WriteLine("TAB pressed");
+
+            //        //while (this.i.State.IsRunning && !this.i.Data.PlayerHasTarget)
+            //        //{
+            //        //    this.HealIfNeeded();
+            //        //    this.i.InputController.TapKey(Keys.D4);
+            //        //    Thread.Sleep(200);
+            //        //}
+            //        //Thread.Sleep(200);
+            //        //while (this.i.State.IsRunning && this.i.Data.PlayerHasTarget && !this.i.Data.IsTargetDead)
+            //        //{
+            //        //    this.HealIfNeeded();
+            //        //    if (this.i.Profile.Settings.ShouldUseBearForm)
+            //        //    {
+            //        //        this.i.WowActions.Shapeshift(DruidShapeshiftForm.Bear);
+
+            //        //        if (this.i.Data.PlayerHealth < 50)
+            //        //        {
+            //        //            this.i.InputController.TapKey(Keys.D4);
+            //        //        }
+            //        //        this.i.InputController.TapKey(Keys.D6);
+            //        //        this.i.InputController.TapKey(Keys.D5);
+            //        //    }
+
+
+            //        //    this.i.InputController.TapKey(Keys.D3);
+            //        //    this.i.InputController.TapKey(Keys.D1);
+            //        //    Thread.Sleep(200);
+            //        //}
+
+            //        //this.i.InputController.TapKey(Keys.Tab);
+            //        //this.i.InputController.TapKey(Keys.D1);
+            //        //Thread.Sleep(1500);
+            //        //this.HealIfNeeded();
+            //        //if (this.i.Data.PlayerHasTarget == false)
+            //        //{
+            //        //    this.i.InputController.TapKey(Keys.Tab);
+            //        //}
+            //        //this.i.InputController.TapKey(Keys.D3);
+            //        //Thread.Sleep(1500);
+            //        //if (this.i.Data.PlayerHasTarget == false)
+            //        //{
+            //        //    this.i.InputController.TapKey(Keys.Tab);
+            //        //}
+            //        //this.i.InputController.TapKey(Keys.D4);
+            //        //this.i.InputController.TapKey(Keys.D3);
+            //        //Thread.Sleep(1500);
+            //        //this.i.InputController.TapKey(Keys.D5);
+            //        //Thread.Sleep(1500);
+            //        //this.i.InputController.TapKey(Keys.D6);
+            //        //Thread.Sleep(1500);
+            //    }
+
+
+            //});
         }
 
         private void HealIfNeeded()
@@ -401,6 +543,22 @@ namespace Grindr
                     this.i.Profile.Settings.VendorProfilePath = dialog.FileName;
                 }
             }
+        }
+
+        private void ClearLastClicks(object sender, RoutedEventArgs e)
+        {
+            // Clear datasource
+            this.i.LastClickedPoints.Clear();
+        }
+
+        private void SimulateSelectedClick(object sender, RoutedEventArgs e)
+        {
+            var selectedIndex = this.positionListBox.SelectedIndex;
+
+            var x = this.i.LastClickedPoints[selectedIndex].X;
+            var y = this.i.LastClickedPoints[selectedIndex].Y;
+
+            this.i.InputController.LeftMouseClick((int)x, (int)y);
         }
     }
 }
