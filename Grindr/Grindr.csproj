@@ -42,7 +42,7 @@
     </Reference>
     <Reference Include="Emgu.CV.World, Version=3.4.3.3016, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <HintPath>..\packages\EMGU.CV.3.4.3.3016\lib\net35\Emgu.CV.World.dll</HintPath>
-	</Reference>
+    </Reference>
     <Reference Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
     </Reference>
@@ -109,10 +109,13 @@
     <Compile Include="Assister.cs" />
     <Compile Include="BotInstance.cs" />
     <Compile Include="Controller\InstanceWalkingController.cs" />
+    <Compile Include="DTOs\Member.cs" />
     <Compile Include="DTOs\Profile.cs" />
+    <Compile Include="DTOs\Team.cs" />
     <Compile Include="Enums\AttachState.cs" />
     <Compile Include="Enums\BotMode.cs" />
     <Compile Include="Enums\DruidShapeshiftForm.cs" />
+    <Compile Include="GlobalState.cs" />
     <Compile Include="Healer.cs" />
     <Compile Include="Helper\CalculationHelper.cs" />
     <Compile Include="Controller\CombatController.cs" />
@@ -130,6 +133,9 @@
     <Compile Include="State.cs" />
     <Compile Include="Controller\WalkingController.cs" />
     <Compile Include="Statistics.cs" />
+    <Compile Include="UI\MultiboxMainWindow.xaml.cs">
+      <DependentUpon>MultiboxMainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WowActions.cs" />
     <Page Include="UI\BotUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -148,6 +154,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\MultiboxMainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
