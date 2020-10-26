@@ -93,6 +93,23 @@ namespace Grindr
                 OnPropertyChanged();
             }
         }
+
+        private bool captureMouseClickEnabled = false;
+        public bool CaptureMouseClickEnabled
+        {
+            get
+            {
+                return captureMouseClickEnabled;
+            }
+            set
+            {
+                captureMouseClickEnabled = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+
         private BotInstance i { get; set; }
 
         public Statistics(BotInstance instance)

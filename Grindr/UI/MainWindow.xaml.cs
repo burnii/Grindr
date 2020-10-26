@@ -15,6 +15,7 @@ namespace Grindr.UI
     {
         private List<BotUserControl> botUserControls = new List<BotUserControl>() { new BotUserControl(0) };
 
+
         public MainWindow()
         {
             InitializeComponent();

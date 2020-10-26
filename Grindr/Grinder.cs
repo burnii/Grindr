@@ -160,7 +160,7 @@ namespace Grindr
                 if (shouldRepeat && i == profile.NavigationNodes.Count - 1)
                 {
                     this.i.Statistics.Runs++;
-                    i = 0;
+                    i = -1;
                 }
             }
         }
@@ -184,6 +184,13 @@ namespace Grindr
 
         public Task StartJourney()
         {
+            Task.Run(() => {
+                while (this.i.State.IsRunning)
+                {
+                    this.i.InputController.TapKey(Keys.D1);
+                    Thread.Sleep(500);
+                }
+            });
             var selectedIndex = this.i.NavigationCoordinatesListBox.SelectedIndex;
             return Task.Run(() =>
             {

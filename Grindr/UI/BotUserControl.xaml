@@ -178,6 +178,19 @@
                     <TextBlock Margin="0,0,10,0" Text="{Binding GoldPerRun, StringFormat='GoldPerRun: \{0\}'}" ></TextBlock>
                 </WrapPanel>
             </TabItem>
+
+            <TabItem Header="Positioning">
+                <StackPanel x:Name="Positioning">
+                    <TextBlock Margin="0,0,10,0" Text="{Binding CurrentMousePoint.X, StringFormat='CurrentMousePosX: \{0\}', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ></TextBlock>
+                    <TextBlock Margin="0,0,10,0" Text="{Binding CurrentMousePoint.Y, StringFormat='CurrentMousePosY: \{0\}', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ></TextBlock>
+                    <TextBlock Margin="0,0,10,0" Text="{Binding CurrentCalculatedMousePoint.X, StringFormat='CurrentCalculatedMousePointX: \{0\}', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ></TextBlock>
+                    <TextBlock Margin="0,0,10,0" Text="{Binding CurrentCalculatedMousePoint.Y, StringFormat='CurrentCalculatedMousePointY: \{0\}', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ></TextBlock>
+                    <CheckBox IsChecked="{Binding CaptureMouseClickEnabled}" Content="Capturing enabled" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                    <Button Click="ClearLastClicks">ClearList</Button>
+                    <Button Click="SimulateSelectedClick">Simulateclick</Button>
+                    <ListBox BorderThickness="0" x:Name="positionListBox" HorizontalAlignment="Left" Height="158" VerticalAlignment="Top" Width="212" Margin="10,10,0,0"/>
+                </StackPanel>
+            </TabItem>
         </TabControl>
         <TabControl Visibility="Hidden" x:Name="assistTabControl" HorizontalAlignment="Left" Height="253" Margin="2,58,0,0" VerticalAlignment="Top" Width="621">
             <TabItem Header="General">
