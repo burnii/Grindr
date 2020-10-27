@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Grindr.DTOs;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +25,13 @@ namespace Grindr.UI
         {
             InitializeComponent();
 
-            // TODO Parse Teams aus ./Teams/ und ergebnis in Globalstate/Teams hinterlegen
+            Team.UpdateTeams();
+            GlobalState.Instance.UpdatedWowExePath();
+        }
+
+        private void LaunchButton_MouseDown(object sender, RoutedEventArgs e)
+        {
+            new Initializer().InitializeTeams();
         }
     }
 }

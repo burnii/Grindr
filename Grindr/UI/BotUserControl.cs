@@ -534,7 +534,7 @@ namespace Grindr.UI
 
                 if (result == DialogResult.OK)
                 {
-                    this.i.Profile.Settings.WowExePath = dialog.FileName;
+                    //this.i.Profile.Settings.WowExePath = dialog.FileName;
                 }
             }
         }

@@ -8,6 +8,7 @@ namespace Grindr.DTOs
 {
     public class Member
     {
+        public BotInstance i { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public int WowAccIndex { get; set; }
