@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="Grindr.UI.UserControls.BotControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Grindr.UI.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Name="StackPanelChar1" Margin="2" Grid.Column="0" HorizontalAlignment="Stretch">
+        <StackPanel>
+            <GroupBox Header="Status" VerticalAlignment="Top">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="Status1"/>
+                        <ColumnDefinition x:Name="Status2"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Bot 1 Status-->
+                    <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Label>Attached:</Label>
+                    </StackPanel>
+                    <StackPanel Grid.Column="0"  Margin="0,20,0,0">
+                        <ToggleButton Height="48" BorderThickness="0" Background="Transparent">
+                            <ToggleButton.Style>
+                                <Style x:Name="ToggleStyleAttachedChar1" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Image Source="..\..\Resources\Status\Green_sphere.png" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Image Source="..\..\Resources\Status\Red_sphere.png" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                    </StackPanel>
+                    <!--Bot 1 Status-->
+
+                    <!--Bot 1 Status-->
+                    <StackPanel Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Label>Running:</Label>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="0,20,0,0">
+                        <ToggleButton Height="48" BorderThickness="0" Background="Transparent">
+                            <ToggleButton.Style>
+                                <Style x:Name="ToggleStyleRunningChar1" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Image Source="..\..\Resources\Status\Green_sphere.png" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Image Source="..\..\Resources\Status\Red_sphere.png" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                    </StackPanel>
+                    <!--Bot 1 Status-->
+
+                </Grid>
+            </GroupBox>
+
+
+        </StackPanel>
+        <StackPanel>
+            <GroupBox Header="Username" VerticalAlignment="Top">
+                <TextBox x:Name="userNameTextBox" Background="WhiteSmoke" Text="{Binding CurrentSelectedTeam}"  Margin="0,0,0,0" />
+            </GroupBox>
+        </StackPanel>
+        <StackPanel>
+            <GroupBox Header="Password" VerticalAlignment="Top">
+                <TextBox x:Name="passwordTextBox" Background="WhiteSmoke" Height="22" Text="Passwort" Margin="0,0,0,0"/>
+            </GroupBox>
+        </StackPanel>
+        <StackPanel>
+            <GroupBox Header="Account" VerticalAlignment="Top" >
+                <TextBox x:Name="blizzAccountTextBox" Background="WhiteSmoke" Height="22" Text="AccountIndex" Margin="0,0,0,0" />
+            </GroupBox>
+        </StackPanel>
+        <StackPanel>
+            <GroupBox Header="Character" VerticalAlignment="Top" >
+                <TextBox x:Name="CharacterIndexTextBox" Background="WhiteSmoke" Height="22" Text="CharacterIndex" Margin="0,0,0,0" />
+            </GroupBox>
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

@@ -148,6 +148,9 @@
   <data name="connecting_484x461" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\connecting_484x461.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Green_sphere" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\status\green_sphere.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="loginButton_484x461" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\loginButton_484x461.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -156,6 +159,9 @@
   </data>
   <data name="passwordWrong_484x461" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\passwordWrong_484x461.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Red_sphere" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\status\red_sphere.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="usernameField_484x461" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\usernameField_484x461.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

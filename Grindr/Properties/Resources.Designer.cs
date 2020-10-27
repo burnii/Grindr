@@ -163,6 +163,16 @@ namespace Grindr.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Green_sphere {
+            get {
+                object obj = ResourceManager.GetObject("Green_sphere", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap loginButton_484x461 {
             get {
                 object obj = ResourceManager.GetObject("loginButton_484x461", resourceCulture);
@@ -186,6 +196,16 @@ namespace Grindr.Properties {
         internal static System.Drawing.Bitmap passwordWrong_484x461 {
             get {
                 object obj = ResourceManager.GetObject("passwordWrong_484x461", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Red_sphere {
+            get {
+                object obj = ResourceManager.GetObject("Red_sphere", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
