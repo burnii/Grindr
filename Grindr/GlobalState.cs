@@ -19,6 +19,8 @@ namespace Grindr
         {
         }
 
+        public Team SelectedTeam { get; set; }
+
         public void UpdatedWowExePath()
         {
             var wowExePaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Wow.exe", System.IO.SearchOption.AllDirectories);

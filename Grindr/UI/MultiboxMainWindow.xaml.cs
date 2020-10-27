@@ -31,7 +31,22 @@ namespace Grindr.UI
 
         private void LaunchButton_MouseDown(object sender, RoutedEventArgs e)
         {
-            new Initializer().InitializeTeams();
+            new Initializer().LaunchTeams();
+        }
+
+        private void AddTeamButton_MouseDown(object sender, RoutedEventArgs e)
+        {
+            Team.AddTeam();
+        }
+
+        private void AddMemberButton_MouseDown(object sender, RoutedEventArgs e)
+        {
+            Team.AddMember(GlobalState.Instance.SelectedTeam);
+        }
+
+        private void RefreshTeamButton_MouseDown(object sender, RoutedEventArgs e)
+        {
+            Team.UpdateTeams();
         }
     }
 }

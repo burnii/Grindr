@@ -32,7 +32,7 @@ namespace Grindr
             this.i = instance;
         }
 
-        public Task InitializeTeams(params Team[] teams)
+        public Task LaunchTeams(params Team[] teams)
         {
             return Task.Run(() =>
             {

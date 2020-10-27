@@ -18,7 +18,6 @@ namespace Grindr
         public DataReader DataReader { get; set; }
         public Initializer Initializer { get; set; }
         public Logger Logger { get; set; }
-
         public BindingList<System.Windows.Point> LastClickedPoints { get; set; } = new BindingList<System.Windows.Point>();
         public Recorder Recorder { get; set; }
         public WowActions WowActions { get; set; }
