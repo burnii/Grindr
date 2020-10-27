@@ -1,5 +1,6 @@
 ﻿using Grindr.DTOs;
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
@@ -80,5 +81,38 @@ namespace Grindr.VM
             }
         }
 
+        internal void CreateNewTeam()
+        {
+            this.Teams.Add(new TeamVM()
+            {
+                TeamIsRunning = false,
+                TeamName = "newTeam",
+                Members = new System.Collections.Generic.List<MemberVM>()
+                {
+                    new MemberVM()
+                    {
+                        IsActive = true,
+                    },
+                    new MemberVM()
+                    {
+                        IsActive = false,
+                    },
+                    new MemberVM()
+                    {
+                        IsActive = false,
+                    },
+                    new MemberVM()
+                    {
+                        IsActive = false,
+                    },
+                    new MemberVM()
+                    {
+                        IsActive = false,
+                    }
+                }
+            });
+
+            this.OnPropertyChanged();
+        }
     }
 }

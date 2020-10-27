@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Grindr.UI
 {
@@ -100,7 +101,7 @@ namespace Grindr.UI
 
         private void NewTeam_Click(object sender, RoutedEventArgs e)
         {
-
+            this.MultiboxMainWindowVM.CreateNewTeam();
         }
 
         private void SaveTeam_Click(object sender, RoutedEventArgs e)
@@ -118,6 +119,45 @@ namespace Grindr.UI
         private void listBoxTeam_LostFocus(object sender, RoutedEventArgs e)
         {
             this.listBoxTeam.SelectedItem = this.MultiboxMainWindowVM.CurrentSelectedTeam;
+        }
+
+        private void EditTeam_Click(object sender, RoutedEventArgs e)
+        {
+            //var selectedItem = (ListBoxItem)this.listBoxTeam.SelectedItem;
+
+            //// Iterate whole listbox tree and search for this items
+            //TextBox nameBox = this.FindDescendant<TextBox>(selectedItem);
+            //nameBox.IsReadOnly = !nameBox.IsReadOnly;
+        }
+
+        private T FindDescendant<T>(DependencyObject obj) where T : DependencyObject
+        {
+            // Check if this object is the specified type
+            if (obj is T)
+                return obj as T;
+
+            // Check for children
+            int childrenCount = VisualTreeHelper.GetChildrenCount(obj);
+            if (childrenCount < 1)
+                return null;
+
+            // First check all the children
+            for (int i = 0; i < childrenCount; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child is T)
+                    return child as T;
+            }
+
+            // Then check the childrens children
+            for (int i = 0; i < childrenCount; i++)
+            {
+                DependencyObject child = FindDescendant<T>(VisualTreeHelper.GetChild(obj, i));
+                if (child != null && child is T)
+                    return child as T;
+            }
+
+            return null;
         }
     }
 }

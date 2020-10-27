@@ -64,6 +64,7 @@
                 <ContextMenu>
                     <MenuItem Header="Launch" Click="ButtonLaunchTeam_Click"/>
                     <MenuItem Header="New" Click="NewTeam_Click"/>
+                    <MenuItem Header="Edit/Lock" Click="EditTeam_Click"/>
                     <MenuItem Header="Save" Click="SaveTeam_Click"/>
                     <Separator></Separator>
                     <MenuItem Header="Delete" Click="DeleteTeam_Click"/>
@@ -71,7 +72,7 @@
             </ListBox.ContextMenu>
         </ListBox>
 
-        <Grid x:Name="GridCharacters" Grid.Column="1" Grid.Row="1" ShowGridLines="True" >
+        <Grid x:Name="GridCharacters" Grid.Column="1" Grid.Row="1" ShowGridLines="False" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="Char1"/>
                 <ColumnDefinition x:Name="Char2"/>
