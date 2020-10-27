@@ -10,6 +10,6 @@ namespace Grindr
 {
     public class GlobalState
     {
-        public static ObservableCollection<Team> Teams { get; set; }
+        public static ObservableCollection<TeamVM> Teams { get; set; }
     }
 }

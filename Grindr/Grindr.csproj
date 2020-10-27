@@ -109,9 +109,9 @@
     <Compile Include="Assister.cs" />
     <Compile Include="BotInstance.cs" />
     <Compile Include="Controller\InstanceWalkingController.cs" />
-    <Compile Include="DTOs\Member.cs" />
+    <Compile Include="DTOs\MemberVM.cs" />
     <Compile Include="DTOs\Profile.cs" />
-    <Compile Include="DTOs\Team.cs" />
+    <Compile Include="DTOs\TeamVM.cs" />
     <Compile Include="Enums\AttachState.cs" />
     <Compile Include="Enums\BotMode.cs" />
     <Compile Include="Enums\DruidShapeshiftForm.cs" />
@@ -144,6 +144,7 @@
     <Compile Include="UI\UserControls\BotControl.xaml.cs">
       <DependentUpon>BotControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VM\BaseViewModel.cs" />
     <Compile Include="VM\MultiboxMainWindowVM.cs" />
     <Compile Include="WowActions.cs" />
     <Page Include="UI\BotUserControl.xaml">

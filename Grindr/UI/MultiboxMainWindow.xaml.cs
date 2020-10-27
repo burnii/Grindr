@@ -1,20 +1,9 @@
-﻿using Grindr.VM;
+﻿using Grindr.DTOs;
+using Grindr.VM;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Grindr.UI
 {
@@ -41,8 +30,10 @@ namespace Grindr.UI
             this.MultiboxMainWindowVM.Initialize();
             this.DataContext = this.MultiboxMainWindowVM;
 
-            this.listBoxTeam.ItemsSource = this.MultiboxMainWindowVM.Teams;
-            this.listBoxTeam.SelectedIndex = 0;
+            if (this.MultiboxMainWindowVM.Teams.Count > 0)
+            {
+                this.listBoxTeam.SelectedItem = this.MultiboxMainWindowVM.Teams.FirstOrDefault();
+            }
         }
 
         private void ButtonAdd1_Click(object sender, RoutedEventArgs e)
@@ -94,7 +85,7 @@ namespace Grindr.UI
         {
             // Team has changed, binding should refresh automatically
             var item = (ListBox)sender;
-            this.MultiboxMainWindowVM.CurrentSelectedTeam = (string)item.SelectedItem;
+            this.MultiboxMainWindowVM.CurrentSelectedTeam = (TeamVM)item.SelectedItem;
         }
 
         private void ButtonLaunchTeam_Click(object sender, RoutedEventArgs e)
@@ -102,6 +93,26 @@ namespace Grindr.UI
             // Launch selected Team
         }
 
+        private void DeleteTeam_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
+
+        private void NewTeam_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SaveTeam_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.MultiboxMainWindowVM.SaveTeam(this.MultiboxMainWindowVM.CurrentSelectedTeam);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Fehler beim Speichern eines Teams",ex.Message);
+            }
+        }
     }
 }

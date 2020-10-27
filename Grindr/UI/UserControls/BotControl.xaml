@@ -81,22 +81,22 @@
         </StackPanel>
         <StackPanel>
             <GroupBox Header="Username" VerticalAlignment="Top">
-                <TextBox x:Name="userNameTextBox" Background="WhiteSmoke" Text="{Binding CurrentSelectedTeam}"  Margin="0,0,0,0" />
+                <TextBox x:Name="userNameTextBox" Background="WhiteSmoke" Text="{Binding AccName}"  Margin="0,0,0,0" />
             </GroupBox>
         </StackPanel>
         <StackPanel>
             <GroupBox Header="Password" VerticalAlignment="Top">
-                <TextBox x:Name="passwordTextBox" Background="WhiteSmoke" Height="22" Text="Passwort" Margin="0,0,0,0"/>
+                <TextBox x:Name="passwordTextBox" Background="WhiteSmoke" Height="22" Text="{Binding Password}" Margin="0,0,0,0"/>
             </GroupBox>
         </StackPanel>
         <StackPanel>
             <GroupBox Header="Account" VerticalAlignment="Top" >
-                <TextBox x:Name="blizzAccountTextBox" Background="WhiteSmoke" Height="22" Text="AccountIndex" Margin="0,0,0,0" />
+                <TextBox x:Name="blizzAccountTextBox" Background="WhiteSmoke" Height="22" Text="{Binding WowAccIndex}" Margin="0,0,0,0" />
             </GroupBox>
         </StackPanel>
         <StackPanel>
             <GroupBox Header="Character" VerticalAlignment="Top" >
-                <TextBox x:Name="CharacterIndexTextBox" Background="WhiteSmoke" Height="22" Text="CharacterIndex" Margin="0,0,0,0" />
+                <TextBox x:Name="CharacterIndexTextBox" Background="WhiteSmoke" Height="22" Text="{Binding CharIndex}" Margin="0,0,0,0" />
             </GroupBox>
         </StackPanel>
 

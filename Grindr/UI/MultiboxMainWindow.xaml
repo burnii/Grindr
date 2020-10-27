@@ -24,7 +24,25 @@
             <Button x:Name="ButtonLaunchTeam" Width="auto" Margin="5" Click="ButtonLaunchTeam_Click">Launch Team</Button>
         </StackPanel>
 
-        <ListBox x:Name="listBoxTeam" Background="LightGray" Grid.Row="1" SelectionChanged="listBoxTeam_SelectionChanged" FontSize="16"/>
+        <ListBox x:Name="listBoxTeam" Background="LightGray" Grid.Row="1" SelectionChanged="listBoxTeam_SelectionChanged" FontSize="16"
+                 ItemsSource="{Binding Teams}"
+                 SelectedItem = "{Binding CurrentSelectedTeam}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding TeamName}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Launch" Click="ButtonLaunchTeam_Click"/>
+                    <MenuItem Header="New" Click="NewTeam_Click"/>
+                    <MenuItem Header="Save" Click="SaveTeam_Click"/>
+                    <Separator></Separator>
+                    <MenuItem Header="Delete" Click="DeleteTeam_Click"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
 
         <Grid x:Name="GridCharacters" Grid.Column="1" Grid.Row="1" ShowGridLines="True" >
             <Grid.ColumnDefinitions>
@@ -38,31 +56,42 @@
             <StackPanel Name="StackPanelChar1" Grid.Column="0" HorizontalAlignment="Stretch">
                 <Button Name="ButtonAdd1" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd1_Click"></Button>
                 <!--UserControl für Bot 1-->
-                <controls:BotControl x:Name="BotControl1" Visibility="Hidden"></controls:BotControl>
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[0]}"
+                                     x:Name="BotControl1" 
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar1Visible}">
+                </controls:BotControl>
             </StackPanel>
 
             <StackPanel Name="StackPanelChar2" Grid.Column="1">
                 <Button Name="ButtonAdd2" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd2_Click"></Button>
                 <!--UserControl für Bot 2-->
-                <controls:BotControl x:Name="BotControl2" Visibility="Hidden"></controls:BotControl>
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[1]}"
+                                     x:Name="BotControl2"
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar2Visible}"></controls:BotControl>
             </StackPanel>
 
             <StackPanel Name="StackPanelChar3" Grid.Column="2">
                 <Button Name="ButtonAdd3" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd3_Click"></Button>
                 <!--UserControl für Bot 3-->
-                <controls:BotControl x:Name="BotControl3" Visibility="Hidden"></controls:BotControl>
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[2]}" 
+                                     x:Name="BotControl3" 
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar3Visible}"></controls:BotControl>
             </StackPanel>
 
             <StackPanel Name="StackPanelChar4" Grid.Column="3">
                 <Button Name="ButtonAdd4" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd4_Click"></Button>
                 <!--UserControl für Bot 4-->
-                <controls:BotControl x:Name="BotControl4" Visibility="Hidden"></controls:BotControl>
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[3]}" 
+                                     x:Name="BotControl4" 
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar4Visible}"></controls:BotControl>
             </StackPanel>
 
             <StackPanel Name="StackPanelChar5" Grid.Column="4">
                 <Button Name="ButtonAdd5" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd5_Click"></Button>
                 <!--UserControl für Bot 2-->
-                <controls:BotControl x:Name="BotControl5" Visibility="Hidden"></controls:BotControl>
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[4]}" 
+                                     x:Name="BotControl5" 
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar5Visible}"></controls:BotControl>
             </StackPanel>
 
         </Grid>
