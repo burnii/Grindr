@@ -114,5 +114,10 @@ namespace Grindr.UI
                 Console.WriteLine("Fehler beim Speichern eines Teams",ex.Message);
             }
         }
+
+        private void listBoxTeam_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.listBoxTeam.SelectedItem = this.MultiboxMainWindowVM.CurrentSelectedTeam;
+        }
     }
 }

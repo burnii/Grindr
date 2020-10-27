@@ -45,7 +45,8 @@ namespace Grindr.VM
         {
             // serialize JSON to a string and then write string to a file 
             var fileName = team.TeamName;
-            var filePath = $@"{this.RootPath}\Teams\{fileName}";
+            var end = ".json";
+            var filePath = $@"{this.RootPath}\Teams\{fileName}{end}";
 
             File.WriteAllText(filePath, JsonConvert.SerializeObject(team));
 

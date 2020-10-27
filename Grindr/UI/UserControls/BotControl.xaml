@@ -19,7 +19,7 @@
                         <Label>Attached:</Label>
                     </StackPanel>
                     <StackPanel Grid.Column="0"  Margin="0,20,0,0">
-                        <ToggleButton Height="48" BorderThickness="0" Background="Transparent">
+                        <ToggleButton Height="48" BorderThickness="0" Background="Transparent" IsChecked="{Binding IsAttached}">
                             <ToggleButton.Style>
                                 <Style x:Name="ToggleStyleAttachedChar1" TargetType="ToggleButton">
                                     <Style.Triggers>
@@ -49,7 +49,7 @@
                         <Label>Running:</Label>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Margin="0,20,0,0">
-                        <ToggleButton Height="48" BorderThickness="0" Background="Transparent">
+                        <ToggleButton Height="48" BorderThickness="0" Background="Transparent" IsChecked="{Binding IsRunning}">
                             <ToggleButton.Style>
                                 <Style x:Name="ToggleStyleRunningChar1" TargetType="ToggleButton">
                                     <Style.Triggers>
@@ -97,6 +97,30 @@
         <StackPanel>
             <GroupBox Header="Character" VerticalAlignment="Top" >
                 <TextBox x:Name="CharacterIndexTextBox" Background="WhiteSmoke" Height="22" Text="{Binding CharIndex}" Margin="0,0,0,0" />
+            </GroupBox>
+        </StackPanel>
+
+        <StackPanel>
+            <GroupBox Header="Servername" VerticalAlignment="Top" >
+                <TextBox x:Name="TextboxServer" Background="WhiteSmoke" Height="22" Text="{Binding ServerName}" Margin="0,0,0,0" />
+            </GroupBox>
+        </StackPanel>
+
+        <StackPanel>
+            <GroupBox Header="CharacterName" VerticalAlignment="Top" >
+                <TextBox x:Name="TextboxCharName" Background="WhiteSmoke" Height="22" Text="{Binding CharName}" Margin="0,0,0,0" />
+            </GroupBox>
+        </StackPanel>
+
+        <StackPanel>
+            <GroupBox Header="IsTeamLeader" VerticalAlignment="Top" >
+                <CheckBox x:Name="IsLeader" Background="WhiteSmoke" Height="22" Content="{Binding IsLeader}" Margin="0,0,0,0"></CheckBox>
+            </GroupBox>
+        </StackPanel>
+
+        <StackPanel>
+            <GroupBox Header="Default Profile" VerticalAlignment="Top" >
+                <TextBox x:Name="DefaultProfil" Background="WhiteSmoke" Height="22" Margin="0,0,0,0" />
             </GroupBox>
         </StackPanel>
 

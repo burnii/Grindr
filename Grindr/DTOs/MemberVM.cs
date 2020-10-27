@@ -66,32 +66,32 @@ namespace Grindr.DTOs
             }
         }
 
-        private string server;
-        [JsonProperty(PropertyName = "Server")]
-        public string Server
+        private string serverName;
+        [JsonProperty(PropertyName = "ServerName")]
+        public string ServerName
         {
             get
             {
-                return server;
+                return serverName;
             }
             set
             {
-                server = value;
+                serverName = value;
                 OnPropertyChanged("Server");
             }
         }
 
-        private string charname;
-        [JsonProperty(PropertyName = "Charname")]
-        public string Charname
+        private string charName;
+        [JsonProperty(PropertyName = "CharName")]
+        public string CharName
         {
             get
             {
-                return charname;
+                return charName;
             }
             set
             {
-                charname = value;
+                charName = value;
                 OnPropertyChanged("Charname");
             }
         }
@@ -123,6 +123,43 @@ namespace Grindr.DTOs
             {
                 defaultProfile = value;
                 OnPropertyChanged("DefaultProfile");
+            }
+        }
+
+        private bool isActive = false;
+        [JsonProperty(PropertyName = "IsActive")]
+        public bool IsActive
+        {
+            get => isActive;
+            set
+            {
+                isActive = value;
+                OnPropertyChanged("IsActive");
+            }
+        }
+
+
+        private bool isRunning;
+        [JsonIgnore]
+        public bool IsRunning
+        {
+            get => isRunning;
+            set
+            {
+                isRunning = value;
+                OnPropertyChanged("IsRunning");
+            }
+        }
+
+        private bool isAttached;
+        [JsonIgnore]
+        public bool IsAttached
+        {
+            get => isAttached;
+            set
+            {
+                isAttached = value;
+                OnPropertyChanged("IsAttached");
             }
         }
     }
