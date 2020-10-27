@@ -4,10 +4,97 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Grindr.UI"
+        xmlns:controls="clr-namespace:Grindr.UI.UserControls"
         mc:Ignorable="d"
-        Title="Grindr" Height="450" Width="800">
-    <Grid>
-        
+        Title="GrindR Multibox Tool ® DanielSonJackson | Eriktion" Height="620.5" Width="1400">
 
+    <Grid x:Name="GridTeam" Background="AliceBlue">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="TeamCollection" MinWidth="250" MaxWidth="250"/>
+            <ColumnDefinition x:Name="TeamContent" Width="7*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="Header" MinHeight="50" MaxHeight="50"></RowDefinition>
+            <RowDefinition x:Name="Content" Height="5*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2">
+            <Button x:Name="ButtonLaunchTeam" Width="auto" Margin="5" Click="ButtonLaunchTeam_Click">Launch Team</Button>
+        </StackPanel>
+
+        <ListBox x:Name="listBoxTeam" Background="LightGray" Grid.Row="1" SelectionChanged="listBoxTeam_SelectionChanged" FontSize="16"
+                 ItemsSource="{Binding Teams}"
+                 SelectedItem = "{Binding CurrentSelectedTeam}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding TeamName}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Launch" Click="ButtonLaunchTeam_Click"/>
+                    <MenuItem Header="New" Click="NewTeam_Click"/>
+                    <MenuItem Header="Save" Click="SaveTeam_Click"/>
+                    <Separator></Separator>
+                    <MenuItem Header="Delete" Click="DeleteTeam_Click"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
+
+        <Grid x:Name="GridCharacters" Grid.Column="1" Grid.Row="1" ShowGridLines="True" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="Char1"/>
+                <ColumnDefinition x:Name="Char2"/>
+                <ColumnDefinition x:Name="Char3"/>
+                <ColumnDefinition x:Name="Char4"/>
+                <ColumnDefinition x:Name="Char5"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Name="StackPanelChar1" Grid.Column="0" HorizontalAlignment="Stretch">
+                <Button Name="ButtonAdd1" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd1_Click"></Button>
+                <!--UserControl für Bot 1-->
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[0]}"
+                                     x:Name="BotControl1" 
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar1Visible}">
+                </controls:BotControl>
+            </StackPanel>
+
+            <StackPanel Name="StackPanelChar2" Grid.Column="1">
+                <Button Name="ButtonAdd2" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd2_Click"></Button>
+                <!--UserControl für Bot 2-->
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[1]}"
+                                     x:Name="BotControl2"
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar2Visible}"></controls:BotControl>
+            </StackPanel>
+
+            <StackPanel Name="StackPanelChar3" Grid.Column="2">
+                <Button Name="ButtonAdd3" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd3_Click"></Button>
+                <!--UserControl für Bot 3-->
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[2]}" 
+                                     x:Name="BotControl3" 
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar3Visible}"></controls:BotControl>
+            </StackPanel>
+
+            <StackPanel Name="StackPanelChar4" Grid.Column="3">
+                <Button Name="ButtonAdd4" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd4_Click"></Button>
+                <!--UserControl für Bot 4-->
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[3]}" 
+                                     x:Name="BotControl4" 
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar4Visible}"></controls:BotControl>
+            </StackPanel>
+
+            <StackPanel Name="StackPanelChar5" Grid.Column="4">
+                <Button Name="ButtonAdd5" Content="+" Height="auto" FontSize="36" FontWeight="Bold" Click="ButtonAdd5_Click"></Button>
+                <!--UserControl für Bot 2-->
+                <controls:BotControl DataContext="{Binding CurrentSelectedTeam.Members[4]}" 
+                                     x:Name="BotControl5" 
+                                     Visibility="{Binding CurrentSelectedTeam.IsChar5Visible}"></controls:BotControl>
+            </StackPanel>
+
+        </Grid>
     </Grid>
+
 </Window>
