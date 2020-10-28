@@ -1,9 +1,11 @@
 ﻿using Grindr.VM;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Grindr.DTOs
 {
@@ -30,7 +32,30 @@ namespace Grindr.DTOs
 
         public static void UpdateTeams()
         {
-            Task.Run(() =>
+            //Task.Run(() =>
+            //{
+            //    var teamFiles = Directory.GetFiles(PathToTeamFiles);
+
+            //    var newTeams = new List<TeamVM>();
+
+            //    GlobalState.Instance.Teams.Clear();
+
+            //    foreach (var teamFile in teamFiles)
+            //    {
+            //        var serializedTeam = File.ReadAllText(teamFile);
+
+            //        var team = JsonConvert.DeserializeObject<TeamVM>(serializedTeam);
+
+            //        newTeams.Add(team);
+
+            //        InitializeMember(team);
+
+            //        GlobalState.Instance.Teams.Add(team);
+            //    }
+            //});
+
+
+            Application.Current.Dispatcher.Invoke(new Action(() =>
             {
                 var teamFiles = Directory.GetFiles(PathToTeamFiles);
 
@@ -50,7 +75,8 @@ namespace Grindr.DTOs
 
                     GlobalState.Instance.Teams.Add(team);
                 }
-            });
+            }));
+
         }
 
         public static void AddTeam()

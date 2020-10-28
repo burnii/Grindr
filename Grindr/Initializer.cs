@@ -92,7 +92,7 @@ namespace Grindr
             this.WindowHandle = null;
         }
 
-        public void InitializeInternal(MemberVM member = null)
+        public async void InitializeInternal(MemberVM member = null)
         {
             // um abwärtskompatibel zu bleiben, da der multiboxer an dieser Stelle keine Botinstanz (i) hat, sondern auf den member zugegriffen wird.
             string username = member.AccName;
@@ -125,123 +125,92 @@ namespace Grindr
             MoveWindow(WindowHandle.Value, 0, 0, 500, 500, false);
 
             // Always focus the window while initializing since "SendKeys" only sends the keys to the focused window
-            Task.Run(() =>
+            //await Task.Run(() =>
+            // {
+            //     while (IsInitializing)
+            //     {
+            //         Thread.Sleep(100);
+            //         SetForegroundWindow(WindowHandle.Value);
+            //     }
+            // });
+
+
+            var found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.usernameField_484x461, WindowHandle.Value, username, true);
+
+            if(!found)
             {
-                while (IsInitializing)
-                {
-                    Thread.Sleep(100);
-                    SetForegroundWindow(WindowHandle.Value);
-                }
-            });
+                throw new Exception("Couldnt insert Username");
+            }
+
+            found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordField_484x461, WindowHandle.Value, password, true);
+
+            if (!found)
+            {
+                throw new Exception("Couldnt insert Password");
+            }
+
+            found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.loginButton_484x461, WindowHandle.Value, string.Empty,true);
+
+            if (!found)
+            {
+                throw new Exception("Couldnt insert Password");
+            }
 
 
-            //var found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.usernameField_484x461, WindowHandle.Value, true);
+            found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordWrong_484x461, WindowHandle.Value, string.Empty, false);
 
-            //var counter = 10;
-            //while (found.Result != true)
-            //{
-            //    Thread.Sleep(1000);
+            if (found)
+            {
+                throw new Exception("Wrong password");
+            }
 
-            //    if (counter == 0)
-            //    {
-            //        throw new Exception("Cant login after 10 seconds");
-            //    }
+            found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.cantFindBlizzAccount_484x461, WindowHandle.Value, string.Empty, false);
 
-            //    counter--;
-            //}
+            if (found)
+            {
+                throw new Exception("No Blizz Acc found");
+            }
 
-            SendKeys.SendWait(username);
-            Thread.Sleep(1000);
-            this.i.InputController.TapKey(Keys.Tab);
+            Thread.Sleep(5000);
 
-            //var found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordField_484x461, WindowHandle.Value, true);
+            switch (member.WowAccIndex)
+            {
+                case 1:
+                    found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow1_484x461, WindowHandle.Value, string.Empty, true);
+                    break;
+                case 2:
+                    found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow2_484x461, WindowHandle.Value, string.Empty, true);
+                    break;
+                case 3:
+                    found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow3_484x461, WindowHandle.Value, string.Empty, true);
+                    break;
+                case 4:
+                    found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow4_484x461, WindowHandle.Value, string.Empty, true);
+                    break;
+                case 5:
+                    found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow5_484x461, WindowHandle.Value, string.Empty, true);
+                    break;
+                case 6:
+                    found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow6_484x461, WindowHandle.Value, string.Empty, true);
+                    break;
+                case 7:
+                    found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow7_484x461, WindowHandle.Value, string.Empty, true);
+                    break;
+                default:
+                    break;
+            }
 
-            //if (found.Result == true)
-            //{
-            //    SendKeys.SendWait(password);
-            //    Thread.Sleep(100);
-            //}
+            if (!found)
+            {
+                throw new Exception("Wow Account (1-8) not found");
+            }
 
-            SendKeys.SendWait(password);
-            Thread.Sleep(1000);
+            found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.acceptAccount_484x461, WindowHandle.Value, string.Empty, true);
 
-            //var found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.loginButton_484x461, WindowHandle.Value, false);
-
-            //if (found.Result == true)
-            //{
-            //    SendKeys.SendWait("{Enter}");
-            //    Thread.Sleep(100);
-            //}
-
-            this.i.InputController.TapKey(Keys.Enter);
-
-            //var found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordWrong_484x461, WindowHandle.Value, false);
-
-            //if (found.Result == true)
-            //{
-            //    IsInitializing = false;
-            //    throw new Exception("Wrong password");
-            //}
-
-            //found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.cantFindBlizzAccount_484x461, WindowHandle.Value, false);
-
-            //if (found.Result == true)
-            //{
-            //    IsInitializing = false;
-            //    throw new Exception("No Blizzard-Account found");
-            //}
-
-            //switch (member.i.Profile.Settings.BlizzAccountIndex)
-            //{
-            //    case 1:
-            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow1_484x461, WindowHandle.Value, true);
-            //        break;
-            //    case 2:
-            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow2_484x461, WindowHandle.Value, true);
-            //        break;
-            //    case 3:
-            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow3_484x461, WindowHandle.Value, true);
-            //        break;
-            //    case 4:
-            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow4_484x461, WindowHandle.Value, true);
-            //        break;
-            //    case 5:
-            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow5_484x461, WindowHandle.Value, true);
-            //        break;
-            //    case 6:
-            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow6_484x461, WindowHandle.Value, true);
-            //        break;
-            //    case 7:
-            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow7_484x461, WindowHandle.Value, true);
-            //        break;
-            //    default:
-            //        break;
-            //}
-
-            //while (!found.IsCompleted || found.Result == false)
-            //{
-            //    Console.WriteLine($" IsCompleted: {found.IsCompleted}");
-            //    Console.WriteLine($" Result     : {found.Result}");
-            //    if (found.Result && found.IsCompleted)
-            //    {
-            //        IsInitializing = false;
-            //        Thread.Sleep(1200);
-            //        // Write to Log (WowAccount 1 ausgewählt)
-            //    }
-            //    else if (found.IsFaulted || found.IsCanceled)
-            //    {
-            //        // Write to Log
-            //    }
-            //}
-
-            //found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.acceptAccount_484x461, WindowHandle.Value, true);
-
-            //if (found.Result == true)
-            //{
-            //    IsInitializing = false;
-            //    Thread.Sleep(100);
-            //    // Write to Log (accept)
-            //}
+            if (!found)
+            {
+                throw new Exception("Cant accept wow account");
+            }
 
             member.i.Logger.AddLogEntry("Initialized");
             IsInitializing = false;

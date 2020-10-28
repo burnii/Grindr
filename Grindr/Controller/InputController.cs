@@ -91,7 +91,7 @@ namespace Grindr
             this.ReleaseKey(key);
         }
 
-        public async Task<bool> ClickAndFindTemplate(Bitmap template, IntPtr windowHandle, bool doClick = false)
+        public async Task<bool> ClickAndFindTemplate(Bitmap template, IntPtr windowHandle, string text = null, bool doClick = false)
         {
             return await Task.Run(() =>
             {
@@ -103,9 +103,10 @@ namespace Grindr
 
                 while (!templateFound && counter < 10)
                 {
-                    this.AnalyseScreenshot(template, windowHandle, out foundX, out foundY, out templateFound);
-                    counter++;
                     Thread.Sleep(100);
+                    counter++;
+
+                    this.AnalyseScreenshot(template, windowHandle, out foundX, out foundY, out templateFound);
                 }
 
                 if (templateFound)
@@ -114,6 +115,12 @@ namespace Grindr
                     {
                         SetForegroundWindow(windowHandle);
                         this.LeftMouseClick(foundX, foundY);
+
+                        if(!string.IsNullOrEmpty(text))
+                        {
+                            Thread.Sleep(1000);
+                            SendKeys.SendWait(text);
+                        }
                     }
                     ret = true;
                 }
