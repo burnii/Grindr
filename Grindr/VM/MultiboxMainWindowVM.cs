@@ -35,49 +35,52 @@ namespace Grindr.VM
 
         }
 
-        public void Initialize()
+        public void LaunchSelectedTeam()
         {
-            // Json to Teams
-            this.LoadTeams();
+            foreach (var member in GlobalState.Instance.SelectedTeam.Member)
+            {
+                member.i.Initializer.LaunchTeams(GlobalState.Instance.SelectedTeam);
+            }
+            new Initializer().LaunchTeams(GlobalState.Instance.SelectedTeam);
         }
 
-        public void SaveTeam(TeamVM team)
-        {
-            // serialize JSON to a string and then write string to a file 
-            var fileName = team.TeamName;
-            var filePath = $@"{this.RootPath}\Teams\{fileName}";
+        //public void SaveTeam(TeamVM team)
+        //{
+        //    // serialize JSON to a string and then write string to a file 
+        //    var fileName = team.TeamName;
+        //    var filePath = $@"{this.RootPath}\Teams\{fileName}";
 
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(team));
+        //    File.WriteAllText(filePath, JsonConvert.SerializeObject(team));
 
-            // serialize JSON directly to a file
-            using (StreamWriter file = File.CreateText(filePath))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(file, team);
-            }
-        }
+        //    // serialize JSON directly to a file
+        //    using (StreamWriter file = File.CreateText(filePath))
+        //    {
+        //        JsonSerializer serializer = new JsonSerializer();
+        //        serializer.Serialize(file, team);
+        //    }
+        //}
 
-        private void LoadTeams()
-        {
-            if (!Directory.Exists($@"{this.RootPath}\Teams"))
-            {
-                //throw new Exception("Keine Teams gefunden");
-                return;
-            }
+        //private void LoadTeams()
+        //{
+        //    if (!Directory.Exists($@"{this.RootPath}\Teams"))
+        //    {
+        //        //throw new Exception("Keine Teams gefunden");
+        //        return;
+        //    }
 
-            var teams = Directory.GetFiles($@"{this.RootPath}\Teams");
+        //    var teams = Directory.GetFiles($@"{this.RootPath}\Teams");
 
-            foreach (var teamPath in teams)
-            {
-                // deserialize JSON directly from a file
-                using (StreamReader file = File.OpenText(teamPath))
-                {
-                    JsonSerializer serializer = new JsonSerializer();
-                    TeamVM team = (TeamVM)serializer.Deserialize(file, typeof(TeamVM));
-                    this.Teams.Add(team);
-                }
-            }
-        }
+        //    foreach (var teamPath in teams)
+        //    {
+        //        // deserialize JSON directly from a file
+        //        using (StreamReader file = File.OpenText(teamPath))
+        //        {
+        //            JsonSerializer serializer = new JsonSerializer();
+        //            TeamVM team = (TeamVM)serializer.Deserialize(file, typeof(TeamVM));
+        //            this.Teams.Add(team);
+        //        }
+        //    }
+        //}
 
     }
 }

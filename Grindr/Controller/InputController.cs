@@ -119,6 +119,7 @@ namespace Grindr
                 }
                 else
                 {
+                    Console.WriteLine("Cant find template");
                     // Write To log, message to user etc.
                 }
 

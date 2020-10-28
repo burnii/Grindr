@@ -1,15 +1,18 @@
 ﻿using Grindr.VM;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Grindr.DTOs
 {
-    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public class TeamVM : BaseViewModel
     {
+        [JsonIgnore]
+        public static string PathToTeamFiles { get; set; } = "./Teams/";
+
         private string teamName;
-        [JsonProperty(PropertyName = "TeamName")]
         public string TeamName
         {
             get
@@ -23,66 +26,81 @@ namespace Grindr.DTOs
             }
         }
 
-        [JsonProperty(PropertyName = "Members")]
-        public List<MemberVM> Members { get; set; } = new List<MemberVM>();
+        public List<MemberVM> Member { get; set; } = new List<MemberVM>();
 
-        private bool teamIsRunning;
-        [JsonProperty(PropertyName = "TeamIsRunning")]
-        public bool TeamIsRunning
+        public static void UpdateTeams()
         {
-            get
+            Task.Run(() =>
             {
-                return teamIsRunning;
-            }
-            set
+                var teamFiles = Directory.GetFiles(PathToTeamFiles);
+
+                var newTeams = new List<TeamVM>();
+
+                GlobalState.Instance.Teams.Clear();
+
+                foreach (var teamFile in teamFiles)
+                {
+                    var serializedTeam = File.ReadAllText(teamFile);
+
+                    var team = JsonConvert.DeserializeObject<TeamVM>(serializedTeam);
+
+                    newTeams.Add(team);
+
+                    InitializeMember(team);
+
+                    GlobalState.Instance.Teams.Add(team);
+                }
+            });
+        }
+
+        public static void AddTeam()
+        {
+            GlobalState.Instance.Teams.Add(new TeamVM());
+        }
+
+        public static void AddMember(TeamVM team)
+        {
+            var member = new MemberVM
             {
-                teamIsRunning = value;
-                OnPropertyChanged("teamIsRunning");
+                i = new BotInstance(new System.Windows.Controls.ListBox(), team.Member.Count)
+            };
+
+            team.Member.Add(member);
+        }
+
+        public void Launch()
+        { 
+            foreach(var member in this.Member)
+            {
+                member.Launch();
             }
         }
 
-        [JsonIgnore]
-        public bool IsChar1Visible
+        private static void InitializeMember(TeamVM team)
         {
-            get
+            for (int i = 0; i < team.Member.Count; i++)
             {
-                return this.Members.ElementAt(0) != null ? true : false;
+                InitializeMember(team.Member[i], i);
             }
         }
 
-        [JsonIgnore]
-        public bool IsChar2Visible
+        private static void InitializeMember(MemberVM member, int index)
         {
-            get
-            {
-                return this.Members.ElementAt(1) != null ? true : false;
-            }
-        }
+            member.i = new BotInstance(null, index);
 
-        [JsonIgnore]
-        public bool IsChar3Visible
-        {
-            get
-            {
-                return this.Members.ElementAt(2) != null ? true : false;
-            }
-        }
+            var defaultProfile = member.DefaultProfile;
 
-        [JsonIgnore]
-        public bool IsChar4Visible
-        {
-            get
+            if (!string.IsNullOrEmpty(defaultProfile) && File.Exists(defaultProfile))
             {
-                return this.Members.ElementAt(3) != null ? true : false;
-            }
-        }
+                var serializedProfile = File.ReadAllText(member.DefaultProfile);
 
-        [JsonIgnore]
-        public bool IsChar5Visible
-        {
-            get
-            {
-                return this.Members.ElementAt(4) != null ? true : false;
+                member.i.Profile.NavigationNodes.Clear();
+
+                var profile = JsonConvert.DeserializeObject<Profile>(serializedProfile);
+
+                member.i.Profile.NavigationNodes = profile.NavigationNodes;
+                member.i.Profile.Settings = profile.Settings;
+                member.i.Profile.Settings.Username = profile.Settings.Username;
             }
         }
     }

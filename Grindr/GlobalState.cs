@@ -18,10 +18,10 @@ namespace Grindr
         private GlobalState()
         {
         }
+        
+        public TeamVM SelectedTeam { get; set; }
 
-        public Team SelectedTeam { get; set; }
-
-        public void UpdatedWowExePath()
+        public void UpdateWowExePath()
         {
             var wowExePaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Wow.exe", System.IO.SearchOption.AllDirectories);
 
@@ -53,6 +53,6 @@ namespace Grindr
         private string wowExePath = @"D:\Battle.net\Games\World of Warcraft\_retail_\Wow.exe";
         public string WowExePath { get { return Instance.wowExePath; } set { Instance.wowExePath = value; this.OnPropertyChanged(); } }
 
-        public ObservableCollection<Team> Teams { get; set; } = new ObservableCollection<Team>();
+        public ObservableCollection<TeamVM> Teams { get; set; } = new ObservableCollection<TeamVM>();
     }
 }

@@ -42,7 +42,7 @@ namespace Grindr
             this.Recorder = new Recorder(this);
             this.Profile = new Profile(this);
             this.WowActions = new WowActions(this);
-            this.NavigationCoordinatesListBox = lb;
+            //this.NavigationCoordinatesListBox = lb;
             this.State = new State();
             this.Statistics = new Statistics(this);
             this.Healer = new Healer(this);

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Grindr.UI.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel Name="StackPanelChar1" Margin="2" Grid.Column="0" HorizontalAlignment="Stretch">
+    <StackPanel Background="WhiteSmoke" Name="StackPanelChar1" Margin="2" Grid.Column="0" HorizontalAlignment="Stretch">
         <StackPanel>
             <GroupBox Header="Status" VerticalAlignment="Top">
                 <Grid>

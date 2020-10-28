@@ -3,11 +3,12 @@ using Newtonsoft.Json;
 
 namespace Grindr.DTOs
 {
-    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public class MemberVM : BaseViewModel
     {
+        [JsonIgnore]
+        public BotInstance i { get; set; }
+
         private string accName;
-        [JsonProperty(PropertyName = "AccName")]
         public string AccName
         {
             get
@@ -22,7 +23,6 @@ namespace Grindr.DTOs
         }
 
         private string password;
-        [JsonProperty(PropertyName = "Password")]
         public string Password
         {
             get
@@ -37,7 +37,6 @@ namespace Grindr.DTOs
         }
 
         private int wowAccIndex;
-        [JsonProperty(PropertyName = "WowAccIndex")]
         public int WowAccIndex
         {
             get
@@ -52,7 +51,6 @@ namespace Grindr.DTOs
         }
 
         private int charIndex;
-        [JsonProperty(PropertyName = "CharIndex")]
         public int CharIndex
         {
             get
@@ -67,7 +65,6 @@ namespace Grindr.DTOs
         }
 
         private string server;
-        [JsonProperty(PropertyName = "Server")]
         public string Server
         {
             get
@@ -82,7 +79,6 @@ namespace Grindr.DTOs
         }
 
         private string charname;
-        [JsonProperty(PropertyName = "Charname")]
         public string Charname
         {
             get
@@ -97,7 +93,6 @@ namespace Grindr.DTOs
         }
 
         private bool isLeader;
-        [JsonProperty(PropertyName = "IsLeader")]
         public bool IsLeader
         {
             get
@@ -112,7 +107,6 @@ namespace Grindr.DTOs
         }
 
         private string defaultProfile;
-        [JsonProperty(PropertyName = "DefaultProfile")]
         public string DefaultProfile
         {
             get
@@ -124,6 +118,11 @@ namespace Grindr.DTOs
                 defaultProfile = value;
                 OnPropertyChanged("DefaultProfile");
             }
+        }
+
+        public void Launch()
+        {
+            this.i.Initializer.InitializeInternal(this);
         }
     }
 }

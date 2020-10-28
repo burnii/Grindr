@@ -19,6 +19,9 @@ namespace Grindr
         [DllImport("user32.dll")]
         private static extern Int32 GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int Width, int Height, bool Repaint);
+
         public IntPtr? WindowHandle { get; set; }
 
         public Process Process { get; set; }
@@ -32,7 +35,7 @@ namespace Grindr
             this.i = instance;
         }
 
-        public Task LaunchTeams(params Team[] teams)
+        public Task LaunchTeams(params TeamVM[] teams)
         {
             return Task.Run(() =>
             {
@@ -89,11 +92,12 @@ namespace Grindr
             this.WindowHandle = null;
         }
 
-        private void InitializeInternal(Member member = null)
+        public void InitializeInternal(MemberVM member = null)
         {
             // um abwärtskompatibel zu bleiben, da der multiboxer an dieser Stelle keine Botinstanz (i) hat, sondern auf den member zugegriffen wird.
-            string username = string.Empty;
-            string password = string.Empty;
+            string username = member.AccName;
+            string password = member.Password;
+
             if (member == null)
             {
                 username = this.i.Profile.Settings.Username;
@@ -105,18 +109,20 @@ namespace Grindr
             }
             //
 
-            this.i.Logger.AddLogEntry("Initializing ...");
+            member.i.Logger.AddLogEntry("Initializing ...");
             IsInitializing = true;
 
             if (Process != null && Process.Responding == true)
             {
-                this.i.Logger.AddLogEntry($"Kill WoW process with PID: {Process.Id}");
+                member.i.Logger.AddLogEntry($"Kill WoW process with PID: {Process.Id}");
                 Process.Kill();
             }
 
-            //Process = Process.Start(this.i.Profile.Settings.WowExePath);
+            Process = Process.Start(GlobalState.Instance.WowExePath);
             Process.WaitForInputIdle();
             WindowHandle = Process.MainWindowHandle;
+
+            MoveWindow(WindowHandle.Value, 0, 0, 500, 500, false);
 
             // Always focus the window while initializing since "SendKeys" only sends the keys to the focused window
             Task.Run(() =>
@@ -129,109 +135,115 @@ namespace Grindr
             });
 
 
-            var found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.usernameField_484x461, WindowHandle.Value, true);
+            //var found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.usernameField_484x461, WindowHandle.Value, true);
 
-            var counter = 10;
-            while (found.Result != true)
-            {
-                Thread.Sleep(1000);
+            //var counter = 10;
+            //while (found.Result != true)
+            //{
+            //    Thread.Sleep(1000);
 
-                if (counter == 0)
-                {
-                    throw new Exception("Cant login after 10 seconds");
-                }
+            //    if (counter == 0)
+            //    {
+            //        throw new Exception("Cant login after 10 seconds");
+            //    }
 
-                counter--;
-            }
+            //    counter--;
+            //}
 
             SendKeys.SendWait(username);
-            Thread.Sleep(100);
+            Thread.Sleep(1000);
+            this.i.InputController.TapKey(Keys.Tab);
 
-            found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordField_484x461, WindowHandle.Value, true);
+            //var found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordField_484x461, WindowHandle.Value, true);
 
-            if (found.Result == true)
-            {
-                SendKeys.SendWait(password);
-                Thread.Sleep(100);
-            }
+            //if (found.Result == true)
+            //{
+            //    SendKeys.SendWait(password);
+            //    Thread.Sleep(100);
+            //}
 
-            found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.loginButton_484x461, WindowHandle.Value, false);
+            SendKeys.SendWait(password);
+            Thread.Sleep(1000);
 
-            if (found.Result == true)
-            {
-                SendKeys.SendWait("{Enter}");
-                Thread.Sleep(100);
-            }
+            //var found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.loginButton_484x461, WindowHandle.Value, false);
 
-            found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordWrong_484x461, WindowHandle.Value, false);
+            //if (found.Result == true)
+            //{
+            //    SendKeys.SendWait("{Enter}");
+            //    Thread.Sleep(100);
+            //}
 
-            if (found.Result == true)
-            {
-                IsInitializing = false;
-                throw new Exception("Wrong password");
-            }
+            this.i.InputController.TapKey(Keys.Enter);
 
-            found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.cantFindBlizzAccount_484x461, WindowHandle.Value, false);
+            //var found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordWrong_484x461, WindowHandle.Value, false);
 
-            if (found.Result == true)
-            {
-                IsInitializing = false;
-                throw new Exception("No Blizzard-Account found");
-            }
+            //if (found.Result == true)
+            //{
+            //    IsInitializing = false;
+            //    throw new Exception("Wrong password");
+            //}
 
-            switch (this.i.Profile.Settings.BlizzAccountIndex)
-            {
-                case 1:
-                    found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow1_484x461, WindowHandle.Value, true);
-                    break;
-                case 2:
-                    found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow2_484x461, WindowHandle.Value, true);
-                    break;
-                case 3:
-                    found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow3_484x461, WindowHandle.Value, true);
-                    break;
-                case 4:
-                    found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow4_484x461, WindowHandle.Value, true);
-                    break;
-                case 5:
-                    found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow5_484x461, WindowHandle.Value, true);
-                    break;
-                case 6:
-                    found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow6_484x461, WindowHandle.Value, true);
-                    break;
-                case 7:
-                    found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow7_484x461, WindowHandle.Value, true);
-                    break;
-                default:
-                    break;
-            }
+            //found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.cantFindBlizzAccount_484x461, WindowHandle.Value, false);
 
-            while (!found.IsCompleted || found.Result == false)
-            {
-                Console.WriteLine($" IsCompleted: {found.IsCompleted}");
-                Console.WriteLine($" Result     : {found.Result}");
-                if (found.Result && found.IsCompleted)
-                {
-                    IsInitializing = false;
-                    Thread.Sleep(1200);
-                    // Write to Log (WowAccount 1 ausgewählt)
-                }
-                else if (found.IsFaulted || found.IsCanceled)
-                {
-                    // Write to Log
-                }
-            }
+            //if (found.Result == true)
+            //{
+            //    IsInitializing = false;
+            //    throw new Exception("No Blizzard-Account found");
+            //}
 
-            found = this.i.InputController.ClickAndFindTemplate(Properties.Resources.acceptAccount_484x461, WindowHandle.Value, true);
+            //switch (member.i.Profile.Settings.BlizzAccountIndex)
+            //{
+            //    case 1:
+            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow1_484x461, WindowHandle.Value, true);
+            //        break;
+            //    case 2:
+            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow2_484x461, WindowHandle.Value, true);
+            //        break;
+            //    case 3:
+            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow3_484x461, WindowHandle.Value, true);
+            //        break;
+            //    case 4:
+            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow4_484x461, WindowHandle.Value, true);
+            //        break;
+            //    case 5:
+            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow5_484x461, WindowHandle.Value, true);
+            //        break;
+            //    case 6:
+            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow6_484x461, WindowHandle.Value, true);
+            //        break;
+            //    case 7:
+            //        found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow7_484x461, WindowHandle.Value, true);
+            //        break;
+            //    default:
+            //        break;
+            //}
 
-            if (found.Result == true)
-            {
-                IsInitializing = false;
-                Thread.Sleep(100);
-                // Write to Log (accept)
-            }
+            //while (!found.IsCompleted || found.Result == false)
+            //{
+            //    Console.WriteLine($" IsCompleted: {found.IsCompleted}");
+            //    Console.WriteLine($" Result     : {found.Result}");
+            //    if (found.Result && found.IsCompleted)
+            //    {
+            //        IsInitializing = false;
+            //        Thread.Sleep(1200);
+            //        // Write to Log (WowAccount 1 ausgewählt)
+            //    }
+            //    else if (found.IsFaulted || found.IsCanceled)
+            //    {
+            //        // Write to Log
+            //    }
+            //}
 
-            this.i.Logger.AddLogEntry("Initialized");
+            //found = member.i.InputController.ClickAndFindTemplate(Properties.Resources.acceptAccount_484x461, WindowHandle.Value, true);
+
+            //if (found.Result == true)
+            //{
+            //    IsInitializing = false;
+            //    Thread.Sleep(100);
+            //    // Write to Log (accept)
+            //}
+
+            member.i.Logger.AddLogEntry("Initialized");
             IsInitializing = false;
         }
 
