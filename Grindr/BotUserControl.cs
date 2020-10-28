@@ -341,7 +341,7 @@ namespace Grindr
                 {
                     if (loot)
                     {
-                        for (int i = 0; i < 3; i++)
+                        for (int i = 0; i < 6; i++)
                         {
                             Thread.Sleep(3500);
                             this.i.InputController.TapKey(Keys.D2);
@@ -352,7 +352,7 @@ namespace Grindr
                     else
                     {
                         this.i.InputController.TapKey(Keys.D1);
-                        Thread.Sleep(500);
+                        Thread.Sleep(100);
                     }
 
                     if (this.i.Data.FreeBagSlots < 50)
@@ -363,7 +363,7 @@ namespace Grindr
                             Thread.Sleep(500);
                         }
 
-                        this.i.WowActions.SellItemsIfNeeded(50, 100);
+                        this.i.WowActions.SellItemsIfNeeded(10, 49);
                     }
                 }
             });
