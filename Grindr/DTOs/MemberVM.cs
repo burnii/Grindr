@@ -1,5 +1,6 @@
 ﻿using Grindr.VM;
 using Newtonsoft.Json;
+using System;
 
 namespace Grindr.DTOs
 {
@@ -107,6 +108,15 @@ namespace Grindr.DTOs
         }
 
         private string defaultProfile;
+
+        internal void Start()
+        {
+            while (this.i.State.IsRunning)
+            { 
+                
+            }
+        }
+
         public string DefaultProfile
         {
             get

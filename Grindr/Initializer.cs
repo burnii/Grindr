@@ -212,6 +212,9 @@ namespace Grindr
                 throw new Exception("Cant accept wow account");
             }
 
+            Thread.Sleep(10000);
+            member.i.InputController.TapKey(Keys.Enter);
+
             member.i.Logger.AddLogEntry("Initialized");
             IsInitializing = false;
         }

@@ -79,9 +79,19 @@ namespace Grindr.DTOs
 
         }
 
+        public void Start()
+        {
+            foreach (var member in GlobalState.Instance.SelectedTeam.Member)
+            {
+                //member.i.InputController.TapKey()
+            }
+        }
+
         public static void AddTeam()
         {
-            GlobalState.Instance.Teams.Add(new TeamVM());
+            // TODO Popup für die Eingabe des Teamnamen. bis dahin Team + count
+            var count = GlobalState.Instance.Teams.Count + 1;
+            GlobalState.Instance.Teams.Add(new TeamVM() { TeamName = $"Team{count}"});
         }
 
         public static void AddMember(TeamVM team)
@@ -95,11 +105,15 @@ namespace Grindr.DTOs
         }
 
         public void Launch()
-        { 
-            foreach(var member in this.Member)
+        {
+            Task.Run(() =>
             {
-                member.Launch();
-            }
+                foreach (var member in this.Member)
+                {
+                    member.Launch();
+                }
+            });
+            
         }
 
         private static void InitializeMember(TeamVM team)

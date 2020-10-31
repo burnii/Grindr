@@ -21,7 +21,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2">
-            <Button x:Name="ButtonLaunchTeam" Width="auto" Margin="5" Click="ButtonLaunchTeam_Click">Launch Team</Button>
+            <Button x:Name="ButtonAddTeam" Width="auto" Margin="5" Click="AddTeamButton_MouseDown">Add Team</Button>
+            <Button x:Name="ButtonAddMember" Width="auto" Margin="5" Click="AddMemberButton_MouseDown">Add Member</Button>
         </StackPanel>
 
         <ListBox x:Name="listBoxTeam" Background="LightGray" Grid.Row="1" SelectionChanged="listBoxTeam_SelectionChanged" FontSize="16"
@@ -36,29 +37,56 @@
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Launch" Click="ButtonLaunchTeam_Click"/>
-                    <MenuItem Header="New" Click="NewTeam_Click"/>
-                    <MenuItem Header="Save" Click="SaveTeam_Click"/>
-                    <Separator></Separator>
-                    <MenuItem Header="Delete" Click="DeleteTeam_Click"/>
+                    <MenuItem Header="Start" Click="StartTeam_Click"/>
+                    <MenuItem Header="Stop" Click="StopTeam_Click"/>
+                    <MenuItem Header="Pause" Click="PauseTeam_Click"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
 
-        <Grid x:Name="GridCharacters" Grid.Column="1" Grid.Row="1" ShowGridLines="True" >
-                
+        <Grid x:Name="GridCharacters" Grid.Column="1" Grid.Row="1" ShowGridLines="True" Visibility="Hidden">
             <ItemsControl x:Name="MemberIcList" Margin="0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-                
+
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Content="{Binding Charname}" Width="200" Height="200" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="25,0,0,25"></Button>
+                        <Button Content="{Binding Charname}" Width="200" Height="200" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="25,0,0,25" Click="MemberButton_Click"></Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+        </Grid>
+
+        <Grid Visibility="Hidden" Name="MemberDetailsGrid" Grid.Column="1" Grid.Row="1" >
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="{Binding Charname, StringFormat='Member - {0}'}" Margin="0,0,0,30"></TextBlock>
+                <GroupBox Header="Login" Margin="20,0,0,361" Width="281" HorizontalAlignment="Left">
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Username" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                            <TextBox x:Name="UserNameTextBox" Height="20" Background="WhiteSmoke" Text="{Binding AccName}"  Margin="0,0,0,0" Width="200" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Password" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                            <TextBox x:Name="PasswordTextBox" Height="20" Background="WhiteSmoke" Text="{Binding Password}"  Margin="0,0,0,0" Width="200" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content= "AccIndex" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                            <TextBox x:Name="WowAccIndexTextbox" Height="20" Background="WhiteSmoke" Text="{Binding WowAccIndex}"  Margin="0,0,0,0" Width="200" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="CharIndex" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                            <TextBox x:Name="CharIndexTextBox" Height="20" Background="WhiteSmoke" Text="{Binding CharIndex}"  Margin="0,0,0,0" Width="200" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </DockPanel>
         </Grid>
     </Grid>
 </Window>

@@ -23,8 +23,8 @@ namespace Grindr
 
         public void UpdateWowExePath()
         {
-            //var wowExePaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Wow.exe", System.IO.SearchOption.AllDirectories);
-            var wowExePaths = new string[]{@"C:\BattleNet\World of Warcraft\_retail_\Wow.exe"};
+            var wowExePaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Wow.exe", System.IO.SearchOption.AllDirectories);
+            //var wowExePaths = new string[]{@"C:\BattleNet\World of Warcraft\_retail_\Wow.exe"};
 
             if (wowExePaths.Length > 1)
             {
@@ -50,10 +50,10 @@ namespace Grindr
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        //private string wowExePath = @"C:\Program Files (x86)\World of Warcraft\_retail_\Wow.exe";
-        private string wowExePath = @"D:\Battle.net\Games\World of Warcraft\_retail_\Wow.exe";
+        private string wowExePath = @"C:\Program Files (x86)\World of Warcraft\_retail_\Wow.exe";
+       // private string wowExePath = @"D:\Battle.net\Games\World of Warcraft\_retail_\Wow.exe";
         public string WowExePath { get { return Instance.wowExePath; } set { Instance.wowExePath = value; this.OnPropertyChanged(); } }
 
-        public ObservableCollection<TeamVM> Teams { get; set; } = new ObservableCollection<TeamVM>();
+        public BindingList<TeamVM> Teams { get; set; } = new BindingList<TeamVM>();
     }
 }

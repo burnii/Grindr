@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Grindr.UI.UserControls
 {
     /// <summary>
-    /// Interaction logic for BotControl.xaml
+    /// Interaction logic for MemberDetailsUserControl.xaml
     /// </summary>
-    public partial class BotControl : UserControl
+    public partial class MemberDetailsUserControl : UserControl
     {
-        public BotControl()
+        public MemberDetailsUserControl()
         {
             InitializeComponent();
         }

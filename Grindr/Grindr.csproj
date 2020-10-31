@@ -141,8 +141,11 @@
     <Compile Include="UI\MultiboxMainWindow.xaml.cs">
       <DependentUpon>MultiboxMainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\UserControls\BotControl.xaml.cs">
-      <DependentUpon>BotControl.xaml</DependentUpon>
+    <Compile Include="UI\UserControls\MemberDetailsUserControl.xaml.cs">
+      <DependentUpon>MemberDetailsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\UserControls\MemberUserControl.xaml.cs">
+      <DependentUpon>MemberUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="VM\BaseViewModel.cs" />
     <Compile Include="VM\MultiboxMainWindowVM.cs" />
@@ -171,7 +174,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\UserControls\BotControl.xaml">
+    <Page Include="UI\UserControls\MemberDetailsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UserControls\MemberUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
