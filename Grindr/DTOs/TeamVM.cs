@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace Grindr.DTOs
             }
         }
 
-        public List<MemberVM> Member { get; set; } = new List<MemberVM>();
+        public BindingList<MemberVM> Member { get; set; } = new BindingList<MemberVM>();
 
         public static void UpdateTeams()
         {

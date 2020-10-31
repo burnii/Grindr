@@ -195,6 +195,9 @@ namespace Grindr
                     break;
                 case 7:
                     found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow7_484x461, WindowHandle.Value, string.Empty, true);
+                    break; 
+                case 8:
+                    found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow8_484x461, WindowHandle.Value, string.Empty, true);
                     break;
                 default:
                     break;

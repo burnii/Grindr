@@ -142,6 +142,9 @@
   <data name="accountWow7_484x461" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\accountWow7_484x461.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="accountWow8_484x461" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\accountwow8_484x461.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="cantFindBlizzAccount_484x461" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cantFindBlizzAccount_484x461.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

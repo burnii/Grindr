@@ -143,6 +143,16 @@ namespace Grindr.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap accountWow8_484x461 {
+            get {
+                object obj = ResourceManager.GetObject("accountWow8_484x461", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cantFindBlizzAccount_484x461 {
             get {
                 object obj = ResourceManager.GetObject("cantFindBlizzAccount_484x461", resourceCulture);
