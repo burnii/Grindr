@@ -8,13 +8,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Threading.Tasks;
+using MahApps.Metro.Controls;
 
 namespace Grindr.UI
 {
     /// <summary>
     /// Interaction logic for MultiboxMainWindow.xaml
     /// </summary>
-    public partial class MultiboxMainWindow : Window
+    public partial class MultiboxMainWindow : MetroWindow
     {
         public MultiboxMainWindow()
         {
@@ -25,9 +26,9 @@ namespace Grindr.UI
             GlobalState.Instance.UpdateWowExePath();
         }
 
-        private void LaunchButton_MouseDown(object sender, RoutedEventArgs e)
+        private async void LaunchButton_MouseDown(object sender, RoutedEventArgs e)
         {
-            new Initializer().LaunchTeams();
+            await new Initializer().LaunchTeams();
         }
 
         private void AddTeamButton_MouseDown(object sender, RoutedEventArgs e)

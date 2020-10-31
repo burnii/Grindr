@@ -173,7 +173,8 @@ namespace Grindr
                                 this.i.Data.Gold = GetIntPixelValue(bmp, x + 78, y, rgbValues);
 
                                 bmp.UnlockBits(bmpData);
-                                Thread.Sleep(50);
+                                //Thread.Sleep(50);
+                                Task.Delay(50);
                             }
                             this.i.Logger.AddLogEntry("Data reading stopped");
                         }
@@ -269,7 +270,8 @@ namespace Grindr
                     }
                 }
 
-                Thread.Sleep(3000);
+                //Thread.Sleep(3000);
+                Task.Delay(3000);
                 attempts++;
             }
         }

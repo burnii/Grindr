@@ -89,7 +89,8 @@ namespace Grindr
                     while (!this.i.Data.IsMounted && this.i.State.IsRunning)
                     {
                         this.i.InputController.TapKey(Keys.D8);
-                        Thread.Sleep(5000);
+                        Task.Delay(5000);
+                        //Thread.Sleep(5000);
                     }
 
                     this.i.InputController.TapKey(Keys.D9);
@@ -97,7 +98,8 @@ namespace Grindr
                     while (!this.i.Data.PlayerHasTarget)
                     {
                         this.i.InputController.TapKey(Keys.D9);
-                        Thread.Sleep(1000);
+                        //Thread.Sleep(1000);
+                        Task.Delay(1000);
                     }
 
                     this.i.InputController.TapKey(Keys.Y);
@@ -109,11 +111,13 @@ namespace Grindr
                         if (!this.i.Data.PlayerHasTarget)
                         {
                             this.i.InputController.TapKey(Keys.D9);
-                            Thread.Sleep(1000);
+                            //Thread.Sleep(1000);
+                            Task.Delay(1000);
                             this.i.InputController.TapKey(Keys.Y);
                         }
 
-                        Thread.Sleep(1000);
+                        //Thread.Sleep(1000);
+                        Task.Delay(1000);
                         this.i.InputController.TapKey(Keys.D0);
                     }
 
@@ -126,9 +130,11 @@ namespace Grindr
             while (this.i.Data.FreeBagSlots < endSlots && this.i.State.IsRunning)
             {
                 this.i.InputController.TapKey(Keys.D9);
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
+                Task.Delay(1000);
                 this.i.InputController.TapKey(Keys.Y);
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
+                Task.Delay(1000);
                 this.i.InputController.TapKey(Keys.D0);
             }
         }

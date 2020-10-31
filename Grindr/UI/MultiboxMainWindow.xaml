@@ -1,10 +1,9 @@
-﻿<Window x:Class="Grindr.UI.MultiboxMainWindow"
+﻿<mah:MetroWindow x:Class="Grindr.UI.MultiboxMainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Grindr.UI"
-        xmlns:controls="clr-namespace:Grindr.UI.UserControls"
         mc:Ignorable="d"
         Title="GrindR Multibox Tool ® DanielSonJackson | Eriktion" Height="620.5" Width="1400">
 
@@ -28,9 +27,35 @@
         <ListBox x:Name="listBoxTeam" Background="LightGray" Grid.Row="1" SelectionChanged="listBoxTeam_SelectionChanged" FontSize="16"
                  ItemsSource="{Binding Teams}"
                  SelectedItem = "{Binding SelectedTeam}">
+
+            <!--Dieser Abschnitt ist wichtig, damit sich ein Listbox Element auf die komplette Fläche bezieht-->
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding TeamName}"/>
+
+                    <Border CornerRadius="6" BorderBrush="Gray" Background="LightGray" BorderThickness="2" DockPanel.Dock="Top">
+                        <StackPanel>
+                            <DockPanel LastChildFill="False" >
+                                <StackPanel >
+                                    <TextBlock Foreground="Black" Margin="1" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding TeamName}"/>
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Button Background="Transparent" ToolTip="gestartet... wiiiishhchhhhhh">
+                                        <Image  Width="16" Source="..\Resources\TeamStatus\Launched.png"/>
+                                    </Button>
+                                </StackPanel>
+                            </DockPanel>
+                            <StackPanel>
+                                <ProgressBar HorizontalAlignment="Stretch" Height="5" x:Name="pbStatus" Minimum="0" Maximum="100" Background="Transparent" Value="{Binding Progress, Mode=OneWay}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
                 </DataTemplate>
             </ListBox.ItemTemplate>
 
@@ -54,7 +79,9 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Content="{Binding Charname}" Width="200" Height="200" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="25,0,0,25" Click="MemberButton_Click"></Button>
+                        <Border CornerRadius="6" BorderBrush="Green" Background="LightGray" BorderThickness="5" DockPanel.Dock="Top" Margin="25,0,0,25">
+                            <Button Content="{Binding Charname}" Width="200" Height="200" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="2"  Click="MemberButton_Click"></Button>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -89,4 +116,4 @@
             </DockPanel>
         </Grid>
     </Grid>
-</Window>
+</mah:MetroWindow>

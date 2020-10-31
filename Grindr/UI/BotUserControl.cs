@@ -337,7 +337,8 @@ namespace Grindr.UI
             {
                 while (this.i.State.IsRunning)
                 {
-                    Thread.Sleep(120000);
+                    //Thread.Sleep(120000);
+                    Task.Delay(120000);
                     loot = true;
                 }
             });
@@ -350,7 +351,8 @@ namespace Grindr.UI
                     {
                         for (int i = 0; i < 3; i++)
                         {
-                            Thread.Sleep(3500);
+                            //Thread.Sleep(3500);
+                            Task.Delay(3500);
                             this.i.InputController.TapKey(Keys.D2);
                         }
 
@@ -359,7 +361,8 @@ namespace Grindr.UI
                     else
                     {
                         this.i.InputController.TapKey(Keys.D1);
-                        Thread.Sleep(500);
+                        Task.Delay(500);
+                        //Thread.Sleep(500);
                     }
 
                     if (this.i.Data.FreeBagSlots < 50)
@@ -367,7 +370,8 @@ namespace Grindr.UI
                         while (this.i.State.IsRunning && this.i.Data.PlayerIsInCombat)
                         {
                             this.i.InputController.TapKey(Keys.D4);
-                            Thread.Sleep(500);
+                            //Thread.Sleep(500);
+                            Task.Delay(500);
                         }
 
                         this.i.WowActions.SellItemsIfNeeded(50, 100);

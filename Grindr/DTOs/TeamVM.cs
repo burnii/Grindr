@@ -29,6 +29,17 @@ namespace Grindr.DTOs
             }
         }
 
+        public int Progress
+        {
+            get
+            {
+                var member = this.Member.Count;
+                var finishedMember = this.Member.Where(c => c.i.Initializer.WindowHandle != null).ToArray().Length;
+
+                return Convert.ToInt32(finishedMember / member);
+            }
+        }
+
         public BindingList<MemberVM> Member { get; set; } = new BindingList<MemberVM>();
 
         public static void UpdateTeams()
@@ -55,29 +66,30 @@ namespace Grindr.DTOs
             //    }
             //});
 
-
-            Application.Current.Dispatcher.Invoke(new Action(() =>
+            Task.Run(() =>
             {
-                var teamFiles = Directory.GetFiles(PathToTeamFiles);
-
-                var newTeams = new List<TeamVM>();
-
-                GlobalState.Instance.Teams.Clear();
-
-                foreach (var teamFile in teamFiles)
+                Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    var serializedTeam = File.ReadAllText(teamFile);
+                    var teamFiles = Directory.GetFiles(PathToTeamFiles);
 
-                    var team = JsonConvert.DeserializeObject<TeamVM>(serializedTeam);
+                    var newTeams = new List<TeamVM>();
 
-                    newTeams.Add(team);
+                    GlobalState.Instance.Teams.Clear();
 
-                    InitializeMember(team);
+                    foreach (var teamFile in teamFiles)
+                    {
+                        var serializedTeam = File.ReadAllText(teamFile);
 
-                    GlobalState.Instance.Teams.Add(team);
-                }
-            }));
+                        var team = JsonConvert.DeserializeObject<TeamVM>(serializedTeam);
 
+                        newTeams.Add(team);
+
+                        InitializeMember(team);
+
+                        GlobalState.Instance.Teams.Add(team);
+                    }
+                }));
+            });
         }
 
         public void Start()
@@ -92,7 +104,7 @@ namespace Grindr.DTOs
         {
             // TODO Popup für die Eingabe des Teamnamen. bis dahin Team + count
             var count = GlobalState.Instance.Teams.Count + 1;
-            GlobalState.Instance.Teams.Add(new TeamVM() { TeamName = $"Team{count}"});
+            GlobalState.Instance.Teams.Add(new TeamVM() { TeamName = $"Team{count}" });
         }
 
         public static void AddMember(TeamVM team)
@@ -117,19 +129,23 @@ namespace Grindr.DTOs
 
         //}
 
-        public async Task LaunchAsync()
+        public void LaunchAsync()
         {
-            foreach (var member in this.Member)
-            {
-                Console.WriteLine($"{DateTime.Now}: Start");
-                var couldLaunch = await member.Launch();
-                Console.WriteLine($"{DateTime.Now}: End");
+            Task.Run(async () =>
+             {
+                 foreach (var member in this.Member)
+                 {
+                     Console.WriteLine($"{DateTime.Now}: Start");
+                     var couldLaunch = await member.Launch();
+                     Console.WriteLine($"{DateTime.Now}: End");
 
-                if(!couldLaunch)
-                {
-                    // Member konnte nicht gestartet werden
-                }
-            }
+                     if (!couldLaunch)
+                     {
+                         // Member konnte nicht gestartet werden
+                     }
+                 }
+
+             });
         }
 
         private static void InitializeMember(TeamVM team)

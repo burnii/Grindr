@@ -183,6 +183,16 @@ namespace Grindr.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Launched {
+            get {
+                object obj = ResourceManager.GetObject("Launched", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap loginButton_484x461 {
             get {
                 object obj = ResourceManager.GetObject("loginButton_484x461", resourceCulture);

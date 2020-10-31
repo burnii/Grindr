@@ -103,7 +103,8 @@ namespace Grindr
 
                 while (!templateFound && counter < 10)
                 {
-                    Thread.Sleep(100);
+                    //Thread.Sleep(100);
+                    Task.Delay(100);
                     counter++;
 
                     this.AnalyseScreenshot(template, windowHandle, out foundX, out foundY, out templateFound);
@@ -118,7 +119,8 @@ namespace Grindr
 
                         if(!string.IsNullOrEmpty(text))
                         {
-                            Thread.Sleep(1000);
+                            //Thread.Sleep(1000);
+                            Task.Delay(1000);
                             SendKeys.SendWait(text);
                         }
                     }

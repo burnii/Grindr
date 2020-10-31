@@ -23,8 +23,8 @@ namespace Grindr
 
         public void UpdateWowExePath()
         {
-            var wowExePaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Wow.exe", System.IO.SearchOption.AllDirectories);
-            //var wowExePaths = new string[]{@"C:\BattleNet\World of Warcraft\_retail_\Wow.exe"};
+            //var wowExePaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Wow.exe", System.IO.SearchOption.AllDirectories);
+            var wowExePaths = new string[]{@"C:\BattleNet\World of Warcraft\_retail_\Wow.exe"};
 
             if (wowExePaths.Length > 1)
             {

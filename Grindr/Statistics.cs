@@ -146,7 +146,8 @@ namespace Grindr
 
                     this.Runtime = $"{diff.Hours}:{diff.Minutes}:{diff.Seconds}";
 
-                    System.Threading.Thread.Sleep(1000);
+                    //System.Threading.Thread.Sleep(1000);
+                    Task.Delay(1000);
                 }
             });
         }

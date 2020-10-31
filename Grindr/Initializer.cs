@@ -37,33 +37,17 @@ namespace Grindr
 
         public async Task LaunchTeams(params TeamVM[] teams)
         {
-            //return Task.Run(() =>
-            //{
-            //    foreach (var team in teams)
-            //    {
-            //        foreach (var member in team.Member)
-            //        {
-            //            this.InitializeInternal(member);
-            //        }
-            //    }
-            //});
-
-                foreach (var team in teams)
+            foreach (var team in teams)
+            {
+                foreach (var member in team.Member)
                 {
-                    foreach (var member in team.Member)
-                    {
-                        await this.InitializeInternal(member);
-                    }
+                    await this.InitializeInternal(member);
                 }
+            }
         }
 
         public async Task<bool> Initialize()
         {
-            //return Task.Run(() =>
-            //{
-            //    this.InitializeInternal();
-            //});
-
             return await this.InitializeInternal();
         }
 
@@ -89,7 +73,8 @@ namespace Grindr
                         break;
                     }
 
-                    Thread.Sleep(1000);
+                    //Thread.Sleep(1000);
+                    Task.Delay(1000);
                 }
             });
         }
@@ -233,6 +218,8 @@ namespace Grindr
             member.i.Logger.AddLogEntry("Initialized");
             IsInitializing = false;
             initialized = true;
+
+            member.OnPropertyChanged("Progress");
 
             return initialized;
         }
