@@ -105,16 +105,31 @@ namespace Grindr.DTOs
             team.Member.Add(member);
         }
 
-        public void Launch()
+        //public void LaunchAsync()
+        //{
+        //    Task.Run(() =>
+        //    {
+        //        foreach (var member in this.Member)
+        //        {
+        //            member.Launch();
+        //        }
+        //    });
+
+        //}
+
+        public async Task LaunchAsync()
         {
-            Task.Run(() =>
+            foreach (var member in this.Member)
             {
-                foreach (var member in this.Member)
+                Console.WriteLine($"{DateTime.Now}: Start");
+                var couldLaunch = await member.Launch();
+                Console.WriteLine($"{DateTime.Now}: End");
+
+                if(!couldLaunch)
                 {
-                    member.Launch();
+                    // Member konnte nicht gestartet werden
                 }
-            });
-            
+            }
         }
 
         private static void InitializeMember(TeamVM team)

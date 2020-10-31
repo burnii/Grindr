@@ -35,26 +35,36 @@ namespace Grindr
             this.i = instance;
         }
 
-        public Task LaunchTeams(params TeamVM[] teams)
+        public async Task LaunchTeams(params TeamVM[] teams)
         {
-            return Task.Run(() =>
-            {
+            //return Task.Run(() =>
+            //{
+            //    foreach (var team in teams)
+            //    {
+            //        foreach (var member in team.Member)
+            //        {
+            //            this.InitializeInternal(member);
+            //        }
+            //    }
+            //});
+
                 foreach (var team in teams)
                 {
                     foreach (var member in team.Member)
                     {
-                        this.InitializeInternal(member);
+                        await this.InitializeInternal(member);
                     }
                 }
-            });
         }
 
-        public Task Initialize()
+        public async Task<bool> Initialize()
         {
-            return Task.Run(() =>
-            {
-                this.InitializeInternal();
-            });
+            //return Task.Run(() =>
+            //{
+            //    this.InitializeInternal();
+            //});
+
+            return await this.InitializeInternal();
         }
 
         public Task Attach()
@@ -92,8 +102,10 @@ namespace Grindr
             this.WindowHandle = null;
         }
 
-        public async void InitializeInternal(MemberVM member = null)
+        public async Task<bool> InitializeInternal(MemberVM member = null)
         {
+            bool initialized = false;
+
             // um abwärtskompatibel zu bleiben, da der multiboxer an dieser Stelle keine Botinstanz (i) hat, sondern auf den member zugegriffen wird.
             string username = member.AccName;
             string password = member.Password;
@@ -137,7 +149,7 @@ namespace Grindr
 
             var found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.usernameField_484x461, WindowHandle.Value, username, true);
 
-            if(!found)
+            if (!found)
             {
                 throw new Exception("Couldnt insert Username");
             }
@@ -149,7 +161,7 @@ namespace Grindr
                 throw new Exception("Couldnt insert Password");
             }
 
-            found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.loginButton_484x461, WindowHandle.Value, string.Empty,true);
+            found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.loginButton_484x461, WindowHandle.Value, string.Empty, true);
 
             if (!found)
             {
@@ -195,7 +207,7 @@ namespace Grindr
                     break;
                 case 7:
                     found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow7_484x461, WindowHandle.Value, string.Empty, true);
-                    break; 
+                    break;
                 case 8:
                     found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.accountWow8_484x461, WindowHandle.Value, string.Empty, true);
                     break;
@@ -220,6 +232,9 @@ namespace Grindr
 
             member.i.Logger.AddLogEntry("Initialized");
             IsInitializing = false;
+            initialized = true;
+
+            return initialized;
         }
 
         private Process GetProcessByHandle(IntPtr hwnd)

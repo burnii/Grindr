@@ -1,6 +1,7 @@
 ﻿using Grindr.VM;
 using Newtonsoft.Json;
 using System;
+using System.Threading.Tasks;
 
 namespace Grindr.DTOs
 {
@@ -130,9 +131,9 @@ namespace Grindr.DTOs
             }
         }
 
-        public void Launch()
+        public async Task<bool> Launch()
         {
-            this.i.Initializer.InitializeInternal(this);
+            return await this.i.Initializer.InitializeInternal(this);
         }
     }
 }

@@ -62,7 +62,7 @@ namespace Grindr.UI
         private void ButtonLaunchTeam_Click(object sender, RoutedEventArgs e)
         {
             // Launch selected Team
-            GlobalState.Instance.SelectedTeam.Launch();
+            GlobalState.Instance.SelectedTeam.LaunchAsync();
         }
 
         private void ButtonAddMember_Click(object sender, RoutedEventArgs e)
