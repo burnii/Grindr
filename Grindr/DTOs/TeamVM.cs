@@ -1,10 +1,12 @@
 ﻿using Grindr.VM;
 using Newtonsoft.Json;
+using QuickGraph;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -12,6 +14,29 @@ namespace Grindr.DTOs
 {
     public class TeamVM : BaseViewModel
     {
+        ManagementEventWatcher stopWatcher;
+
+        private void stopWatcher_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            var processName = (string)e.NewEvent.Properties["ProcessName"].Value;
+            var processIdAsObject = e.NewEvent.Properties["ProcessID"].Value;
+
+            if (Int32.TryParse(processIdAsObject.ToString(), out int res))
+            {
+                var processId = res;
+                var corruptMember = this.Member.Where(c => c.i.Initializer?.Process?.Id == (int)processId).Select(c => c).SingleOrDefault();
+                if (corruptMember != null)
+                {
+                    corruptMember.IsAttached = false;
+                    corruptMember.i.Initializer.Process = null;
+                    corruptMember.i.Initializer.WindowHandle = null;
+                    UpdateProgress();
+                }
+            }
+            //Console.WriteLine(string.Format("{0} stopped", (string)e.NewEvent["ProcessName"]));
+        }
+
+
         [JsonIgnore]
         public static string PathToTeamFiles { get; set; } = "./Teams/";
 
@@ -29,20 +54,30 @@ namespace Grindr.DTOs
             }
         }
 
+        private int progress;
         public int Progress
         {
             get
             {
-                var member = this.Member.Count;
-                var finishedMember = this.Member.Where(c => c.i.Initializer.WindowHandle != null).ToArray().Length;
-
-                return Convert.ToInt32(finishedMember / member);
+                return progress;
             }
+            set
+            {
+                progress = value;
+                OnPropertyChanged("Progress");
+            }
+        }
+
+        public TeamVM()
+        {
+            stopWatcher = new ManagementEventWatcher("Select * From Win32_ProcessStopTrace");
+            stopWatcher.EventArrived += new EventArrivedEventHandler(stopWatcher_EventArrived);
+            stopWatcher.Start();
         }
 
         public BindingList<MemberVM> Member { get; set; } = new BindingList<MemberVM>();
 
-        public static void UpdateTeams()
+        public void UpdateTeams()
         {
             //Task.Run(() =>
             //{
@@ -114,6 +149,8 @@ namespace Grindr.DTOs
                 i = new BotInstance(new System.Windows.Controls.ListBox(), team.Member.Count)
             };
 
+            member.Initialize();
+
             team.Member.Add(member);
         }
 
@@ -135,20 +172,24 @@ namespace Grindr.DTOs
              {
                  foreach (var member in this.Member)
                  {
-                     Console.WriteLine($"{DateTime.Now}: Start");
                      var couldLaunch = await member.Launch();
-                     Console.WriteLine($"{DateTime.Now}: End");
+                     member.IsAttached = couldLaunch;
+                     UpdateProgress();
 
                      if (!couldLaunch)
                      {
-                         // Member konnte nicht gestartet werden
+                         // Member konnte nicht gestartet werden                         
                      }
                  }
-
              });
         }
 
-        private static void InitializeMember(TeamVM team)
+        private void UpdateProgress()
+        {
+            this.Progress = (this.Member.Count(c => c.IsAttached) * 100) / this.Member.Count;
+        }
+
+        private void InitializeMember(TeamVM team)
         {
             for (int i = 0; i < team.Member.Count; i++)
             {
@@ -156,7 +197,7 @@ namespace Grindr.DTOs
             }
         }
 
-        private static void InitializeMember(MemberVM member, int index)
+        private void InitializeMember(MemberVM member, int index)
         {
             member.i = new BotInstance(null, index);
 

@@ -17,12 +17,16 @@ namespace Grindr.UI
     /// </summary>
     public partial class MultiboxMainWindow : MetroWindow
     {
+        public TeamVM TeamVM { get; set; }
+
         public MultiboxMainWindow()
         {
             InitializeComponent();
             this.DataContext = GlobalState.Instance;
 
+            TeamVM = new TeamVM();
             TeamVM.UpdateTeams();
+
             GlobalState.Instance.UpdateWowExePath();
         }
 

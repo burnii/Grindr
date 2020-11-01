@@ -51,7 +51,7 @@
                                 </StackPanel>
                             </DockPanel>
                             <StackPanel>
-                                <ProgressBar HorizontalAlignment="Stretch" Height="5" x:Name="pbStatus" Minimum="0" Maximum="100" Background="Transparent" Value="{Binding Progress, Mode=OneWay}" />
+                                <ProgressBar HorizontalAlignment="Stretch" Height="5" x:Name="pbStatus" Minimum="0" Maximum="100" Background="Transparent" Value="{Binding Progress, Mode=TwoWay}" />
                             </StackPanel>
                         </StackPanel>
                     </Border>

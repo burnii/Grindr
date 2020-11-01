@@ -23,7 +23,6 @@ namespace Grindr
         static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int Width, int Height, bool Repaint);
 
         public IntPtr? WindowHandle { get; set; }
-
         public Process Process { get; set; }
 
         public bool IsInitializing { get; set; } = false;
@@ -67,7 +66,8 @@ namespace Grindr
                     if (process.ProcessName == "Wow")
                     {
                         WindowHandle = windowHandle;
-                        Process = process;
+                        this.Process = process;
+
                         this.i.State.AttachState = Enums.AttachState.Detach;
                         this.i.Logger.AddLogEntry($"Attached to Wow process");
                         break;
@@ -89,7 +89,7 @@ namespace Grindr
 
         public async Task<bool> InitializeInternal(MemberVM member = null)
         {
-            bool initialized = false;
+            var initialized = false;
 
             // um abwärtskompatibel zu bleiben, da der multiboxer an dieser Stelle keine Botinstanz (i) hat, sondern auf den member zugegriffen wird.
             string username = member.AccName;
@@ -104,7 +104,6 @@ namespace Grindr
             {
                 password = this.i.Profile.Settings.Password;
             }
-            //
 
             member.i.Logger.AddLogEntry("Initializing ...");
             IsInitializing = true;
@@ -121,17 +120,17 @@ namespace Grindr
 
             MoveWindow(WindowHandle.Value, 0, 0, 500, 500, false);
 
-            // Always focus the window while initializing since "SendKeys" only sends the keys to the focused window
-            //await Task.Run(() =>
-            // {
-            //     while (IsInitializing)
-            //     {
-            //         Thread.Sleep(100);
-            //         SetForegroundWindow(WindowHandle.Value);
-            //     }
-            // });
+            await this.LogInRoutine(member, username, password);
 
+            member.i.Logger.AddLogEntry("Initialized");
+            IsInitializing = false;
+            member.IsAttached = initialized = true;
 
+            return initialized;
+        }
+
+        private async Task LogInRoutine(MemberVM member, string username, string password)
+        {
             var found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.usernameField_484x461, WindowHandle.Value, username, true);
 
             if (!found)
@@ -150,9 +149,8 @@ namespace Grindr
 
             if (!found)
             {
-                throw new Exception("Couldnt insert Password");
+                throw new Exception("Couldnt click login");
             }
-
 
             found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.passwordWrong_484x461, WindowHandle.Value, string.Empty, false);
 
@@ -168,7 +166,7 @@ namespace Grindr
                 throw new Exception("No Blizz Acc found");
             }
 
-            Thread.Sleep(5000);
+            Thread.Sleep(1000);
 
             switch (member.WowAccIndex)
             {
@@ -205,6 +203,8 @@ namespace Grindr
                 throw new Exception("Wow Account (1-8) not found");
             }
 
+            Thread.Sleep(1000);
+
             found = await member.i.InputController.ClickAndFindTemplate(Properties.Resources.acceptAccount_484x461, WindowHandle.Value, string.Empty, true);
 
             if (!found)
@@ -212,16 +212,8 @@ namespace Grindr
                 throw new Exception("Cant accept wow account");
             }
 
-            Thread.Sleep(10000);
+            Thread.Sleep(4000);
             member.i.InputController.TapKey(Keys.Enter);
-
-            member.i.Logger.AddLogEntry("Initialized");
-            IsInitializing = false;
-            initialized = true;
-
-            member.OnPropertyChanged("Progress");
-
-            return initialized;
         }
 
         private Process GetProcessByHandle(IntPtr hwnd)

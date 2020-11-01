@@ -70,7 +70,7 @@ namespace Grindr
             Task.Run(() =>
             {
                 PostMessage(this.i.Initializer.WindowHandle.Value, WM_LBUTTONDOWN, (IntPtr)0, (IntPtr)MakeLParam(x, y));
-                var rand = new Random().Next(100, 1000);
+                var rand = new Random().Next(50, 500);
                 Task.Delay(rand);
                 PostMessage(this.i.Initializer.WindowHandle.Value, WM_LBUTTONUP, (IntPtr)1, (IntPtr)MakeLParam(x, y));
             });
@@ -120,7 +120,7 @@ namespace Grindr
                         if(!string.IsNullOrEmpty(text))
                         {
                             //Thread.Sleep(1000);
-                            Task.Delay(1000);
+                            Task.Delay(500);
                             SendKeys.SendWait(text);
                         }
                     }

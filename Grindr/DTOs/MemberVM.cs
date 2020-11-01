@@ -108,7 +108,32 @@ namespace Grindr.DTOs
             }
         }
 
+        private bool isAttached;
+
+        [JsonIgnore]
+        public bool IsAttached
+        {
+            get
+            {
+                return isAttached;
+            }
+            set
+            {
+                isAttached = value;
+                OnPropertyChanged("IsAttached");
+            }
+        }
+
         private string defaultProfile;
+
+        public MemberVM()
+        {
+          
+        }
+
+        public void Initialize()
+        {
+        }
 
         internal void Start()
         {
