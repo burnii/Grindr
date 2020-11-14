@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace Grindr.DTOs
 {
@@ -14,6 +16,8 @@ namespace Grindr.DTOs
     {
         [JsonIgnore]
         public static string PathToTeamFiles { get; set; } = "./Teams/";
+        [JsonIgnore]
+        public static string PathToProfiles { get; set; } = "./Profiles/";
 
         private string teamName;
         public string TeamName
@@ -33,66 +37,66 @@ namespace Grindr.DTOs
 
         public static void UpdateTeams()
         {
-            //Task.Run(() =>
-            //{
-            //    var teamFiles = Directory.GetFiles(PathToTeamFiles);
+            var teamFiles = Directory.GetFiles(PathToTeamFiles);
 
-            //    var newTeams = new List<TeamVM>();
+            var newTeams = new List<TeamVM>();
 
-            //    GlobalState.Instance.Teams.Clear();
+            GlobalState.Instance.Teams.Clear();
 
-            //    foreach (var teamFile in teamFiles)
-            //    {
-            //        var serializedTeam = File.ReadAllText(teamFile);
-
-            //        var team = JsonConvert.DeserializeObject<TeamVM>(serializedTeam);
-
-            //        newTeams.Add(team);
-
-            //        InitializeMember(team);
-
-            //        GlobalState.Instance.Teams.Add(team);
-            //    }
-            //});
-
-
-            Application.Current.Dispatcher.Invoke(new Action(() =>
+            foreach (var teamFile in teamFiles)
             {
-                var teamFiles = Directory.GetFiles(PathToTeamFiles);
+                var serializedTeam = File.ReadAllText(teamFile);
 
-                var newTeams = new List<TeamVM>();
+                var team = JsonConvert.DeserializeObject<TeamVM>(serializedTeam);
 
-                GlobalState.Instance.Teams.Clear();
+                newTeams.Add(team);
 
-                foreach (var teamFile in teamFiles)
-                {
-                    var serializedTeam = File.ReadAllText(teamFile);
+                InitializeMember(team);
 
-                    var team = JsonConvert.DeserializeObject<TeamVM>(serializedTeam);
+                GlobalState.Instance.Teams.Add(team);
+            }
+        }
 
-                    newTeams.Add(team);
+        public static void SaveTeams()
+        {
+            foreach (var team in GlobalState.Instance.Teams)
+            {
+                team.Save();
+            }
+        }
 
-                    InitializeMember(team);
-
-                    GlobalState.Instance.Teams.Add(team);
-                }
-            }));
-
+        public void Save()
+        {
+            var serializedTeam = JsonConvert.SerializeObject(this);
+            File.WriteAllText(Path.Combine(PathToTeamFiles, this.GetTeamFileName()), serializedTeam);
         }
 
         public void Start()
         {
-            foreach (var member in GlobalState.Instance.SelectedTeam.Member)
+
+            foreach (var member in this.Member)
             {
-                //member.i.InputController.TapKey()
+                member.i.State.IsRunning = true;
             }
+
+
+            this.Member.First().i.Profile.CombatRoutine.Run(this);
+        }
+
+        public void Stop()
+        {
+            foreach (var member in this.Member)
+            {
+                member.i.State.IsRunning = false;
+            }
+
         }
 
         public static void AddTeam()
         {
             // TODO Popup für die Eingabe des Teamnamen. bis dahin Team + count
             var count = GlobalState.Instance.Teams.Count + 1;
-            GlobalState.Instance.Teams.Add(new TeamVM() { TeamName = $"Team{count}"});
+            GlobalState.Instance.Teams.Add(new TeamVM() { TeamName = $"Team{count}" });
         }
 
         public static void AddMember(TeamVM team)
@@ -105,17 +109,41 @@ namespace Grindr.DTOs
             team.Member.Add(member);
         }
 
-        //public void LaunchAsync()
-        //{
-        //    Task.Run(() =>
-        //    {
-        //        foreach (var member in this.Member)
-        //        {
-        //            member.Launch();
-        //        }
-        //    });
+        public void TapKeysForAllMember(params Keys[] keys)
+        {
+            Parallel.ForEach(this.Member.Where(x => x.i.Initializer.Process != null), (member) =>
+            {
+                foreach (var key in keys)
+                {
+                    member.i.InputController.TapKey(key);
+                }
+            });
+        }
 
-        //}
+        public void VendorItemsForAllMember()
+        {
+            this.TapKeysForAllMember(Keys.D4);
+            Thread.Sleep(2000);
+
+            this.TapKeysForAllMember(Keys.D8);
+            Thread.Sleep(7000);
+
+            this.TapKeysForAllMember(Keys.D9);
+            Thread.Sleep(1000);
+            this.TapKeysForAllMember(Keys.D9);
+            Thread.Sleep(1000);
+
+            this.TapKeysForAllMember(Keys.Y);
+            Thread.Sleep(1000);
+            this.TapKeysForAllMember(Keys.Y);
+            Thread.Sleep(1000);
+
+            for (int i = 0; i < 10; i++)
+            {
+                this.TapKeysForAllMember(Keys.D0);
+                Thread.Sleep(1000);
+            }
+        }
 
         public async Task LaunchAsync()
         {
@@ -125,11 +153,16 @@ namespace Grindr.DTOs
                 var couldLaunch = await member.Launch();
                 Console.WriteLine($"{DateTime.Now}: End");
 
-                if(!couldLaunch)
+                if (!couldLaunch)
                 {
                     // Member konnte nicht gestartet werden
                 }
             }
+        }
+
+        private string GetTeamFileName()
+        {
+            return this.teamName + ".json";
         }
 
         private static void InitializeMember(TeamVM team)
@@ -146,9 +179,11 @@ namespace Grindr.DTOs
 
             var defaultProfile = member.DefaultProfile;
 
-            if (!string.IsNullOrEmpty(defaultProfile) && File.Exists(defaultProfile))
+            var fullProfilePath = Path.Combine(PathToProfiles, defaultProfile + ".json");
+
+            if (!string.IsNullOrEmpty(defaultProfile) && File.Exists(fullProfilePath))
             {
-                var serializedProfile = File.ReadAllText(member.DefaultProfile);
+                var serializedProfile = File.ReadAllText(fullProfilePath);
 
                 member.i.Profile.NavigationNodes.Clear();
 
@@ -157,6 +192,7 @@ namespace Grindr.DTOs
                 member.i.Profile.NavigationNodes = profile.NavigationNodes;
                 member.i.Profile.Settings = profile.Settings;
                 member.i.Profile.Settings.Username = profile.Settings.Username;
+                member.i.Profile.CombatRoutine = profile.CombatRoutine;
             }
         }
     }

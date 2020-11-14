@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Grindr.CombaRoutine;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 
 namespace Grindr.DTOs
@@ -7,6 +8,7 @@ namespace Grindr.DTOs
     {
         public Settings Settings { get; set; }
         public ObservableCollection<NavigationNode> NavigationNodes { get; set; }
+        public CombatRoutine CombatRoutine { get; set; }
 
         [JsonIgnore]
         public BotInstance i { get; set; }
@@ -15,6 +17,7 @@ namespace Grindr.DTOs
         {
             this.Settings = new Settings();
             this.NavigationNodes = new ObservableCollection<NavigationNode>();
+            this.CombatRoutine = new CombatRoutine();
             this.i = instance;
         }
 

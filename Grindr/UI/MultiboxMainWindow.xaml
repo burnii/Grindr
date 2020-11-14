@@ -20,9 +20,12 @@
             <RowDefinition x:Name="Content" Height="5*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2">
+        <StackPanel Name="ButtonsStackPanel" Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2">
             <Button x:Name="ButtonAddTeam" Width="auto" Margin="5" Click="AddTeamButton_MouseDown">Add Team</Button>
             <Button x:Name="ButtonAddMember" Width="auto" Margin="5" Click="AddMemberButton_MouseDown">Add Member</Button>
+            <Button x:Name="ButtonRefreshTeams" Width="auto" Margin="5" Click="RefreshTeamButton_MouseDown">Refresh Teams</Button>
+            <Button x:Name="ButtonSave" Width="auto" Margin="5" Click="SaveButton_MouseDown">Save Teams</Button>
+            <Button Content="{Binding AttachState}" x:Name="ButtonAttach" Width="auto" Margin="5" Click="AttachButton_Click"></Button>
         </StackPanel>
 
         <ListBox x:Name="listBoxTeam" Background="LightGray" Grid.Row="1" SelectionChanged="listBoxTeam_SelectionChanged" FontSize="16"
@@ -33,7 +36,6 @@
                     <TextBlock Text="{Binding TeamName}"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Launch" Click="ButtonLaunchTeam_Click"/>
@@ -60,32 +62,111 @@
             </ItemsControl>
         </Grid>
 
-        <Grid Visibility="Hidden" Name="MemberDetailsGrid" Grid.Column="1" Grid.Row="1" >
+        <Grid Visibility="Visible" Name="MemberDetailsGrid" Grid.Column="1" Grid.Row="1" >
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" Text="{Binding Charname, StringFormat='Member - {0}'}" Margin="0,0,0,30"></TextBlock>
-                <GroupBox Header="Login" Margin="20,0,0,361" Width="281" HorizontalAlignment="Left">
-                    <StackPanel DockPanel.Dock="Bottom">
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Username" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-                            <TextBox x:Name="UserNameTextBox" Height="20" Background="WhiteSmoke" Text="{Binding AccName}"  Margin="0,0,0,0" Width="200" />
-                        </StackPanel>
+                <GroupBox Header="Account" Margin="0,0,0,246" Padding="20" Width="350">
+                    <GroupBox Header="Login"  Width="299" HorizontalAlignment="Left" Margin="0,0,-1,0">
+                        <StackPanel DockPanel.Dock="Bottom">
+                            <DockPanel>
+                                <Label Content="Username" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                <TextBox x:Name="UserNameTextBox" Height="20" Background="WhiteSmoke" Text="{Binding AccName}"  Margin="0,0,0,0" Width="200" HorizontalAlignment="Right" />
+                            </DockPanel>
 
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Password" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-                            <TextBox x:Name="PasswordTextBox" Height="20" Background="WhiteSmoke" Text="{Binding Password}"  Margin="0,0,0,0" Width="200" />
-                        </StackPanel>
+                            <DockPanel>
+                                <Label Content="Password" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                <TextBox x:Name="PasswordTextBox" Height="20" Background="WhiteSmoke" Text="{Binding Password}"  Margin="0,0,0,0" Width="200" HorizontalAlignment="Right" />
+                            </DockPanel>
 
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content= "AccIndex" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-                            <TextBox x:Name="WowAccIndexTextbox" Height="20" Background="WhiteSmoke" Text="{Binding WowAccIndex}"  Margin="0,0,0,0" Width="200" />
-                        </StackPanel>
+                            <DockPanel>
+                                <Label Content= "AccIndex" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                <TextBox x:Name="WowAccIndexTextbox" Height="20" Background="WhiteSmoke" Text="{Binding WowAccIndex}"  Margin="0,0,0,0" Width="200" HorizontalAlignment="Right" />
+                            </DockPanel>
 
+                            <DockPanel >
+                                <Label Content="CharIndex" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                <TextBox x:Name="CharIndexTextBox" Height="20" Background="WhiteSmoke" Text="{Binding CharIndex}"  Margin="0,0,0,0" Width="200" HorizontalAlignment="Right"/>
+                            </DockPanel>
+
+                            <DockPanel>
+                                <Label Content="DefaultProfile" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                <TextBox x:Name="DefaultProfileTextBox" Height="20" Background="WhiteSmoke" Text="{Binding DefaultProfile}"  Margin="0,0,0,0" Width="200" HorizontalAlignment="Right" MouseDoubleClick="DefaultProfileTextBox_MouseDoubleClick" TextChanged="DefaultProfileTextBox_TextChanged"/>
+                            </DockPanel>
+
+                            <DockPanel>
+                                <Label Content="Charname" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                <TextBox x:Name="CharNameTextBox" Height="20" Background="WhiteSmoke" Text="{Binding Charname}"  Margin="0,0,0,0" Width="200" HorizontalAlignment="Right" MouseDoubleClick="DefaultProfileTextBox_MouseDoubleClick" TextChanged="DefaultProfileTextBox_TextChanged"/>
+                            </DockPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </GroupBox>
+                <GroupBox Header="Profile" Padding="20" Margin="0,0,0,194" Width="519">
+                    <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="CharIndex" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-                            <TextBox x:Name="CharIndexTextBox" Height="20" Background="WhiteSmoke" Text="{Binding CharIndex}"  Margin="0,0,0,0" Width="200" />
+                            <TextBox x:Name="ProfileNameTextBox" Width="200" Margin="5"></TextBox>
+                            <Button Content="Save Profile" Height="20" Width=" 70" HorizontalAlignment="Left" Margin="5" Click="SaveProfileButton_Click"></Button>
+                            <Button Content="Load Profile" Height="20" Width=" 70" HorizontalAlignment="Left" Margin="5" Click="ImportProfileButton_Click"></Button>
+                        </StackPanel>
+                        <StackPanel  Orientation="Horizontal">
+                            <GroupBox Header="Combat routine"  Width="217" HorizontalAlignment="Left" >
+                                <StackPanel Name="CombatRoutineStackPanel" Orientation="Horizontal">
+                                    <StackPanel DockPanel.Dock="Bottom"  Width="581">
+                                        <DockPanel  Margin="0,0,271,0">
+                                            <Label Content="Millis between casts" />
+                                            <TextBox x:Name="MillisBetweenCastsTextBox" Height="20" Background="WhiteSmoke" Text="{Binding MillisBetweenInput}"  Width="70" Margin="0,0,120,0" HorizontalAlignment="Right"/>
+                                        </DockPanel>
+
+                                        <DockPanel  Margin="0,0,271,0">
+                                            <Label Content="Loot after millis" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                            <TextBox x:Name="LootAfterMillisTextBox" Height="20" Background="WhiteSmoke" Text="{Binding LootMillis}"  Width="70" Margin="0,0,120,0" HorizontalAlignment="Right"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,0,271,0">
+                                            <Label Content="Loot attempts" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                            <TextBox x:Name="LootAttemptsTextBox" Height="20" Background="WhiteSmoke" Text="{Binding LootAttempts}"  Width="70" Margin="0,0,120,0" HorizontalAlignment="Right"/>
+                                        </DockPanel>
+
+                                        <DockPanel Margin="0,0,271,0">
+                                            <Label Content="Vendor after millis" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                            <TextBox x:Name="VendorAfterMillisTextBox" Height="20" Background="WhiteSmoke" Text="{Binding VendorMillis}"  Width="70" Margin="0,0,120,0" HorizontalAlignment="Right"/>
+                                        </DockPanel>
+
+                                        <DockPanel  Margin="0,0,271,0">
+                                            <Label Content="Vendor attempts" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                            <TextBox x:Name="VendorAttemptsTextBox" Height="20" Background="WhiteSmoke" Text="{Binding VendorAttempts}"  Width="70" Margin="0,0,120,0" HorizontalAlignment="Right"/>
+                                        </DockPanel>
+
+                                        <DockPanel  Margin="0,0,271,0">
+                                            <Label Content= "Heal after millis" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                                            <TextBox x:Name="HealAfterMillisTextBox" Height="20" Background="WhiteSmoke" Text="{Binding HealMillis}"  Width="70" Margin="0,0,120,0" HorizontalAlignment="Right"/>
+                                        </DockPanel>
+
+                                    </StackPanel>
+
+
+                                </StackPanel>
+
+                            </GroupBox>
+                            <GroupBox Header="Inputs" Width="245" HorizontalAlignment="Left" Height="195" >
+                                <StackPanel  >
+                                    <ListBox Height="95" Name="InputListbox">
+                                    </ListBox>
+                                    <ComboBox x:Name="InputsDropDown" Height="20" Width="100" HorizontalAlignment="Center" Margin="68,10,65,10"/>
+                                    <StackPanel Orientation="Horizontal" Height="20">
+                                        <Button Content="Add" Width="76" Height="20" Click="AddInputButton_MouseDown"/>
+                                        <Button Content="Remove" Width="76" Height="20" Click="RemoveInputButton_MouseDown" />
+                                        <Button Content="Clear" Width="76" Height="20" Click="ClearInputsButton_MouseDown" />
+                                    </StackPanel>
+
+                                </StackPanel>
+
+                            </GroupBox>
                         </StackPanel>
                     </StackPanel>
+
+
                 </GroupBox>
+
             </DockPanel>
         </Grid>
     </Grid>

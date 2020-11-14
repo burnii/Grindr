@@ -108,15 +108,12 @@ namespace Grindr.DTOs
             }
         }
 
-        private string defaultProfile;
 
         internal void Start()
         {
-            while (this.i.State.IsRunning)
-            { 
-                
-            }
         }
+
+        private string defaultProfile;
 
         public string DefaultProfile
         {

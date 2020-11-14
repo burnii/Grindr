@@ -108,6 +108,7 @@
     </ApplicationDefinition>
     <Compile Include="Assister.cs" />
     <Compile Include="BotInstance.cs" />
+    <Compile Include="CombaRoutine\CombatRoutine.cs" />
     <Compile Include="Controller\InstanceWalkingController.cs" />
     <Compile Include="DTOs\MemberVM.cs" />
     <Compile Include="DTOs\Profile.cs" />

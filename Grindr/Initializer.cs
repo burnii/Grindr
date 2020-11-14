@@ -183,7 +183,7 @@ namespace Grindr
                 throw new Exception("No Blizz Acc found");
             }
 
-            Thread.Sleep(5000);
+            Thread.Sleep(2000);
 
             switch (member.WowAccIndex)
             {
@@ -227,7 +227,7 @@ namespace Grindr
                 throw new Exception("Cant accept wow account");
             }
 
-            Thread.Sleep(10000);
+            Thread.Sleep(8000);
             member.i.InputController.TapKey(Keys.Enter);
 
             member.i.Logger.AddLogEntry("Initialized");
