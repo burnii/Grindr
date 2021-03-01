@@ -116,8 +116,9 @@ namespace Grindr.UI
             GlobalState.Instance.SelectedTeam = (TeamVM)listbox.SelectedItem;
 
             if (GlobalState.Instance.SelectedTeam != null)
-            { 
+            {
                 this.MemberIcList.ItemsSource = GlobalState.Instance.SelectedTeam.Member;
+                this.GridCharacters.DataContext = GlobalState.Instance.SelectedTeam;
             }
         }
 
@@ -128,8 +129,8 @@ namespace Grindr.UI
         }
 
         private void ButtonAddMember_Click(object sender, RoutedEventArgs e)
-        { 
-            
+        {
+
         }
 
         private void SaveButton_MouseDown(object sender, RoutedEventArgs e)
@@ -163,6 +164,7 @@ namespace Grindr.UI
             this.CombatRoutineStackPanel.DataContext = memberVm.i.Profile.CombatRoutine;
             this.ProfileNameTextBox.Text = "";
             this.ButtonsStackPanel.DataContext = memberVm.i.State;
+            this.dataStackPanel.DataContext = memberVm.i.Data;
         }
 
         private void DefaultProfileTextBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -208,6 +210,84 @@ namespace Grindr.UI
         private void DefaultProfileTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var member in GlobalState.Instance.SelectedTeam.Member)
+            {
+                member.i.Profile.CombatRoutine = GlobalState.Instance.SelectedTeam.CombatRoutine;
+            }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MemberDetailsGrid.Visibility = Visibility.Visible;
+            GridCharacters.Visibility = Visibility.Hidden;
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            GlobalState.Instance.Teams.Clear();
+
+            var drives = System.Environment.GetLogicalDrives();
+
+            var info = new DirectoryInfo(@"C:\Program Files (x86)\World of Warcraft\_retail_\WTF\Account");
+            var subs = info.GetDirectories();
+
+            var elements = (from x in subs
+                            where x.Name.Contains("#")
+                            let bla = x.Name.Split('#').First()
+                            orderby x.CreationTime descending
+                            group x by bla into g
+                            select g).ToDictionary(g => g.Key, g => g.ToArray());
+
+            var newTeams = new List<TeamVM>();
+
+            foreach (var element in elements)
+            {
+                var team = new TeamVM();
+
+                var teamName = "";
+                var index = 1;
+                foreach (var acc in element.Value)
+                {
+                    var subDirectories = acc.GetDirectories();
+                    var serverDirectory = subDirectories.First();
+
+                    var member = new MemberVM
+                    {
+                        WowAccIndex = index,
+                        Charname = serverDirectory.GetDirectories().Count() > 0 ? serverDirectory.GetDirectories().First().Name : null,
+                        IsLeader = index == 1,
+                        Password = "yh9tegjmg",
+                        Server = serverDirectory.Name,
+                        i = new BotInstance(null, index)
+                    };
+
+                    team.Member.Add(member);
+
+                    if (teamName != "")
+                    {
+                        teamName += ", ";
+                    }
+
+                    teamName += member.Charname;
+
+                    index++;
+                }
+
+                team.TeamName = teamName;
+
+                newTeams.Add(team);
+            }
+
+            foreach (var team in newTeams)
+            {
+                GlobalState.Instance.Teams.Add(team);
+            }
+
+            //Directory.GetDirectories(asd2, "*.*", SearchOption.TopDirectoryOnly);
         }
     }
 }

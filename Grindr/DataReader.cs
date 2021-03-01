@@ -47,23 +47,7 @@ namespace Grindr
             this.i = instance;
         }
 
-        private void AlignWindow()
-        {
-            var row = 0;
 
-            if ((this.i.BotIndex + 1) * height1 > maxWidth)
-            {
-                row++;
-            }
-
-            if (this.i.BotIndex * height1 > maxWidth * 2)
-            {
-                row++;
-            }
-
-            //MoveWindow(this.i.Initializer.WindowHandle.Value, 1, 1, width1, height1, false);
-            MoveWindow(this.i.Initializer.WindowHandle.Value, this.i.BotIndex * width1 - (row * maxWidth), row * height1, width1, height1, false);
-        }
 
         public void Start()
         {
@@ -74,7 +58,7 @@ namespace Grindr
                 RECT srcRect;
                 if (this.i.Initializer.Process != null && this.i.Initializer.WindowHandle != null)
                 {
-                    this.AlignWindow();
+
 
                     if (GetWindowRect(this.i.Initializer.WindowHandle.Value, out srcRect))
                     {

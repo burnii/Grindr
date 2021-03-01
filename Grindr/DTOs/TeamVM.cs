@@ -1,4 +1,5 @@
-﻿using Grindr.VM;
+﻿using Grindr.CombaRoutine;
+using Grindr.VM;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,35 @@ namespace Grindr.DTOs
                 OnPropertyChanged("TeamName");
             }
         }
+
+        private CombatRoutine combatRoutine = new CombatRoutine();
+        public CombatRoutine CombatRoutine
+        {
+            get
+            {
+                return combatRoutine;
+            }
+            set
+            {
+                combatRoutine = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool shouldUseTeamCombatRoutine = true;
+        public bool ShouldUseTeamCombatRoutine
+        {
+            get 
+            {
+                return shouldUseTeamCombatRoutine;
+            }
+            set
+            {
+                shouldUseTeamCombatRoutine = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public BindingList<MemberVM> Member { get; set; } = new BindingList<MemberVM>();
 
@@ -73,23 +103,25 @@ namespace Grindr.DTOs
 
         public void Start()
         {
-
             foreach (var member in this.Member)
             {
-                member.i.State.IsRunning = true;
+                if (this.shouldUseTeamCombatRoutine)
+                {
+                    member.StartCombatRoutine(this.CombatRoutine);
+                }
+                else
+                { 
+                    member.StartCombatRoutine();
+                }
             }
-
-
-            this.Member.First().i.Profile.CombatRoutine.Run(this);
         }
 
         public void Stop()
         {
             foreach (var member in this.Member)
             {
-                member.i.State.IsRunning = false;
+                member.StopCombatRoutine();
             }
-
         }
 
         public static void AddTeam()

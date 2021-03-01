@@ -151,6 +151,7 @@
     <Compile Include="VM\BaseViewModel.cs" />
     <Compile Include="VM\MultiboxMainWindowVM.cs" />
     <Compile Include="WowActions.cs" />
+    <Compile Include="WowPaths.cs" />
     <Page Include="UI\BotUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
